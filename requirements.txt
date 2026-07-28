@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+streamlit
+pandas
+openpyxl
+pydantic
+python-dotenv
+chromadb
+pytest
+pymupdf
+httpx

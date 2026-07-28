@@ -1,0 +1,9 @@
+﻿.venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+.vscode/
+backend/storage/chroma/
+.pytest_cache/
+.tmp/
