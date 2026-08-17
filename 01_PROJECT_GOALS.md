@@ -1,6 +1,6 @@
 # 01_PROJECT_GOALS.md — Mục tiêu & chia nhỏ dự án
 
-**Cập nhật lần cuối:** 09/07/2026
+**Cập nhật lần cuối:** 17/08/2026
 **Mục tiêu tổng thể:** Xây dựng và nộp dự thi TaxGPT — trợ lý AI phát hiện rủi ro thuế và tuân thủ chứng từ cho SMEs — tại AI-Quantum Challenge 2026, HVTC.
 **Ràng buộc thời gian cứng (từ thể lệ, không thay đổi được):**
 
@@ -26,8 +26,26 @@
 | GD0-02 | Tạo repo Git + thư mục tài liệu dùng chung | Con người + VSCode AI | Repo có cấu trúc thư mục cơ bản | [x] |
 | GD0-03 | Brainstorm & chốt 3–5 case rủi ro thuế cụ thể | ChatGPT Plus → Con người xác nhận | Danh sách case cuối cùng, có mô tả ngắn mỗi case | [x] |
 | GD0-04 | Thu thập & tóm tắt văn bản luật cho các case đã chọn | Gemini Pro | Bảng pháp lý V3 đã có khung logic kỹ thuật, còn cần con người kiểm chứng điều/khoản gốc | [~] |
-| GD0-05 | Cài môi trường code (Python, FastAPI, Streamlit, ChromaDB) | VSCode AI | Môi trường chạy được, ghi trong README repo | [x] |
+| GD0-05 | Cài và khôi phục môi trường code cơ bản (Python, FastAPI, Streamlit, ChromaDB) | VSCode AI | Runtime cơ bản đã được xác minh lại ngày 17/08/2026: Python 3.12.10, pip 25.0.1, pytest 1 passed; backend `/health` trả HTTP 200 và frontend tĩnh render được | [x] |
 | GD0-06 | Đăng ký đội trên hệ thống (ai-quantum.hvtc.edu.vn/register) | Con người | Đội đã đăng ký, có tài khoản Dashboard cho đội trưởng hoặc email/ảnh xác nhận | [x] Đội đã đăng ký thành công; Dashboard hiển thị mã đội AQ2026-183 và trạng thái hồ sơ APPROVED |
+
+### Trạng thái runtime sau khi khôi phục ngày 17/08/2026
+
+- Môi trường `.venv` đã hoạt động với Python 3.12.10 và pip 25.0.1.
+- `pytest` chạy thành công: 1 test passed, 1 warning.
+- Backend FastAPI chạy được; endpoint `GET /health` trả HTTP 200 OK.
+- Frontend Streamlit chạy và render được trang “TaxGPT Dashboard” với danh sách tĩnh 5 case MVP.
+- Đây mới là runtime nền tảng, **không phải prototype nghiệp vụ hoàn chỉnh**. Dashboard chưa upload file, chưa đọc Excel, chưa gọi backend, chưa có rule engine và chưa có bảng cảnh báo.
+- Sau bước khôi phục runtime, backend đã có lát cắt nghiệp vụ đầu tiên cho Case 1: `Excel hóa đơn → parser → rule hóa đơn trùng → API JSON`.
+
+### Trạng thái triển khai backend Case 1 ngày 17/08/2026
+
+- Parser Excel tối thiểu tại `backend/app/parsers/excel_parser.py` đọc sheet `invoices`, tự nhận diện header tại dòng Excel 4 và đọc đúng 12 hóa đơn từ `sample_invoices_mvp.xlsx`.
+- Rule Case 1 tại `backend/app/rules/duplicate_invoice.py` đã có code và test; phát hiện 1 nhóm có khả năng trùng gồm `INV-DEMO-003` và `INV-DEMO-004`.
+- Backend có endpoint `GET /demo/case-1-duplicates`; kết quả xác minh trả HTTP 200, `total_invoices = 12` và `total_alerts = 1`.
+- Test hiện có gồm health, parser, xử lý lỗi parser, rule Case 1 và API; toàn bộ đạt `7 passed, 1 warning`. Warning TestClient không làm test thất bại.
+- Case 2–5 chưa triển khai. Frontend vẫn là trang tĩnh, chưa upload file, chưa gọi backend và chưa hiển thị bảng cảnh báo. RAG và AI explanation chưa triển khai.
+- Đây là **backend slice cho Case 1**, chưa phải prototype end-to-end.
 
 ### Danh sách đội đã chốt (cập nhật GD0-01)
 
@@ -65,10 +83,12 @@
 
 ## GIAI ĐOẠN CHỜ — Chuẩn bị trước cho Vòng 2 (30/07 – 20/08)
 
+**Ưu tiên kỹ thuật hiện tại:** triển khai luồng tối thiểu đọc hai file Excel mẫu, chạy rule engine và đưa kết quả lên Dashboard. Không triển khai RAG trước khi rule engine hoạt động và căn cứ pháp lý được kiểm chứng.
+
 | ID | Việc | Phụ trách | Output/DoD | Trạng thái |
 |---|---|---|---|---|
 | GDC-01 | Code module đọc XML/PDF hóa đơn | VSCode AI | Module chạy được với dữ liệu mẫu | [ ] |
-| GDC-02 | Code rule engine cơ bản cho 5 case | VSCode AI | Rule engine phát hiện đúng case test | [ ] |
+| GDC-02 | Code rule engine cơ bản cho 5 case | VSCode AI | Case 1 đã có code và test; Case 2–5 chưa triển khai | [~] |
 | GDC-03 | Mở rộng ngân hàng văn bản pháp luật cho case 2–5 | Gemini Pro | Bảng luật mở rộng | [ ] |
 | GDC-04 | Luyện phỏng vấn sơ loại (nếu được gọi 09/08) | ChatGPT Plus (đóng vai giám khảo) | Ghi âm/ghi chú buổi luyện tập | [ ] |
 
@@ -77,8 +97,8 @@
 | ID | Việc | Phụ trách | Output/DoD | Trạng thái |
 |---|---|---|---|---|
 | GD2-01 | Chốt phạm vi cuối cùng sau kick-off | Con người | Tài liệu phạm vi đã chốt | [ ] |
-| GD2-02 | Hoàn thiện module đọc dữ liệu (XML/PDF/Excel) | VSCode AI | Module xử lý cả 3 định dạng | [ ] |
-| GD2-03 | Hoàn thiện rule engine 5 case | VSCode AI | Test pass 5/5 case | [ ] |
+| GD2-02 | Hoàn thiện module đọc dữ liệu (XML/PDF/Excel) | VSCode AI | Đã có parser Excel tối thiểu cho file hóa đơn mẫu; XML/PDF và parser tổng quát chưa triển khai | [~] |
+| GD2-03 | Hoàn thiện rule engine 5 case | VSCode AI | Case 1 đã pass test; Case 2–5 chưa triển khai | [~] |
 | GD2-04 | Xây RAG: nạp luật vào ChromaDB, tách chunk, gắn metadata | Gemini Pro + VSCode AI | Pipeline RAG trả kết quả đúng câu hỏi mẫu | [ ] |
 | GD2-05 | Xây dashboard 3 màn hình | VSCode AI | Dashboard chạy demo được | [ ] |
 | GD2-06 | Test 15–20 tình huống thực tế | Con người + VSCode AI | Bảng kết quả test | [ ] |

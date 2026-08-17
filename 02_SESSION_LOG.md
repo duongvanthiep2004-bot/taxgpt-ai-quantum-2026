@@ -172,3 +172,23 @@
 - **Kết quả/Output:** Tạo file `docs/proposal/GD1-07_round1_idea_description_v2.md`. File có đủ 15 mục và phụ lục cải tiến, khoảng 2.814 từ, không nêu ngưỡng tiền cụ thể cho case 5 và không cam kết tuân thủ tuyệt đối. Bản này được dùng làm master hiện hành; GD1-05 giữ làm bản gốc đối chiếu.
 - **Vấn đề phát sinh:** Bản v2 quá dài để dán nguyên văn lên Dashboard; cần kiểm tra cấu trúc trường/giới hạn ký tự và tạo bản rút gọn để nộp.
 - **Quyết định:** Đạt — GD1-07 hoàn thành `[x]`.
+
+### 17/08/2026 — GD1.5-ENV — Khôi phục môi trường và xác minh runtime cơ bản
+
+- **AI/công cụ dùng:** Python, pip, pytest, Uvicorn, FastAPI và Streamlit; AI hỗ trợ cập nhật tài liệu điều phối theo kết quả xác minh.
+- **Người thực hiện:** Đội TaxGPT.
+- **Việc đã làm:** Khôi phục môi trường Python trong `.venv` và chạy lại các kiểm tra runtime cơ bản cho test, backend FastAPI, endpoint health và frontend Streamlit.
+- **Kết quả/Output:** Python 3.12.10 chạy được; pip 25.0.1 chạy được; `pytest` hoàn tất với 1 passed, 1 warning; backend chạy bằng `uvicorn backend.app.main:app --reload`; endpoint `GET /health` trả HTTP 200 OK; frontend chạy bằng `streamlit run frontend/streamlit_app/app.py` và render được trang “TaxGPT Dashboard” với danh sách tĩnh 5 case MVP.
+- **Giới hạn:** Dashboard chưa có upload file, chưa đọc Excel và chưa gọi backend. Chưa có parser, chưa có rule engine, chưa có bảng cảnh báo và chưa có prototype nghiệp vụ end-to-end.
+- **Vấn đề phát sinh:** Runtime nền tảng đã ổn định nhưng mới chỉ xác minh khung ứng dụng. Các chức năng nghiệp vụ cốt lõi vẫn phải được triển khai và kiểm thử bằng dữ liệu mẫu.
+- **Quyết định:** Đạt cho phạm vi môi trường runtime cơ bản — đủ điều kiện bắt đầu triển khai P1/P2/P3. Không triển khai RAG trước khi rule engine hoạt động và căn cứ pháp lý được con người kiểm chứng.
+
+### 17/08/2026 — GD1.5-CASE1 — Hoàn thành backend slice Case 1
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Python, pandas, openpyxl, FastAPI, Uvicorn và pytest.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Tạo `backend/app/parsers/excel_parser.py`, tạo `backend/app/rules/duplicate_invoice.py`, sửa `backend/app/main.py` để thêm endpoint `GET /demo/case-1-duplicates`, và tạo `backend/tests/test_case_1_duplicates.py`. Chỉ triển khai lát cắt Case 1, không triển khai RAG hoặc AI explanation.
+- **Kết quả/Output:** Parser đọc sheet `invoices`, nhận diện header ở dòng Excel 4 và đọc đúng 12 hóa đơn từ `sample_invoices_mvp.xlsx`. Rule Case 1 phát hiện 1 nhóm hóa đơn có khả năng trùng gồm `INV-DEMO-003` và `INV-DEMO-004`. API `/demo/case-1-duplicates` trả HTTP 200 với `total_invoices = 12` và `total_alerts = 1`. Toàn bộ test đạt `7 passed, 1 warning`; warning TestClient không làm test thất bại.
+- **Giới hạn:** Chưa có upload file, chưa kết nối frontend Streamlit, chưa triển khai Case 2–5, chưa có RAG hoặc AI explanation. Kết quả hiện tại là backend slice Case 1, chưa phải prototype end-to-end.
+- **Vấn đề phát sinh:** Rule duplicate hiện dùng khóa kỹ thuật tối thiểu theo dữ liệu mẫu; các ngoại lệ như hóa đơn điều chỉnh/thay thế cần được xử lý ở bước mở rộng sau.
+- **Quyết định:** Đạt cho phạm vi backend slice Case 1. Bước tiếp theo là triển khai Case 2 hoặc kết nối Dashboard tối thiểu; tiếp tục giữ RAG sau rule engine và kiểm chứng pháp lý.
