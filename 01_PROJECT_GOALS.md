@@ -35,17 +35,19 @@
 - `pytest` chạy thành công: 1 test passed, 1 warning.
 - Backend FastAPI chạy được; endpoint `GET /health` trả HTTP 200 OK.
 - Frontend Streamlit chạy và render được trang “TaxGPT Dashboard” với danh sách tĩnh 5 case MVP.
-- Đây mới là runtime nền tảng, **không phải prototype nghiệp vụ hoàn chỉnh**. Dashboard chưa upload file, chưa đọc Excel, chưa gọi backend, chưa có rule engine và chưa có bảng cảnh báo.
+- Đây mới là runtime nền tảng, **không phải prototype nghiệp vụ hoàn chỉnh**. Dashboard chưa upload file, chưa đọc Excel, chưa gọi backend, chưa nhận kết quả rule engine và chưa có bảng cảnh báo.
 - Sau bước khôi phục runtime, backend đã có lát cắt nghiệp vụ đầu tiên cho Case 1: `Excel hóa đơn → parser → rule hóa đơn trùng → API JSON`.
 
-### Trạng thái triển khai backend Case 1 ngày 17/08/2026
+### Trạng thái triển khai backend Case 1–3 ngày 17/08/2026
 
 - Parser Excel tối thiểu tại `backend/app/parsers/excel_parser.py` đọc sheet `invoices`, tự nhận diện header tại dòng Excel 4 và đọc đúng 12 hóa đơn từ `sample_invoices_mvp.xlsx`.
 - Rule Case 1 tại `backend/app/rules/duplicate_invoice.py` đã có code và test; phát hiện 1 nhóm có khả năng trùng gồm `INV-DEMO-003` và `INV-DEMO-004`.
 - Backend có endpoint `GET /demo/case-1-duplicates`; kết quả xác minh trả HTTP 200, `total_invoices = 12` và `total_alerts = 1`.
-- Test hiện có gồm health, parser, xử lý lỗi parser, rule Case 1 và API; toàn bộ đạt `7 passed, 1 warning`. Warning TestClient không làm test thất bại.
-- Case 2–5 chưa triển khai. Frontend vẫn là trang tĩnh, chưa upload file, chưa gọi backend và chưa hiển thị bảng cảnh báo. RAG và AI explanation chưa triển khai.
-- Đây là **backend slice cho Case 1**, chưa phải prototype end-to-end.
+- Rule Case 2 tại `backend/app/rules/buyer_info_mismatch.py`, endpoint `GET /demo/case-2-buyer-info` và test tương ứng đã hoàn thành; phát hiện 2 cảnh báo cho `INV-DEMO-005` và `INV-DEMO-006`.
+- Rule Case 3 tại `backend/app/rules/vat_mismatch.py`, endpoint `GET /demo/case-3-vat-mismatch` và test tương ứng đã hoàn thành; phát hiện 2 cảnh báo cho `INV-DEMO-007` và `INV-DEMO-008`.
+- Test hiện có gồm health, parser, xử lý lỗi parser, rule và API Case 1–3; toàn bộ đạt `16 passed, 1 warning`. Warning TestClient không làm test thất bại.
+- Case 4 và Case 5 chưa triển khai. Chưa có API tổng hợp scan-all. Frontend vẫn là trang tĩnh, chưa upload file, chưa gọi backend và chưa hiển thị bảng cảnh báo. RAG và AI explanation chưa triển khai.
+- Đây là các **backend slice cho Case 1–3**, chưa phải prototype end-to-end.
 
 ### Danh sách đội đã chốt (cập nhật GD0-01)
 
@@ -88,7 +90,7 @@
 | ID | Việc | Phụ trách | Output/DoD | Trạng thái |
 |---|---|---|---|---|
 | GDC-01 | Code module đọc XML/PDF hóa đơn | VSCode AI | Module chạy được với dữ liệu mẫu | [ ] |
-| GDC-02 | Code rule engine cơ bản cho 5 case | VSCode AI | Case 1 đã có code và test; Case 2–5 chưa triển khai | [~] |
+| GDC-02 | Code rule engine cơ bản cho 5 case | VSCode AI | Case 1–3 đã có backend code, API và test; Case 4–5 chưa triển khai | [~] |
 | GDC-03 | Mở rộng ngân hàng văn bản pháp luật cho case 2–5 | Gemini Pro | Bảng luật mở rộng | [ ] |
 | GDC-04 | Luyện phỏng vấn sơ loại (nếu được gọi 09/08) | ChatGPT Plus (đóng vai giám khảo) | Ghi âm/ghi chú buổi luyện tập | [ ] |
 
@@ -98,7 +100,7 @@
 |---|---|---|---|---|
 | GD2-01 | Chốt phạm vi cuối cùng sau kick-off | Con người | Tài liệu phạm vi đã chốt | [ ] |
 | GD2-02 | Hoàn thiện module đọc dữ liệu (XML/PDF/Excel) | VSCode AI | Đã có parser Excel tối thiểu cho file hóa đơn mẫu; XML/PDF và parser tổng quát chưa triển khai | [~] |
-| GD2-03 | Hoàn thiện rule engine 5 case | VSCode AI | Case 1 đã pass test; Case 2–5 chưa triển khai | [~] |
+| GD2-03 | Hoàn thiện rule engine 5 case | VSCode AI | Case 1–3 đã có backend code, API và test; toàn bộ suite đạt 16 passed; Case 4–5 chưa triển khai | [~] |
 | GD2-04 | Xây RAG: nạp luật vào ChromaDB, tách chunk, gắn metadata | Gemini Pro + VSCode AI | Pipeline RAG trả kết quả đúng câu hỏi mẫu | [ ] |
 | GD2-05 | Xây dashboard 3 màn hình | VSCode AI | Dashboard chạy demo được | [ ] |
 | GD2-06 | Test 15–20 tình huống thực tế | Con người + VSCode AI | Bảng kết quả test | [ ] |

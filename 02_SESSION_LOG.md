@@ -192,3 +192,23 @@
 - **Giới hạn:** Chưa có upload file, chưa kết nối frontend Streamlit, chưa triển khai Case 2–5, chưa có RAG hoặc AI explanation. Kết quả hiện tại là backend slice Case 1, chưa phải prototype end-to-end.
 - **Vấn đề phát sinh:** Rule duplicate hiện dùng khóa kỹ thuật tối thiểu theo dữ liệu mẫu; các ngoại lệ như hóa đơn điều chỉnh/thay thế cần được xử lý ở bước mở rộng sau.
 - **Quyết định:** Đạt cho phạm vi backend slice Case 1. Bước tiếp theo là triển khai Case 2 hoặc kết nối Dashboard tối thiểu; tiếp tục giữ RAG sau rule engine và kiểm chứng pháp lý.
+
+### 17/08/2026 — GD1.5-CASE2 — Hoàn thành backend slice Case 2
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Python, pandas, FastAPI, Uvicorn và pytest.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Tạo rule Case 2 tại `backend/app/rules/buyer_info_mismatch.py`, thêm endpoint `GET /demo/case-2-buyer-info` vào backend và tạo test tại `backend/tests/test_case_2_buyer_info.py`.
+- **Kết quả/Output:** Backend slice Case 2 phát hiện 2 cảnh báo thông tin người mua cần rà soát cho `INV-DEMO-005` và `INV-DEMO-006`; endpoint trả HTTP 200 trên dữ liệu mẫu. Thay đổi đã được lưu tại commit `934d3e3` (`Implement backend buyer info mismatch case`).
+- **Giới hạn:** Rule hiện phục vụ dữ liệu demo có nhãn rõ ràng; chưa có upload file, chưa kết nối frontend, chưa có API scan-all, chưa triển khai Case 4–5, RAG hoặc AI explanation. Đây chưa phải prototype end-to-end.
+- **Vấn đề phát sinh:** Cần cấu hình hồ sơ doanh nghiệp tham chiếu đã được xác nhận trước khi mở rộng logic so khớp MST/tên cho dữ liệu thực.
+- **Quyết định:** Đạt cho phạm vi backend slice Case 2.
+
+### 17/08/2026 — GD1.5-CASE3 — Hoàn thành backend slice Case 3
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Python, pandas, FastAPI, Uvicorn và pytest.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Tạo rule Case 3 tại `backend/app/rules/vat_mismatch.py`, thêm endpoint `GET /demo/case-3-vat-mismatch` vào backend và tạo test tại `backend/tests/test_case_3_vat_mismatch.py`.
+- **Kết quả/Output:** Backend slice Case 3 phát hiện 2 cảnh báo phép tính VAT cần rà soát cho `INV-DEMO-007` và `INV-DEMO-008`; endpoint trả HTTP 200 trên dữ liệu mẫu. Toàn bộ suite đạt `16 passed, 1 warning`; warning TestClient không làm test thất bại. Thay đổi đã được lưu tại commit `7570404` (`Implement backend VAT mismatch case`).
+- **Giới hạn:** Chưa có upload file, chưa kết nối frontend, chưa có API scan-all, chưa triển khai Case 4–5, RAG hoặc AI explanation. Đây chưa phải prototype end-to-end.
+- **Vấn đề phát sinh:** Tolerance hiện là cấu hình kỹ thuật; quy tắc làm tròn cần được chốt trước khi dùng với dữ liệu thực.
+- **Quyết định:** Đạt cho phạm vi backend slice Case 3. Ưu tiên tiếp theo là Case 4, sau đó Case 5 và API tổng hợp scan-all; RAG tiếp tục để sau rule engine và kiểm chứng pháp lý.

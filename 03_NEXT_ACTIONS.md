@@ -17,8 +17,10 @@
 - GD1-07: `[x]` Đã tạo và review đạt bản v2 mô tả ý tưởng Vòng 1; dùng làm master hiện hành.
 - P0-ENV: `[x]` Đã khôi phục runtime cơ bản ngày 17/08/2026: Python 3.12.10, pip 25.0.1, pytest 1 passed; backend `/health` HTTP 200 và frontend tĩnh render được.
 - P1-CASE1: `[x]` Đã hoàn thành luồng `Đọc Excel → rule Case 1 → API JSON`; parser đọc 12 hóa đơn, API trả HTTP 200 và phát hiện 1 nhóm duplicate.
+- P2-CASE2: `[x]` Đã hoàn thành backend slice Case 2; API trả 2 cảnh báo cho `INV-DEMO-005` và `INV-DEMO-006`.
+- P3-CASE3: `[x]` Đã hoàn thành backend slice Case 3; API trả 2 cảnh báo cho `INV-DEMO-007` và `INV-DEMO-008`; toàn bộ suite đạt 16 passed, 1 warning.
 
-**Ghi chú:** Backend đã có lát cắt Case 1 và test đạt 7 passed, 1 warning. Dashboard vẫn là trang tĩnh, chưa upload hoặc gọi backend; Case 2–5 và RAG chưa triển khai. Chưa có prototype end-to-end.
+**Ghi chú:** Backend đã có code, API và test cho Case 1–3. Dashboard vẫn là trang tĩnh, chưa upload hoặc gọi backend; Case 4–5, API scan-all và RAG chưa triển khai. Chưa có prototype end-to-end.
 
 ## Thứ tự ưu tiên
 
@@ -36,31 +38,43 @@
 - Endpoint `GET /demo/case-1-duplicates` trả HTTP 200 và danh sách cảnh báo JSON.
 - Test health, parser, xử lý lỗi, rule và API đạt `7 passed, 1 warning`.
 
-### P2 — Triển khai Case 2 sai MST/tên người mua
+### P2 — Triển khai Case 2 sai MST/tên người mua `[x]`
 
-- Chốt dữ liệu doanh nghiệp tham chiếu dùng để so sánh MST và tên người mua.
-- Tách cảnh báo sai MST khỏi sai lệch nhỏ trong tên; chỉ đưa cảnh báo rà soát, không kết luận hóa đơn vô hiệu.
-- Viết unit test và API test cho dữ liệu bình thường, sai MST và sai tên.
+- Rule `buyer_info_mismatch.py`, endpoint `GET /demo/case-2-buyer-info` và test Case 2 đã hoàn thành.
+- Phát hiện 2 cảnh báo demo: `INV-DEMO-005`, `INV-DEMO-006`.
+- Commit: `934d3e3` (`Implement backend buyer info mismatch case`).
 
-### P3 — Triển khai Case 3 VAT lệch phép tính
+### P3 — Triển khai Case 3 VAT lệch phép tính `[x]`
 
-- Tính lại VAT từ `taxable_amount × vat_rate` và so sánh với `vat_amount`.
-- Chốt tolerance kỹ thuật cho sai số làm tròn và ghi rõ đây không phải ngưỡng pháp lý.
-- Viết test cho giá trị đúng, lệch và trường hợp biên làm tròn.
+- Rule `vat_mismatch.py`, endpoint `GET /demo/case-3-vat-mismatch` và test Case 3 đã hoàn thành.
+- Phát hiện 2 cảnh báo demo: `INV-DEMO-007`, `INV-DEMO-008`.
+- Commit: `7570404` (`Implement backend VAT mismatch case`); toàn bộ suite đạt 16 passed, 1 warning.
 
-### P4 — Kết nối Dashboard Streamlit
+### P4 — Case 4: Hóa đơn ngoài kỳ dữ liệu đang rà soát
 
-- Gọi backend API và hiển thị danh sách/bảng cảnh báo cho các case đã triển khai.
+- So sánh `invoice_date` với kỳ dữ liệu đang rà soát.
+- Chỉ nhắc người dùng rà soát hóa đơn ngoài kỳ, không kết luận vi phạm hoặc sai kỳ pháp lý.
+- Bổ sung rule, endpoint demo và test tự động trước khi đánh dấu hoàn thành.
+
+### P5 — Case 5: Đối chiếu hóa đơn giá trị lớn với dữ liệu thanh toán
+
+- Đọc file `sample_bank_payments_mvp.xlsx` và xác minh schema trước khi code.
+- Chốt ngưỡng cấu hình, ngoại lệ và logic liên kết thanh toán với người phụ trách nghiệp vụ.
+- Chỉ cảnh báo chưa tìm thấy chứng từ phù hợp; không tự kết luận hóa đơn không hợp lệ.
+
+### P6 — API tổng hợp `/demo/scan-all`
+
+- Chạy các rule Case 1–5 đã hoàn thành trên cùng dữ liệu mẫu.
+- Trả danh sách cảnh báo thống nhất và tổng hợp số lượng theo case.
+- Không coi scan-all là hoàn thành cho đến khi Case 4–5 có test đạt.
+
+### P7 — Kết nối Streamlit hiển thị bảng cảnh báo
+
+- Gọi API scan-all và hiển thị bảng cảnh báo theo case, mức độ và invoice liên quan.
 - Sau khi luồng gọi API ổn định, bổ sung upload Excel thay cho file demo cố định.
-- Hiển thị trạng thái lỗi rõ ràng khi file thiếu, sai định dạng hoặc backend không khả dụng.
+- Hiển thị lỗi rõ ràng khi file sai định dạng hoặc backend không khả dụng.
 
-### P5 — Triển khai Case 4 và Case 5
-
-- Case 4 chỉ nhắc rà soát hóa đơn ngoài kỳ dữ liệu đang kiểm tra, không kết luận vi phạm.
-- Case 5 chỉ triển khai sau khi ngưỡng, ngoại lệ và logic liên kết thanh toán được người phụ trách nghiệp vụ xác nhận.
-- Duy trì unit test và API test cho từng case trước khi đánh dấu hoàn thành.
-
-### P6 — RAG pháp lý sau
+### P8 — RAG pháp lý sau
 
 - Chỉ bắt đầu sau khi parser, rule engine, API và Dashboard đã tạo được luồng end-to-end ổn định.
 - Chỉ ingest nội dung pháp lý đã được con người kiểm chứng nguồn, hiệu lực và điều/khoản.
@@ -68,9 +82,9 @@
 
 ## Bước tiếp theo cụ thể
 
-**Bước đã hoàn thành:** đọc `sample_invoices_mvp.xlsx` → chạy rule Case 1 → trả danh sách cảnh báo JSON.
+**Bước đã hoàn thành:** backend code, API và test cho Case 1–3; toàn bộ suite đạt `16 passed, 1 warning`.
 
-**Bước tiếp theo:** triển khai Case 2 sai MST/tên người mua với dữ liệu doanh nghiệp tham chiếu được xác nhận; sau đó triển khai Case 3 và kết nối Dashboard Streamlit tối thiểu.
+**Bước tiếp theo:** triển khai Case 4 — hóa đơn ngoài kỳ dữ liệu đang rà soát — với thông điệp chỉ nhắc rà soát; sau đó mới triển khai Case 5, API scan-all và kết nối Streamlit.
 
 ## Nguyên tắc thực hiện
 
