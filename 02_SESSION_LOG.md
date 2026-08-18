@@ -232,3 +232,23 @@
 - **Giới hạn:** Dự án chưa phải prototype end-to-end vì frontend chưa kết nối backend, chưa có upload file thật, chưa có API tổng hợp scan-all, chưa có RAG và chưa có AI explanation.
 - **Vấn đề phát sinh:** Kiểm chứng nguồn, hiệu lực và điều/khoản pháp lý vẫn là rủi ro lớn nhất. RAG tiếp tục hoãn; không ingest tài liệu pháp lý chưa kiểm chứng.
 - **Quyết định:** Đạt cho phạm vi backend MVP. Ưu tiên tiếp theo là xác nhận commit/push Case 5, hoàn thành scan-all và kết nối dashboard Streamlit; chỉ triển khai RAG sau khi pháp lý được kiểm chứng.
+
+### 18/08/2026 — GD1.5-SCANALL — Hoàn thành API tổng hợp scan-all
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Python, FastAPI, pandas, httpx và pytest.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Thêm endpoint tổng hợp `GET /demo/scan-all` để đọc hai file Excel demo, chạy đủ 5 rule MVP và trả một response thống nhất gồm số liệu tổng quan, `case_summary` và danh sách cảnh báo giữ nguyên evidence.
+- **Kết quả/Output:** Endpoint trả `total_invoices = 12`, `total_payments = 6`, `total_alerts = 9`. `case_summary` có đủ 5 case với số cảnh báo lần lượt `1, 2, 2, 2, 2`. Toàn bộ suite đạt `33 passed, 1 warning`. Thay đổi được lưu tại commit `667bf24` (`Implement backend scan-all demo endpoint`).
+- **Giới hạn:** API vẫn đọc file demo cố định; chưa nhận file upload thật, chưa có RAG pháp lý hoặc AI explanation và chưa xử lý ngoại lệ nghiệp vụ nâng cao.
+- **Vấn đề phát sinh:** Evidence của các case có schema khác nhau và được giữ nguyên để tránh mất dữ liệu; phần frontend cần định dạng lại nếu muốn trình bày thân thiện hơn.
+- **Quyết định:** Đạt cho phạm vi backend scan-all demo.
+
+### 18/08/2026 — GD1.5-FRONTEND-DEMO — Kết nối Streamlit với scan-all
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Streamlit, pandas và httpx.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Sửa `frontend/streamlit_app/app.py` để Dashboard gọi backend `/demo/scan-all` khi người dùng bấm nút “Chạy rà soát dữ liệu demo”.
+- **Kết quả/Output:** Dashboard hiển thị 3 metric tổng quan gồm 12 hóa đơn, 6 giao dịch thanh toán và 9 cảnh báo; có bảng tổng hợp đủ 5 case và bảng chi tiết 9 cảnh báo. Dashboard có disclaimer: TaxGPT chỉ hỗ trợ rà soát rủi ro và không thay thế kế toán, luật sư, đại lý thuế hoặc cơ quan thuế. Khi backend chưa chạy, giao diện hiển thị lỗi thân thiện: “Backend chưa chạy. Vui lòng chạy uvicorn backend.app.main:app --reload”. Thay đổi được lưu tại commit `a13dfd1` (`Connect Streamlit dashboard to scan-all endpoint`). Git working tree sạch sau commit.
+- **Giới hạn:** Chưa có upload file thật, RAG pháp lý hoặc AI explanation; evidence còn hiển thị dạng JSON thô và chưa xử lý ngoại lệ nghiệp vụ nâng cao.
+- **Vấn đề phát sinh:** Giao diện hiện ưu tiên rõ ràng và dễ demo; chưa có lọc theo case, màu severity hoặc định dạng evidence thân thiện.
+- **Quyết định:** **Đạt prototype demo local không RAG** với phạm vi `Excel demo cố định → backend scan-all → Streamlit dashboard hiển thị bảng cảnh báo`. Đây chưa phải sản phẩm hoàn chỉnh.

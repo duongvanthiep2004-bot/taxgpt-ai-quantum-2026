@@ -1,6 +1,6 @@
 # 01_PROJECT_GOALS.md — Mục tiêu & chia nhỏ dự án
 
-**Cập nhật lần cuối:** 17/08/2026
+**Cập nhật lần cuối:** 18/08/2026
 **Mục tiêu tổng thể:** Xây dựng và nộp dự thi TaxGPT — trợ lý AI phát hiện rủi ro thuế và tuân thủ chứng từ cho SMEs — tại AI-Quantum Challenge 2026, HVTC.
 **Ràng buộc thời gian cứng (từ thể lệ, không thay đổi được):**
 
@@ -38,7 +38,7 @@
 - Đây mới là runtime nền tảng, **không phải prototype nghiệp vụ hoàn chỉnh**. Dashboard chưa upload file, chưa đọc Excel, chưa gọi backend, chưa nhận kết quả rule engine và chưa có bảng cảnh báo.
 - Sau bước khôi phục runtime, backend đã có lát cắt nghiệp vụ đầu tiên cho Case 1: `Excel hóa đơn → parser → rule hóa đơn trùng → API JSON`.
 
-### Trạng thái triển khai backend 5 case MVP ngày 17/08/2026
+### Trạng thái triển khai backend và demo local đến 18/08/2026
 
 - Parser Excel tối thiểu tại `backend/app/parsers/excel_parser.py` đọc sheet `invoices`, tự nhận diện header tại dòng Excel 4 và đọc đúng 12 hóa đơn từ `sample_invoices_mvp.xlsx`.
 - Rule Case 1 tại `backend/app/rules/duplicate_invoice.py` đã có code và test; phát hiện 1 nhóm có khả năng trùng gồm `INV-DEMO-003` và `INV-DEMO-004`.
@@ -47,14 +47,15 @@
 - Rule Case 3 tại `backend/app/rules/vat_mismatch.py`, endpoint `GET /demo/case-3-vat-mismatch` và test tương ứng đã hoàn thành; phát hiện 2 cảnh báo cho `INV-DEMO-007` và `INV-DEMO-008`.
 - Case 4 — hóa đơn ngoài kỳ dữ liệu đang rà soát — đã có backend slice ở mức parser/rule/API/test.
 - Case 5 — hóa đơn giá trị lớn thiếu chứng từ thanh toán không dùng tiền mặt — đã có backend slice ở mức parser/rule/API/test; phát hiện cảnh báo cho `INV-DEMO-011` và `INV-DEMO-012`. Báo cáo cuối phiên chưa xác nhận commit/push phần thay đổi này.
-- Như vậy, **5/5 case MVP đã có backend slice ở mức parser/rule/API/test**. Toàn bộ test hiện đạt `32 passed, 1 warning`; warning không làm test thất bại.
-- Frontend Streamlit vẫn chưa kết nối backend, chưa có upload file thật, chưa có API tổng hợp `GET /demo/scan-all`, chưa có RAG và chưa có AI explanation.
+- Như vậy, **5/5 case MVP đã có backend slice ở mức parser/rule/API/test**. Backend đã có API tổng hợp `GET /demo/scan-all`; toàn bộ test hiện đạt `33 passed, 1 warning`, warning không làm test thất bại.
+- Frontend Streamlit đã kết nối `GET /demo/scan-all`. Dashboard có nút “Chạy rà soát dữ liệu demo” và hiển thị 12 hóa đơn, 6 giao dịch thanh toán, 9 cảnh báo, bảng tổng hợp 5 case cùng bảng chi tiết cảnh báo.
 - RAG tiếp tục bị khóa cho đến khi nguồn, hiệu lực và điều/khoản pháp lý được con người kiểm chứng; không ingest tài liệu pháp lý chưa kiểm chứng.
-- Đây là tiến độ backend tốt nhất từ đầu dự án, nhưng **chưa phải prototype end-to-end**.
+- **Prototype demo local không RAG: đạt.** Phạm vi đã xác minh là `Excel demo cố định → backend scan-all → Streamlit dashboard hiển thị bảng cảnh báo`.
+- Đây không phải sản phẩm hoàn chỉnh. Chưa có upload file thật, RAG pháp lý, AI explanation, giao diện evidence được trình bày thân thiện hoặc xử lý ngoại lệ nghiệp vụ nâng cao; evidence hiện vẫn hiển thị dạng JSON thô.
 
 ### Ước lượng tiến độ từ sau phiên 17/08/2026
 
-- **Mức 1 — Prototype demo local không RAG:** Excel mẫu → `scan-all` → Streamlit hiển thị bảng cảnh báo; ước tính 1–2 phiên, khoảng 2–4 ngày. Prototype demo local không RAG có thể đạt trong 1–2 phiên tiếp theo nếu hoàn thành scan-all và dashboard Streamlit.
+- **Mức 1 — Prototype demo local không RAG:** đã đạt ngày 18/08/2026 với luồng Excel mẫu → `scan-all` → Streamlit hiển thị bảng cảnh báo.
 - **Mức 2 — RAG pháp lý + trích dẫn + AI explanation:** phụ thuộc kiểm chứng pháp lý; nếu pháp lý xong trong tuần này thì cần thêm khoảng 2–3 phiên, ước tính 1–1.5 tuần.
 - **Tổng mức trình diễn đầy đủ:** khoảng 1.5–2 tuần nếu pháp lý không bị trì hoãn.
 - Rủi ro lớn nhất hiện tại là kiểm chứng pháp lý, không phải kỹ thuật backend.
@@ -95,12 +96,12 @@
 
 ## GIAI ĐOẠN CHỜ — Chuẩn bị trước cho Vòng 2 (30/07 – 20/08)
 
-**Ưu tiên kỹ thuật hiện tại:** triển khai luồng tối thiểu đọc hai file Excel mẫu, chạy rule engine và đưa kết quả lên Dashboard. Không triển khai RAG trước khi rule engine hoạt động và căn cứ pháp lý được kiểm chứng.
+**Ưu tiên kỹ thuật hiện tại:** ổn định và làm rõ Dashboard demo, sau đó bổ sung upload hai file Excel. Không triển khai RAG trước khi căn cứ pháp lý được kiểm chứng.
 
 | ID | Việc | Phụ trách | Output/DoD | Trạng thái |
 |---|---|---|---|---|
 | GDC-01 | Code module đọc XML/PDF hóa đơn | VSCode AI | Module chạy được với dữ liệu mẫu | [ ] |
-| GDC-02 | Code rule engine cơ bản cho 5 case | VSCode AI | 5/5 case MVP đã có backend slice ở mức parser/rule/API/test; toàn bộ suite đạt 32 passed, 1 warning | [x] |
+| GDC-02 | Code rule engine cơ bản cho 5 case | VSCode AI | 5/5 case MVP đã có backend slice ở mức parser/rule/API/test; scan-all đã hoàn thành; toàn bộ suite đạt 33 passed, 1 warning | [x] |
 | GDC-03 | Mở rộng ngân hàng văn bản pháp luật cho case 2–5 | Gemini Pro | Bảng luật mở rộng | [ ] |
 | GDC-04 | Luyện phỏng vấn sơ loại (nếu được gọi 09/08) | ChatGPT Plus (đóng vai giám khảo) | Ghi âm/ghi chú buổi luyện tập | [ ] |
 
@@ -110,9 +111,9 @@
 |---|---|---|---|---|
 | GD2-01 | Chốt phạm vi cuối cùng sau kick-off | Con người | Tài liệu phạm vi đã chốt | [ ] |
 | GD2-02 | Hoàn thiện module đọc dữ liệu (XML/PDF/Excel) | VSCode AI | Đã có parser Excel tối thiểu cho file hóa đơn mẫu; XML/PDF và parser tổng quát chưa triển khai | [~] |
-| GD2-03 | Hoàn thiện rule engine 5 case | VSCode AI | 5/5 case MVP đã có backend slice ở mức parser/rule/API/test; toàn bộ suite đạt 32 passed, 1 warning; còn cần scan-all và tích hợp frontend để thành luồng demo | [x] |
+| GD2-03 | Hoàn thiện rule engine 5 case | VSCode AI | 5/5 case MVP và API scan-all đã có code/test; toàn bộ suite đạt 33 passed, 1 warning | [x] |
 | GD2-04 | Xây RAG: nạp luật vào ChromaDB, tách chunk, gắn metadata | Gemini Pro + VSCode AI | Pipeline RAG trả kết quả đúng câu hỏi mẫu; bị khóa cho đến khi nguồn, hiệu lực và điều/khoản pháp lý được con người kiểm chứng | [!] |
-| GD2-05 | Xây dashboard 3 màn hình | VSCode AI | Dashboard chạy demo được | [ ] |
+| GD2-05 | Xây dashboard 3 màn hình | VSCode AI | Dashboard local đã gọi scan-all và hiển thị tổng quan/bảng cảnh báo; chưa có upload file thật và chưa hoàn thiện phạm vi 3 màn hình | [~] |
 | GD2-06 | Test 15–20 tình huống thực tế | Con người + VSCode AI | Bảng kết quả test | [ ] |
 | GD2-07 | Viết báo cáo giải pháp 8–12 trang | ChatGPT Plus → Con người | File báo cáo hoàn chỉnh | [ ] |
 | GD2-08 | Làm slide + quay video demo dự phòng | Con người | Slide + video | [ ] |
