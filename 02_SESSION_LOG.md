@@ -252,3 +252,13 @@
 - **Giới hạn:** Chưa có upload file thật, RAG pháp lý hoặc AI explanation; evidence còn hiển thị dạng JSON thô và chưa xử lý ngoại lệ nghiệp vụ nâng cao.
 - **Vấn đề phát sinh:** Giao diện hiện ưu tiên rõ ràng và dễ demo; chưa có lọc theo case, màu severity hoặc định dạng evidence thân thiện.
 - **Quyết định:** **Đạt prototype demo local không RAG** với phạm vi `Excel demo cố định → backend scan-all → Streamlit dashboard hiển thị bảng cảnh báo`. Đây chưa phải sản phẩm hoàn chỉnh.
+
+### 18/08/2026 — GD1.5-README — Cập nhật README hướng dẫn chạy demo local
+
+- **AI/công cụ dùng:** AI hỗ trợ kỹ thuật tài liệu trong VSCode/Codex và Markdown.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật tài liệu.
+- **Việc đã làm:** Cập nhật `README.md` để mô tả prototype demo local không RAG, 5 case MVP, trạng thái hiện tại, cách cài môi trường Windows PowerShell, chạy test, khởi động backend/frontend bằng hai terminal và thao tác demo.
+- **Kết quả/Output:** README ghi rõ kết quả demo kỳ vọng `12 hóa đơn / 6 giao dịch thanh toán / 9 cảnh báo`, danh sách API, hai file dữ liệu giả lập, giới hạn hiện tại và nguyên tắc an toàn pháp lý. Thay đổi được lưu tại commit `21976fc` (`Update README with local demo instructions`). Git working tree sạch sau commit.
+- **Giới hạn:** Hướng dẫn hiện phục vụ prototype local dùng file demo cố định; chưa có upload file thật, RAG pháp lý, AI explanation hoặc xử lý ngoại lệ nghiệp vụ nâng cao.
+- **Vấn đề phát sinh:** Không có. README hiện đủ để người khác clone repo, cài môi trường và chạy lại kịch bản demo local theo hai terminal.
+- **Quyết định:** Đạt cho phạm vi tài liệu hướng dẫn demo local. Prototype demo local không RAG hiện đã có thể trình diễn, nhưng chưa phải sản phẩm hoàn chỉnh.

@@ -51,7 +51,8 @@
 - Frontend Streamlit đã kết nối `GET /demo/scan-all`. Dashboard có nút “Chạy rà soát dữ liệu demo” và hiển thị 12 hóa đơn, 6 giao dịch thanh toán, 9 cảnh báo, bảng tổng hợp 5 case cùng bảng chi tiết cảnh báo.
 - RAG tiếp tục bị khóa cho đến khi nguồn, hiệu lực và điều/khoản pháp lý được con người kiểm chứng; không ingest tài liệu pháp lý chưa kiểm chứng.
 - **Prototype demo local không RAG: đạt.** Phạm vi đã xác minh là `Excel demo cố định → backend scan-all → Streamlit dashboard hiển thị bảng cảnh báo`.
-- Đây không phải sản phẩm hoàn chỉnh. Chưa có upload file thật, RAG pháp lý, AI explanation, giao diện evidence được trình bày thân thiện hoặc xử lý ngoại lệ nghiệp vụ nâng cao; evidence hiện vẫn hiển thị dạng JSON thô.
+- README hướng dẫn chạy demo local đã hoàn thành tại commit `21976fc`. Repo hiện đã có đủ hướng dẫn để người khác clone, tạo môi trường Windows PowerShell, chạy test, khởi động backend/frontend bằng hai terminal và thực hiện kịch bản demo `12 hóa đơn / 6 giao dịch / 9 cảnh báo`.
+- Đây không phải sản phẩm hoàn chỉnh. Chưa có upload file thật, RAG pháp lý, AI explanation hoặc xử lý ngoại lệ nghiệp vụ nâng cao.
 
 ### Ước lượng tiến độ từ sau phiên 17/08/2026
 
