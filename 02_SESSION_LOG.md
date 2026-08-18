@@ -212,3 +212,23 @@
 - **Giới hạn:** Chưa có upload file, chưa kết nối frontend, chưa có API scan-all, chưa triển khai Case 4–5, RAG hoặc AI explanation. Đây chưa phải prototype end-to-end.
 - **Vấn đề phát sinh:** Tolerance hiện là cấu hình kỹ thuật; quy tắc làm tròn cần được chốt trước khi dùng với dữ liệu thực.
 - **Quyết định:** Đạt cho phạm vi backend slice Case 3. Ưu tiên tiếp theo là Case 4, sau đó Case 5 và API tổng hợp scan-all; RAG tiếp tục để sau rule engine và kiểm chứng pháp lý.
+
+### 17/08/2026 — GD1.5-CASE5 — Hoàn thành backend slice Case 5
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Python, pandas, openpyxl, FastAPI và pytest.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Tạo `backend/app/parsers/payment_parser.py`, tạo `backend/app/rules/missing_bank_payment.py`, tạo `backend/tests/test_case_5_missing_bank_payment.py` và sửa `backend/app/main.py` để thêm endpoint `GET /demo/case-5-missing-bank-payment`.
+- **Kết quả/Output:** Parser đọc file thanh toán có sheet `payments`, header tại dòng Excel 4 và 6 giao dịch. Rule Case 5 phát hiện 2 cảnh báo cần rà soát cho `INV-DEMO-011` và `INV-DEMO-012`. API trả HTTP 200. Toàn bộ suite `pytest` đạt `32 passed, 1 warning`.
+- **Giới hạn:** Rule chỉ cảnh báo chưa tìm thấy chứng từ thanh toán không dùng tiền mặt phù hợp trong dữ liệu đang đối chiếu; không kết luận gian lận, vi phạm, hóa đơn vô hiệu, không được khấu trừ, bị xử phạt hoặc bị loại chi phí. Chưa có upload file thật, API tổng hợp scan-all, kết nối frontend, RAG hoặc AI explanation; đây chưa phải prototype end-to-end.
+- **Vấn đề phát sinh:** Báo cáo cuối phiên chưa xác nhận commit/push thay đổi Case 5. Đầu phiên sau phải chạy `git status` và commit/push nếu còn `modified` hoặc `untracked`.
+- **Quyết định:** Đạt cho phạm vi code/test/API của backend slice Case 5; trạng thái lưu trên Git cần được xác nhận ở đầu phiên sau.
+
+### 17/08/2026 — GD1.5-SUMMARY — Tổng kết phiên backend MVP
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Python, FastAPI và pytest; AI hỗ trợ tổng hợp trạng thái dự án.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Hoàn thiện và rà soát tiến độ các lát cắt backend của 5 case MVP theo chuỗi parser/rule/API/test. Đây là phiên có tiến độ kỹ thuật tốt nhất từ đầu dự án.
+- **Kết quả/Output:** 5/5 case backend đã có code/test/API; toàn bộ suite đạt `32 passed, 1 warning`. Ngôn ngữ pháp lý an toàn được giữ: các rule chỉ nêu “có dấu hiệu”, “cần rà soát”, không đưa ra kết luận pháp lý bất lợi.
+- **Giới hạn:** Dự án chưa phải prototype end-to-end vì frontend chưa kết nối backend, chưa có upload file thật, chưa có API tổng hợp scan-all, chưa có RAG và chưa có AI explanation.
+- **Vấn đề phát sinh:** Kiểm chứng nguồn, hiệu lực và điều/khoản pháp lý vẫn là rủi ro lớn nhất. RAG tiếp tục hoãn; không ingest tài liệu pháp lý chưa kiểm chứng.
+- **Quyết định:** Đạt cho phạm vi backend MVP. Ưu tiên tiếp theo là xác nhận commit/push Case 5, hoàn thành scan-all và kết nối dashboard Streamlit; chỉ triển khai RAG sau khi pháp lý được kiểm chứng.

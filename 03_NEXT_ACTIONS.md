@@ -2,92 +2,93 @@
 
 ## Trạng thái hiện tại
 
-- GD0-01: `[x]` Chốt đội thi.
-- GD0-02: `[x]` Tạo cấu trúc repo.
-- GD0-03: `[x]` Chốt 5 case MVP.
-- GD0-04: `[~]` Đã có khung pháp lý V3, chưa kiểm chứng đầy đủ điều/khoản gốc.
-- GD0-05: `[x]` Môi trường code cơ bản đã chạy được.
-- GD0-06: `[x]` Đội đã đăng ký thành công; Dashboard hiển thị mã đội AQ2026-183 và trạng thái hồ sơ APPROVED.
-- GD1-P1: `[~]` Đã có bản diễn đạt pháp lý an toàn cho hồ sơ Vòng 1; chưa chốt kiểm chứng pháp lý đầy đủ.
-- GD1-02: `[x]` Đã tạo và review đạt file mô tả giải pháp TaxGPT cho hồ sơ Vòng 1.
-- GD1-03: `[x]` Đã tạo và review đạt dữ liệu mẫu giả lập cho 5 case MVP.
-- GD1-04: `[x]` Đã tạo và review đạt file kiến trúc kỹ thuật TaxGPT cho hồ sơ Vòng 1.
-- GD1-05: `[x]` Đã tạo và review đạt bản master mô tả ý tưởng Vòng 1.
-- GD1-06: `[x]` Đã tạo báo cáo phản biện thử hồ sơ Vòng 1.
-- GD1-07: `[x]` Đã tạo và review đạt bản v2 mô tả ý tưởng Vòng 1; dùng làm master hiện hành.
-- P0-ENV: `[x]` Đã khôi phục runtime cơ bản ngày 17/08/2026: Python 3.12.10, pip 25.0.1, pytest 1 passed; backend `/health` HTTP 200 và frontend tĩnh render được.
-- P1-CASE1: `[x]` Đã hoàn thành luồng `Đọc Excel → rule Case 1 → API JSON`; parser đọc 12 hóa đơn, API trả HTTP 200 và phát hiện 1 nhóm duplicate.
-- P2-CASE2: `[x]` Đã hoàn thành backend slice Case 2; API trả 2 cảnh báo cho `INV-DEMO-005` và `INV-DEMO-006`.
-- P3-CASE3: `[x]` Đã hoàn thành backend slice Case 3; API trả 2 cảnh báo cho `INV-DEMO-007` và `INV-DEMO-008`; toàn bộ suite đạt 16 passed, 1 warning.
-
-**Ghi chú:** Backend đã có code, API và test cho Case 1–3. Dashboard vẫn là trang tĩnh, chưa upload hoặc gọi backend; Case 4–5, API scan-all và RAG chưa triển khai. Chưa có prototype end-to-end.
+- 5/5 case MVP đã có backend slice ở mức parser/rule/API/test: hóa đơn trùng; sai MST/tên người mua; VAT không khớp phép tính; hóa đơn ngoài kỳ dữ liệu đang rà soát; hóa đơn giá trị lớn thiếu chứng từ thanh toán không dùng tiền mặt.
+- Toàn bộ test hiện đạt `32 passed, 1 warning`.
+- Case 5 đã hoàn thành code/test/API, nhưng báo cáo cuối phiên chưa xác nhận commit/push.
+- Frontend Streamlit chưa kết nối backend; chưa có upload file thật; chưa có API tổng hợp `GET /demo/scan-all`.
+- RAG và AI explanation chưa triển khai. RAG bị khóa cho đến khi nguồn, hiệu lực và điều/khoản pháp lý được Khánh cùng Gemini Pro kiểm chứng.
+- Ngôn ngữ rule phải tiếp tục chỉ cảnh báo “có dấu hiệu”, “cần rà soát”; không kết luận gian lận, vi phạm, hóa đơn vô hiệu, không được khấu trừ, bị xử phạt hoặc bị loại chi phí.
+- Đây là tiến độ backend tốt nhất từ đầu dự án, nhưng dự án **chưa phải prototype end-to-end**.
 
 ## Thứ tự ưu tiên
 
-### P0 — Khôi phục và xác minh môi trường `[x]`
+### P0 — Xác nhận Case 5 đã commit/push
 
-- Python 3.12.10 và pip 25.0.1 trong `.venv` chạy được.
-- `pytest`: 1 passed, 1 warning.
-- Backend FastAPI và endpoint `/health` chạy được, trả HTTP 200 OK.
-- Streamlit render được Dashboard tĩnh.
+Chạy đầu tiên ở phiên sau:
 
-### P1 — Đọc Excel → rule Case 1 → API JSON `[x]`
+```bash
+git status
+```
 
-- Parser đọc đúng 12 hóa đơn từ sheet `invoices` của file mẫu.
-- Rule Case 1 phát hiện 1 nhóm có khả năng trùng: `INV-DEMO-003`, `INV-DEMO-004`.
-- Endpoint `GET /demo/case-1-duplicates` trả HTTP 200 và danh sách cảnh báo JSON.
-- Test health, parser, xử lý lỗi, rule và API đạt `7 passed, 1 warning`.
+Nếu còn file `modified` hoặc `untracked` của Case 5 thì thực hiện:
 
-### P2 — Triển khai Case 2 sai MST/tên người mua `[x]`
+```bash
+git add backend/app/main.py backend/app/parsers/payment_parser.py backend/app/rules/missing_bank_payment.py backend/tests/test_case_5_missing_bank_payment.py
+git commit -m "Implement backend missing bank payment case"
+git push
+```
 
-- Rule `buyer_info_mismatch.py`, endpoint `GET /demo/case-2-buyer-info` và test Case 2 đã hoàn thành.
-- Phát hiện 2 cảnh báo demo: `INV-DEMO-005`, `INV-DEMO-006`.
-- Commit: `934d3e3` (`Implement backend buyer info mismatch case`).
+Chỉ đánh dấu hoàn thành sau khi xác nhận working tree và remote phù hợp.
 
-### P3 — Triển khai Case 3 VAT lệch phép tính `[x]`
+### P1 — API tổng hợp `GET /demo/scan-all`
 
-- Rule `vat_mismatch.py`, endpoint `GET /demo/case-3-vat-mismatch` và test Case 3 đã hoàn thành.
-- Phát hiện 2 cảnh báo demo: `INV-DEMO-007`, `INV-DEMO-008`.
-- Commit: `7570404` (`Implement backend VAT mismatch case`); toàn bộ suite đạt 16 passed, 1 warning.
-
-### P4 — Case 4: Hóa đơn ngoài kỳ dữ liệu đang rà soát
-
-- So sánh `invoice_date` với kỳ dữ liệu đang rà soát.
-- Chỉ nhắc người dùng rà soát hóa đơn ngoài kỳ, không kết luận vi phạm hoặc sai kỳ pháp lý.
-- Bổ sung rule, endpoint demo và test tự động trước khi đánh dấu hoàn thành.
-
-### P5 — Case 5: Đối chiếu hóa đơn giá trị lớn với dữ liệu thanh toán
-
-- Đọc file `sample_bank_payments_mvp.xlsx` và xác minh schema trước khi code.
-- Chốt ngưỡng cấu hình, ngoại lệ và logic liên kết thanh toán với người phụ trách nghiệp vụ.
-- Chỉ cảnh báo chưa tìm thấy chứng từ phù hợp; không tự kết luận hóa đơn không hợp lệ.
-
-### P6 — API tổng hợp `/demo/scan-all`
-
-- Chạy các rule Case 1–5 đã hoàn thành trên cùng dữ liệu mẫu.
+- Chạy cả 5 rule trên cùng bộ dữ liệu mẫu.
 - Trả danh sách cảnh báo thống nhất và tổng hợp số lượng theo case.
-- Không coi scan-all là hoàn thành cho đến khi Case 4–5 có test đạt.
+- Giữ nguyên ngôn ngữ cảnh báo an toàn pháp lý của từng rule.
 
-### P7 — Kết nối Streamlit hiển thị bảng cảnh báo
+### P2 — Test cho scan-all
 
-- Gọi API scan-all và hiển thị bảng cảnh báo theo case, mức độ và invoice liên quan.
-- Sau khi luồng gọi API ổn định, bổ sung upload Excel thay cho file demo cố định.
-- Hiển thị lỗi rõ ràng khi file sai định dạng hoặc backend không khả dụng.
+- Kiểm tra HTTP 200, schema response, tổng số cảnh báo và phân nhóm theo 5 case.
+- Chạy toàn bộ suite để bảo đảm không làm hỏng các endpoint riêng lẻ.
 
-### P8 — RAG pháp lý sau
+### P3 — Kết nối Streamlit gọi scan-all và hiển thị dashboard cảnh báo
 
-- Chỉ bắt đầu sau khi parser, rule engine, API và Dashboard đã tạo được luồng end-to-end ổn định.
-- Chỉ ingest nội dung pháp lý đã được con người kiểm chứng nguồn, hiệu lực và điều/khoản.
-- Thiết kế citation và cơ chế từ chối khi không đủ căn cứ trước khi tích hợp phần giải thích AI.
+- Gọi `GET /demo/scan-all` từ Streamlit.
+- Hiển thị bảng cảnh báo theo case, mức độ và hóa đơn liên quan; hiển thị lỗi rõ ràng khi backend không khả dụng.
+- Mốc này tạo prototype demo local không RAG trên dữ liệu mẫu, chưa phải luồng upload file thật.
+
+### P4 — Kiểm chứng pháp lý RAG với Khánh + Gemini Pro
+
+- Đối chiếu nguồn gốc, hiệu lực và điều/khoản cho từng nội dung dự kiến ingest.
+- Ghi rõ nội dung đã xác minh, chưa xác minh và điểm cần chuyên gia quyết định.
+- Không ingest tài liệu chưa kiểm chứng.
+
+### P5 — Upload file thật thay vì file demo cố định
+
+- Cho phép người dùng đưa file đầu vào qua Streamlit/API thay cho đường dẫn demo cố định.
+- Kiểm tra định dạng, schema và thông báo lỗi an toàn trước khi chạy scan-all.
+
+### P6 — RAG pháp lý + AI explanation sau khi pháp lý được kiểm chứng
+
+- Chỉ bắt đầu khi P4 đã hoàn tất đủ căn cứ cho phạm vi MVP.
+- Trả trích dẫn nguồn và từ chối kết luận khi không đủ căn cứ.
+- AI explanation phải giữ vai trò giải thích cảnh báo và gợi ý rà soát, không thay chuyên gia thuế đưa ra kết luận pháp lý.
 
 ## Bước tiếp theo cụ thể
 
-**Bước đã hoàn thành:** backend code, API và test cho Case 1–3; toàn bộ suite đạt `16 passed, 1 warning`.
+**Bước đã hoàn thành:** 5/5 case MVP đã có backend slice ở mức parser/rule/API/test; toàn bộ suite đạt `32 passed, 1 warning`.
 
-**Bước tiếp theo:** triển khai Case 4 — hóa đơn ngoài kỳ dữ liệu đang rà soát — với thông điệp chỉ nhắc rà soát; sau đó mới triển khai Case 5, API scan-all và kết nối Streamlit.
+**Bước đầu phiên sau:** chạy `git status`, xác nhận Case 5 đã commit/push và lưu thay đổi nếu cần; sau đó triển khai `GET /demo/scan-all` cùng test.
+
+## Ước lượng tiến độ
+
+- **Mức 1 — Prototype demo local không RAG:** Excel mẫu → scan-all → Streamlit hiển thị bảng cảnh báo; ước tính 1–2 phiên, khoảng 2–4 ngày.
+- **Mức 2 — RAG pháp lý + trích dẫn + AI explanation:** phụ thuộc kiểm chứng pháp lý; nếu pháp lý xong trong tuần này thì cần thêm khoảng 2–3 phiên, ước tính 1–1.5 tuần.
+- **Tổng mức trình diễn đầy đủ:** khoảng 1.5–2 tuần nếu pháp lý không bị trì hoãn.
+- **Rủi ro lớn nhất hiện tại:** kiểm chứng pháp lý, không phải kỹ thuật backend.
+
+## Không làm vội trước khi có prototype chạy được
+
+- Ngoại lệ nâng cao như hóa đơn điều chỉnh/thay thế.
+- Thanh toán từng phần/gộp.
+- Bù trừ công nợ.
+- OCR/PDF phức tạp.
+
+Các hạng mục này để sau khi prototype demo local đã chạy được và được kiểm tra ổn định.
 
 ## Nguyên tắc thực hiện
 
 - Sau mỗi nhiệm vụ, append kết quả vào `02_SESSION_LOG.md`.
 - Chỉ cập nhật task thành `[x]` khi có output và bằng chứng đáp ứng Definition of Done.
 - Không tự ý thay đổi phạm vi 5 case MVP khi chưa có xác nhận của đội.
+- Không gọi dự án là prototype end-to-end cho đến khi có ít nhất upload file thật, scan-all và frontend kết nối backend; RAG/AI explanation chỉ được tuyên bố khi đã triển khai và kiểm chứng.
