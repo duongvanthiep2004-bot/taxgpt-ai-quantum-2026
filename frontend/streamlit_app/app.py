@@ -1,5 +1,3 @@
-import json
-
 import httpx
 import pandas as pd
 import streamlit as st
@@ -38,27 +36,28 @@ def build_case_summary_table(case_summary: dict) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def get_invoice_reference(alert: dict) -> str:
+    invoice_id = alert.get("invoice_id")
+    if invoice_id:
+        return str(invoice_id)
+    return ", ".join(
+        str(invoice_id) for invoice_id in alert.get("invoice_ids", [])
+    )
+
+
 def build_alerts_table(alerts: list[dict]) -> pd.DataFrame:
-    rows = []
-    for alert in alerts:
-        invoice_reference = alert.get("invoice_id")
-        if not invoice_reference:
-            invoice_reference = ", ".join(
-                str(invoice_id) for invoice_id in alert.get("invoice_ids", [])
-            )
-        rows.append(
+    return pd.DataFrame(
+        [
             {
                 "case_id": alert.get("case_id", ""),
                 "risk_type": alert.get("risk_type", ""),
                 "severity": alert.get("severity", ""),
-                "invoice_id hoặc invoice_ids": invoice_reference,
+                "invoice_id hoặc invoice_ids": get_invoice_reference(alert),
                 "message": alert.get("message", ""),
-                "evidence": json.dumps(
-                    alert.get("evidence", {}), ensure_ascii=False, default=str
-                ),
             }
-        )
-    return pd.DataFrame(rows)
+            for alert in alerts
+        ]
+    )
 
 
 st.set_page_config(page_title="TaxGPT Dashboard", layout="wide")
@@ -69,28 +68,80 @@ st.info(
     "đại lý thuế hoặc cơ quan thuế."
 )
 
+with st.expander("Cách chạy demo local"):
+    st.markdown("**1. Chạy backend:**")
+    st.code("uvicorn backend.app.main:app --reload", language="bash")
+    st.markdown("**2. Chạy frontend:**")
+    st.code("streamlit run frontend/streamlit_app/app.py", language="bash")
+    st.warning("Cần bật backend trước khi bấm nút rà soát dữ liệu demo.")
+
 if st.button("Chạy rà soát dữ liệu demo", type="primary"):
     with st.spinner("Đang gọi backend và rà soát dữ liệu demo..."):
-        result = fetch_scan_all()
+        scan_result = fetch_scan_all()
+    if scan_result is None:
+        st.session_state.pop("scan_result", None)
+    else:
+        st.session_state["scan_result"] = scan_result
 
-    if result is not None:
-        invoice_metric, payment_metric, alert_metric = st.columns(3)
-        invoice_metric.metric("Tổng số hóa đơn", result.get("total_invoices", 0))
-        payment_metric.metric(
-            "Tổng số giao dịch thanh toán", result.get("total_payments", 0)
-        )
-        alert_metric.metric("Tổng số cảnh báo", result.get("total_alerts", 0))
+result = st.session_state.get("scan_result")
+if result is not None:
+    invoice_metric, payment_metric, alert_metric = st.columns(3)
+    invoice_metric.metric("Tổng số hóa đơn", result.get("total_invoices", 0))
+    payment_metric.metric(
+        "Tổng số giao dịch thanh toán", result.get("total_payments", 0)
+    )
+    alert_metric.metric("Tổng số cảnh báo", result.get("total_alerts", 0))
 
-        st.subheader("Tổng hợp theo 5 case")
-        st.dataframe(
-            build_case_summary_table(result.get("case_summary", {})),
-            width="stretch",
-            hide_index=True,
-        )
+    source_invoice, source_payment = st.columns(2)
+    source_invoice.markdown(
+        f"**Nguồn hóa đơn demo:** `{result.get('source_invoice_file', '')}`"
+    )
+    source_payment.markdown(
+        f"**Nguồn thanh toán demo:** `{result.get('source_payment_file', '')}`"
+    )
 
-        st.subheader("Chi tiết cảnh báo")
-        st.dataframe(
-            build_alerts_table(result.get("alerts", [])),
-            width="stretch",
-            hide_index=True,
+    st.subheader("Tổng hợp theo 5 case")
+    st.dataframe(
+        build_case_summary_table(result.get("case_summary", {})),
+        width="stretch",
+        hide_index=True,
+    )
+
+    alerts = result.get("alerts", [])
+    case_options = list(result.get("case_summary", {}).keys())
+    severity_options = sorted(
+        {str(alert.get("severity", "")) for alert in alerts if alert.get("severity")}
+    )
+    case_filter_column, severity_filter_column = st.columns(2)
+    selected_case = case_filter_column.selectbox(
+        "Lọc theo case_id", ["Tất cả", *case_options]
+    )
+    selected_severity = severity_filter_column.selectbox(
+        "Lọc theo severity", ["Tất cả", *severity_options]
+    )
+    filtered_alerts = [
+        alert
+        for alert in alerts
+        if (selected_case == "Tất cả" or alert.get("case_id") == selected_case)
+        and (
+            selected_severity == "Tất cả"
+            or alert.get("severity") == selected_severity
         )
+    ]
+
+    st.subheader("Chi tiết cảnh báo")
+    st.caption(f"Đang hiển thị {len(filtered_alerts)} / {len(alerts)} cảnh báo.")
+    st.dataframe(
+        build_alerts_table(filtered_alerts),
+        width="stretch",
+        hide_index=True,
+    )
+
+    with st.expander("Xem evidence chi tiết"):
+        if not filtered_alerts:
+            st.write("Không có cảnh báo phù hợp với bộ lọc hiện tại.")
+        for alert in filtered_alerts:
+            invoice_reference = get_invoice_reference(alert) or "Không có invoice_id"
+            case_id = alert.get("case_id", "Không có case_id")
+            with st.expander(f"{invoice_reference} — {case_id}"):
+                st.json(alert.get("evidence", {}), expanded=True)
