@@ -53,6 +53,9 @@
 - **Prototype demo local không RAG: đạt.** Phạm vi đã xác minh là `Excel demo cố định → backend scan-all → Streamlit dashboard hiển thị bảng cảnh báo`.
 - README hướng dẫn chạy demo local đã hoàn thành tại commit `21976fc`. Repo hiện đã có đủ hướng dẫn để người khác clone, tạo môi trường Windows PowerShell, chạy test, khởi động backend/frontend bằng hai terminal và thực hiện kịch bản demo `12 hóa đơn / 6 giao dịch / 9 cảnh báo`.
 - Đây không phải sản phẩm hoàn chỉnh. Chưa có upload file thật, RAG pháp lý, AI explanation hoặc xử lý ngoại lệ nghiệp vụ nâng cao.
+- **Prototype MVP local mức 1 đã đạt:** GD2-02 scan-all và GD2-03 dashboard xong, có README, repo sạch. GD2-04 upload file thật chưa hoàn thành và là ưu tiên kỹ thuật tiếp theo.
+- **Trạng thái pháp lý:** Có legal draft do VSCode AI tạo theo prompt điều phối của ChatGPT Plus tại `van-ban-luat/processed/GD1_5_P_LEGAL_DRAFT_mapping_5_cases.md`, commit `ee099db` (`Add legal draft mapping for MVP cases`). Chưa có Khánh/Gemini Pro hoặc người có chuyên môn rà soát độc lập; chưa xác nhận pháp lý hoàn tất.
+- **Trạng thái kiểm soát:** Legal draft: đã có. Human/legal review: chưa có. RAG: **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence.
 
 ### Ước lượng tiến độ từ sau phiên 17/08/2026
 
@@ -97,7 +100,7 @@
 
 ## GIAI ĐOẠN CHỜ — Chuẩn bị trước cho Vòng 2 (30/07 – 20/08)
 
-**Ưu tiên kỹ thuật hiện tại:** ổn định và làm rõ Dashboard demo, sau đó bổ sung upload hai file Excel. Không triển khai RAG trước khi căn cứ pháp lý được kiểm chứng.
+**Ưu tiên kỹ thuật hiện tại:** GD2-04 — bổ sung upload file thật cho Excel hóa đơn và payment. Không triển khai RAG trước khi legal draft được rà soát độc lập và căn cứ pháp lý được người có chuyên môn xác nhận.
 
 | ID | Việc | Phụ trách | Output/DoD | Trạng thái |
 |---|---|---|---|---|
@@ -111,10 +114,10 @@
 | ID | Việc | Phụ trách | Output/DoD | Trạng thái |
 |---|---|---|---|---|
 | GD2-01 | Chốt phạm vi cuối cùng sau kick-off | Con người | Tài liệu phạm vi đã chốt | [ ] |
-| GD2-02 | Hoàn thiện module đọc dữ liệu (XML/PDF/Excel) | VSCode AI | Đã có parser Excel tối thiểu cho file hóa đơn mẫu; XML/PDF và parser tổng quát chưa triển khai | [~] |
-| GD2-03 | Hoàn thiện rule engine 5 case | VSCode AI | 5/5 case MVP và API scan-all đã có code/test; toàn bộ suite đạt 33 passed, 1 warning | [x] |
-| GD2-04 | Xây RAG: nạp luật vào ChromaDB, tách chunk, gắn metadata | Gemini Pro + VSCode AI | Pipeline RAG trả kết quả đúng câu hỏi mẫu; bị khóa cho đến khi nguồn, hiệu lực và điều/khoản pháp lý được con người kiểm chứng | [!] |
-| GD2-05 | Xây dashboard 3 màn hình | VSCode AI | Dashboard local đã gọi scan-all và hiển thị tổng quan/bảng cảnh báo; chưa có upload file thật và chưa hoàn thiện phạm vi 3 màn hình | [~] |
+| GD2-02 | Hoàn thiện API tổng hợp scan-all cho 5 case MVP | VSCode AI | 5/5 case MVP và API `GET /demo/scan-all` đã có code/test; toàn bộ suite đạt 33 passed, 1 warning | [x] |
+| GD2-03 | Hoàn thiện dashboard demo local | VSCode AI | Dashboard local đã gọi scan-all, hiển thị tổng quan/bảng cảnh báo và đã được cải thiện cho thao tác demo | [x] |
+| GD2-04 | Upload file thật cho Excel hóa đơn và payment | VSCode AI | Người dùng có thể đưa hai file qua Streamlit/API, có kiểm tra schema và thông báo lỗi đầu vào an toàn | [ ] Ưu tiên kỹ thuật tiếp theo |
+| GD2-05 | Xây RAG: nạp luật vào ChromaDB, tách chunk, gắn metadata | Gemini Pro + VSCode AI | Chỉ bắt đầu sau khi legal draft được rà soát độc lập; hiện **LOCKED toàn bộ 5 case** | [!] |
 | GD2-06 | Test 15–20 tình huống thực tế | Con người + VSCode AI | Bảng kết quả test | [ ] |
 | GD2-07 | Viết báo cáo giải pháp 8–12 trang | ChatGPT Plus → Con người | File báo cáo hoàn chỉnh | [ ] |
 | GD2-08 | Làm slide + quay video demo dự phòng | Con người | Slide + video | [ ] |

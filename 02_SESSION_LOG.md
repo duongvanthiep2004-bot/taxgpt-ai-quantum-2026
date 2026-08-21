@@ -262,3 +262,13 @@
 - **Giới hạn:** Hướng dẫn hiện phục vụ prototype local dùng file demo cố định; chưa có upload file thật, RAG pháp lý, AI explanation hoặc xử lý ngoại lệ nghiệp vụ nâng cao.
 - **Vấn đề phát sinh:** Không có. README hiện đủ để người khác clone repo, cài môi trường và chạy lại kịch bản demo local theo hai terminal.
 - **Quyết định:** Đạt cho phạm vi tài liệu hướng dẫn demo local. Prototype demo local không RAG hiện đã có thể trình diễn, nhưng chưa phải sản phẩm hoàn chỉnh.
+
+### 21/08/2026 — GD1.5-P-LEGAL-DRAFT — Tạo legal draft mapping cho 5 case MVP
+
+- **AI/công cụ dùng:** VSCode AI theo prompt điều phối của ChatGPT Plus; chưa có Khánh/Gemini Pro rà soát độc lập.
+- **Người thực hiện:** Đội trưởng điều phối việc tạo bản nháp bằng AI; chưa có người có chuyên môn thực hiện rà soát pháp lý cuối cùng.
+- **Việc đã làm:** Tạo legal draft mapping cho 5 case MVP, tổng hợp nguồn dự kiến, điều/khoản cần đối chiếu và mức độ tin cậy sơ bộ để làm đầu vào cho bước rà soát độc lập.
+- **Kết quả/Output:** File legal draft được tạo tại `van-ban-luat/processed/GD1_5_P_LEGAL_DRAFT_mapping_5_cases.md`. Thay đổi được lưu tại commit `ee099db` (`Add legal draft mapping for MVP cases`).
+- **Giới hạn:** Đây là bản nháp do AI tạo, chưa phải nội dung đã kiểm chứng pháp lý. Chưa có Khánh/Gemini Pro hoặc người có chuyên môn rà soát độc lập. Nhãn High/Medium/Low là đánh giá sơ bộ của AI, chưa phải xác nhận pháp lý cuối cùng.
+- **Vấn đề phát sinh:** Cần kiểm tra độc lập nguồn tạo, luật hiện hành, hiệu lực, điều/khoản và ưu tiên các case có nhãn Low/Medium trước khi dùng nội dung cho RAG hoặc tuyên bố pháp lý.
+- **Quyết định:** RAG vẫn **LOCKED cho cả 5 case, kể cả case có nhãn High confidence**. Không ghi nhận Khánh đã hoàn thành GD1.5-P1 và chưa xác nhận pháp lý hoàn tất.
