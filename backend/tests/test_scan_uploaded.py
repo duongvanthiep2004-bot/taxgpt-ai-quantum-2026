@@ -1,6 +1,8 @@
+from io import BytesIO
 from pathlib import Path
 
 from fastapi.testclient import TestClient
+from openpyxl import Workbook
 
 from backend.app.main import app
 
@@ -14,6 +16,16 @@ PAYMENT_FILE = (
     / "sample_bank_payments_mvp.xlsx"
 )
 client = TestClient(app)
+
+
+def build_workbook(sheet_name: str, headers: list[str]) -> bytes:
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = sheet_name
+    worksheet.append(headers)
+    output = BytesIO()
+    workbook.save(output)
+    return output.getvalue()
 
 
 def test_scan_uploaded_returns_same_totals_as_demo() -> None:
@@ -83,7 +95,122 @@ def test_scan_uploaded_returns_friendly_error_for_invalid_workbook() -> None:
         )
 
     assert response.status_code == 400
-    assert response.json()["detail"].startswith("File hóa đơn không hợp lệ:")
+    assert response.json()["detail"] == (
+        "File hóa đơn không hợp lệ: Không đọc được file hóa đơn Excel."
+    )
+
+
+def test_scan_uploaded_rejects_invoice_without_invoices_sheet() -> None:
+    with PAYMENT_FILE.open("rb") as payment_file:
+        response = client.post(
+            "/demo/scan-uploaded",
+            files={
+                "invoice_file": (
+                    "invoices.xlsx",
+                    build_workbook("other", ["invoice_id"]),
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+                "payment_file": (
+                    PAYMENT_FILE.name,
+                    payment_file,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+            },
+        )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File hóa đơn không hợp lệ: "
+        "Không tìm thấy sheet invoices trong file hóa đơn."
+    )
+
+
+def test_scan_uploaded_rejects_payment_without_payments_sheet() -> None:
+    with INVOICE_FILE.open("rb") as invoice_file:
+        response = client.post(
+            "/demo/scan-uploaded",
+            files={
+                "invoice_file": (
+                    INVOICE_FILE.name,
+                    invoice_file,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+                "payment_file": (
+                    "payments.xlsx",
+                    build_workbook("other", ["payment_ref"]),
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+            },
+        )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File thanh toán không hợp lệ: "
+        "Không tìm thấy sheet payments trong file thanh toán."
+    )
+
+
+def test_scan_uploaded_lists_missing_invoice_columns() -> None:
+    invoice_workbook = build_workbook(
+        "invoices",
+        ["invoice_no", "invoice_date"],
+    )
+    with PAYMENT_FILE.open("rb") as payment_file:
+        response = client.post(
+            "/demo/scan-uploaded",
+            files={
+                "invoice_file": (
+                    "invoices.xlsx",
+                    invoice_workbook,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+                "payment_file": (
+                    PAYMENT_FILE.name,
+                    payment_file,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+            },
+        )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File hóa đơn không hợp lệ: File hóa đơn thiếu các cột bắt buộc: "
+        "invoice_id, total_amount"
+    )
+
+
+def test_scan_uploaded_lists_missing_payment_column() -> None:
+    payment_workbook = build_workbook(
+        "payments",
+        [
+            "payment_ref",
+            "payment_date",
+            "payment_method",
+            "related_invoice_no",
+        ],
+    )
+    with INVOICE_FILE.open("rb") as invoice_file:
+        response = client.post(
+            "/demo/scan-uploaded",
+            files={
+                "invoice_file": (
+                    INVOICE_FILE.name,
+                    invoice_file,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+                "payment_file": (
+                    "payments.xlsx",
+                    payment_workbook,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+            },
+        )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File thanh toán không hợp lệ: "
+        "File thanh toán thiếu cột bắt buộc: amount"
+    )
 
 
 def test_scan_uploaded_requires_both_files() -> None:

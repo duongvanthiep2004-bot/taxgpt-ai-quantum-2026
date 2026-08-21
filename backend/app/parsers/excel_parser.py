@@ -21,16 +21,29 @@ class InvoiceExcelError(ValueError):
 
 
 def _find_header_row(preview: pd.DataFrame) -> int:
+    best_row_index: int | None = None
+    best_match_count = 0
     for row_index, row in preview.iterrows():
         values = {
             str(value).strip()
             for value in row.tolist()
             if pd.notna(value)
         }
-        if "invoice_id" in values:
-            return int(row_index)
+        match_count = len(values & REQUIRED_INVOICE_COLUMNS)
+        if match_count > best_match_count:
+            best_row_index = int(row_index)
+            best_match_count = match_count
 
-    raise InvoiceExcelError("Không tìm thấy dòng header chứa cột 'invoice_id'")
+    if best_row_index is not None:
+        return best_row_index
+    raise InvoiceExcelError("Không tìm thấy dòng header phù hợp trong file hóa đơn.")
+
+
+def _missing_columns_message(missing_columns: set[str]) -> str:
+    missing = ", ".join(sorted(missing_columns))
+    if len(missing_columns) == 1:
+        return f"File hóa đơn thiếu cột bắt buộc: {missing}"
+    return f"File hóa đơn thiếu các cột bắt buộc: {missing}"
 
 
 def _to_python_value(value: object) -> object:
@@ -55,30 +68,32 @@ def load_invoices_from_excel(file_path: str) -> list[dict]:
         raise FileNotFoundError(f"Không tìm thấy file hóa đơn: {path}")
 
     try:
-        preview = pd.read_excel(
-            path,
-            sheet_name=INVOICE_SHEET_NAME,
-            header=None,
-            nrows=HEADER_SCAN_LIMIT,
-        )
-        header_row = _find_header_row(preview)
-        invoices_frame = pd.read_excel(
-            path,
-            sheet_name=INVOICE_SHEET_NAME,
-            header=header_row,
-        )
+        with pd.ExcelFile(path, engine="openpyxl") as workbook:
+            if INVOICE_SHEET_NAME not in workbook.sheet_names:
+                raise InvoiceExcelError(
+                    "Không tìm thấy sheet invoices trong file hóa đơn."
+                )
+            preview = pd.read_excel(
+                workbook,
+                sheet_name=INVOICE_SHEET_NAME,
+                header=None,
+                nrows=HEADER_SCAN_LIMIT,
+            )
+            header_row = _find_header_row(preview)
+            invoices_frame = pd.read_excel(
+                workbook,
+                sheet_name=INVOICE_SHEET_NAME,
+                header=header_row,
+            )
     except InvoiceExcelError:
         raise
     except (ValueError, OSError, BadZipFile, InvalidFileException) as exc:
-        raise InvoiceExcelError(
-            f"Không đọc được sheet '{INVOICE_SHEET_NAME}' từ file {path}: {exc}"
-        ) from exc
+        raise InvoiceExcelError("Không đọc được file hóa đơn Excel.") from exc
 
     invoices_frame.columns = [str(column).strip() for column in invoices_frame.columns]
     missing_columns = REQUIRED_INVOICE_COLUMNS - set(invoices_frame.columns)
     if missing_columns:
-        missing = ", ".join(sorted(missing_columns))
-        raise InvoiceExcelError(f"Thiếu cột hóa đơn bắt buộc: {missing}")
+        raise InvoiceExcelError(_missing_columns_message(missing_columns))
 
     invoices_frame = invoices_frame.dropna(how="all")
     return [

@@ -22,16 +22,29 @@ class PaymentExcelError(ValueError):
 
 
 def _find_header_row(preview: pd.DataFrame) -> int:
+    best_row_index: int | None = None
+    best_match_count = 0
     for row_index, row in preview.iterrows():
         values = {
             str(value).strip()
             for value in row.tolist()
             if pd.notna(value)
         }
-        if "payment_ref" in values:
-            return int(row_index)
+        match_count = len(values & REQUIRED_PAYMENT_COLUMNS)
+        if match_count > best_match_count:
+            best_row_index = int(row_index)
+            best_match_count = match_count
 
-    raise PaymentExcelError("Không tìm thấy dòng header chứa cột 'payment_ref'")
+    if best_row_index is not None:
+        return best_row_index
+    raise PaymentExcelError("Không tìm thấy dòng header phù hợp trong file thanh toán.")
+
+
+def _missing_columns_message(missing_columns: set[str]) -> str:
+    missing = ", ".join(sorted(missing_columns))
+    if len(missing_columns) == 1:
+        return f"File thanh toán thiếu cột bắt buộc: {missing}"
+    return f"File thanh toán thiếu các cột bắt buộc: {missing}"
 
 
 def _to_python_value(value: object) -> object:
@@ -56,30 +69,32 @@ def load_payments_from_excel(file_path: str) -> list[dict]:
         raise FileNotFoundError(f"Không tìm thấy file thanh toán: {path}")
 
     try:
-        preview = pd.read_excel(
-            path,
-            sheet_name=PAYMENT_SHEET_NAME,
-            header=None,
-            nrows=HEADER_SCAN_LIMIT,
-        )
-        header_row = _find_header_row(preview)
-        payments_frame = pd.read_excel(
-            path,
-            sheet_name=PAYMENT_SHEET_NAME,
-            header=header_row,
-        )
+        with pd.ExcelFile(path, engine="openpyxl") as workbook:
+            if PAYMENT_SHEET_NAME not in workbook.sheet_names:
+                raise PaymentExcelError(
+                    "Không tìm thấy sheet payments trong file thanh toán."
+                )
+            preview = pd.read_excel(
+                workbook,
+                sheet_name=PAYMENT_SHEET_NAME,
+                header=None,
+                nrows=HEADER_SCAN_LIMIT,
+            )
+            header_row = _find_header_row(preview)
+            payments_frame = pd.read_excel(
+                workbook,
+                sheet_name=PAYMENT_SHEET_NAME,
+                header=header_row,
+            )
     except PaymentExcelError:
         raise
     except (ValueError, OSError, BadZipFile, InvalidFileException) as exc:
-        raise PaymentExcelError(
-            f"Không đọc được sheet '{PAYMENT_SHEET_NAME}' từ file {path}: {exc}"
-        ) from exc
+        raise PaymentExcelError("Không đọc được file thanh toán Excel.") from exc
 
     payments_frame.columns = [str(column).strip() for column in payments_frame.columns]
     missing_columns = REQUIRED_PAYMENT_COLUMNS - set(payments_frame.columns)
     if missing_columns:
-        missing = ", ".join(sorted(missing_columns))
-        raise PaymentExcelError(f"Thiếu cột thanh toán bắt buộc: {missing}")
+        raise PaymentExcelError(_missing_columns_message(missing_columns))
 
     payments_frame = payments_frame.dropna(how="all")
     return [
