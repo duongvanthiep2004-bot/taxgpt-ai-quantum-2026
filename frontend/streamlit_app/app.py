@@ -93,7 +93,7 @@ def build_alerts_table(alerts: list[dict]) -> pd.DataFrame:
 
 st.set_page_config(page_title="TaxGPT Dashboard", layout="wide")
 st.title("TaxGPT Dashboard")
-st.write("Rà soát 5 nhóm rủi ro trên bộ dữ liệu Excel demo.")
+st.write("Rà soát 5 nhóm rủi ro trên dữ liệu Excel demo hoặc file tải lên.")
 st.info(
     "TaxGPT chỉ hỗ trợ rà soát rủi ro và không thay thế kế toán, luật sư, "
     "đại lý thuế hoặc cơ quan thuế."
@@ -106,6 +106,8 @@ with st.expander("Cách chạy demo local"):
     st.code("streamlit run frontend/streamlit_app/app.py", language="bash")
     st.warning("Cần bật backend trước khi bấm nút rà soát dữ liệu demo.")
 
+st.subheader("Chế độ 1: Dữ liệu demo cố định")
+st.caption("Dùng hai file mẫu có sẵn trong repo để chạy nhanh luồng demo.")
 if st.button("Chạy rà soát dữ liệu demo", type="primary"):
     with st.spinner("Đang gọi backend và rà soát dữ liệu demo..."):
         scan_result = fetch_scan_all()
@@ -114,7 +116,9 @@ if st.button("Chạy rà soát dữ liệu demo", type="primary"):
     else:
         st.session_state["scan_result"] = scan_result
 
-st.subheader("Rà soát file Excel tải lên")
+st.divider()
+st.subheader("Chế độ 2: File Excel tải lên")
+st.caption("Rà soát file Excel tải lên theo sheet, header và schema hiện tại.")
 upload_invoice_column, upload_payment_column = st.columns(2)
 uploaded_invoice_file = upload_invoice_column.file_uploader(
     "File hóa đơn Excel (.xlsx)",
@@ -143,20 +147,37 @@ if st.button("Chạy rà soát file tải lên"):
 
 result = st.session_state.get("scan_result")
 if result is not None:
+    st.divider()
+    st.subheader("Kết quả rà soát")
+
+    uploaded_files = result.get("uploaded_files")
+    if isinstance(uploaded_files, dict):
+        st.info("Nguồn kết quả: File tải lên")
+        uploaded_invoice_source, uploaded_payment_source = st.columns(2)
+        uploaded_invoice_source.write(
+            "**File hóa đơn đã tải lên:**",
+            uploaded_files.get("invoice_file", ""),
+        )
+        uploaded_payment_source.write(
+            "**File thanh toán đã tải lên:**",
+            uploaded_files.get("payment_file", ""),
+        )
+    else:
+        st.info("Nguồn kết quả: Dữ liệu demo cố định")
+        source_invoice, source_payment = st.columns(2)
+        source_invoice.markdown(
+            f"**Nguồn hóa đơn demo:** `{result.get('source_invoice_file', '')}`"
+        )
+        source_payment.markdown(
+            f"**Nguồn thanh toán demo:** `{result.get('source_payment_file', '')}`"
+        )
+
     invoice_metric, payment_metric, alert_metric = st.columns(3)
     invoice_metric.metric("Tổng số hóa đơn", result.get("total_invoices", 0))
     payment_metric.metric(
         "Tổng số giao dịch thanh toán", result.get("total_payments", 0)
     )
     alert_metric.metric("Tổng số cảnh báo", result.get("total_alerts", 0))
-
-    source_invoice, source_payment = st.columns(2)
-    source_invoice.markdown(
-        f"**Nguồn hóa đơn:** `{result.get('source_invoice_file', '')}`"
-    )
-    source_payment.markdown(
-        f"**Nguồn thanh toán:** `{result.get('source_payment_file', '')}`"
-    )
 
     st.subheader("Tổng hợp theo 5 case")
     st.dataframe(
