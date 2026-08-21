@@ -4,6 +4,7 @@ import streamlit as st
 
 
 SCAN_ALL_URL = "http://127.0.0.1:8000/demo/scan-all"
+SCAN_UPLOADED_URL = "http://127.0.0.1:8000/demo/scan-uploaded"
 BACKEND_NOT_RUNNING_MESSAGE = (
     "Backend chưa chạy. Vui lòng chạy "
     "uvicorn backend.app.main:app --reload"
@@ -19,6 +20,36 @@ def fetch_scan_all() -> dict | None:
         st.error(BACKEND_NOT_RUNNING_MESSAGE)
     except httpx.HTTPStatusError as exc:
         st.error(f"Backend trả về lỗi HTTP {exc.response.status_code}.")
+    except ValueError:
+        st.error("Backend trả về dữ liệu không đúng định dạng JSON.")
+    return None
+
+
+def scan_uploaded_files(invoice_file, payment_file) -> dict | None:
+    files = {
+        "invoice_file": (
+            invoice_file.name,
+            invoice_file.getvalue(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ),
+        "payment_file": (
+            payment_file.name,
+            payment_file.getvalue(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ),
+    }
+    try:
+        response = httpx.post(SCAN_UPLOADED_URL, files=files, timeout=30.0)
+        response.raise_for_status()
+        return response.json()
+    except httpx.RequestError:
+        st.error(BACKEND_NOT_RUNNING_MESSAGE)
+    except httpx.HTTPStatusError as exc:
+        try:
+            detail = exc.response.json().get("detail")
+        except ValueError:
+            detail = None
+        st.error(detail or f"Backend trả về lỗi HTTP {exc.response.status_code}.")
     except ValueError:
         st.error("Backend trả về dữ liệu không đúng định dạng JSON.")
     return None
@@ -83,6 +114,33 @@ if st.button("Chạy rà soát dữ liệu demo", type="primary"):
     else:
         st.session_state["scan_result"] = scan_result
 
+st.subheader("Rà soát file Excel tải lên")
+upload_invoice_column, upload_payment_column = st.columns(2)
+uploaded_invoice_file = upload_invoice_column.file_uploader(
+    "File hóa đơn Excel (.xlsx)",
+    type=["xlsx"],
+    key="uploaded_invoice_file",
+)
+uploaded_payment_file = upload_payment_column.file_uploader(
+    "File thanh toán Excel (.xlsx)",
+    type=["xlsx"],
+    key="uploaded_payment_file",
+)
+
+if st.button("Chạy rà soát file tải lên"):
+    if uploaded_invoice_file is None or uploaded_payment_file is None:
+        st.error("Vui lòng chọn đủ file hóa đơn và file thanh toán.")
+    else:
+        with st.spinner("Đang tải file lên backend và rà soát dữ liệu..."):
+            scan_result = scan_uploaded_files(
+                uploaded_invoice_file,
+                uploaded_payment_file,
+            )
+        if scan_result is None:
+            st.session_state.pop("scan_result", None)
+        else:
+            st.session_state["scan_result"] = scan_result
+
 result = st.session_state.get("scan_result")
 if result is not None:
     invoice_metric, payment_metric, alert_metric = st.columns(3)
@@ -94,10 +152,10 @@ if result is not None:
 
     source_invoice, source_payment = st.columns(2)
     source_invoice.markdown(
-        f"**Nguồn hóa đơn demo:** `{result.get('source_invoice_file', '')}`"
+        f"**Nguồn hóa đơn:** `{result.get('source_invoice_file', '')}`"
     )
     source_payment.markdown(
-        f"**Nguồn thanh toán demo:** `{result.get('source_payment_file', '')}`"
+        f"**Nguồn thanh toán:** `{result.get('source_payment_file', '')}`"
     )
 
     st.subheader("Tổng hợp theo 5 case")

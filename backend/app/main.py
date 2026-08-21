@@ -1,6 +1,7 @@
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, HTTPException, UploadFile
 
 from backend.app.parsers.excel_parser import InvoiceExcelError, load_invoices_from_excel
 from backend.app.parsers.payment_parser import PaymentExcelError, load_payments_from_excel
@@ -23,6 +24,7 @@ DEMO_PAYMENT_FILE = (
 )
 DEMO_INVOICE_SOURCE = "data-mau/excel/sample_invoices_mvp.xlsx"
 DEMO_PAYMENT_SOURCE = "data-mau/bank_statements/sample_bank_payments_mvp.xlsx"
+ALLOWED_UPLOAD_SUFFIX = ".xlsx"
 
 
 @app.get("/health")
@@ -128,6 +130,21 @@ def demo_scan_all() -> dict:
     except (FileNotFoundError, InvoiceExcelError, PaymentExcelError) as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    return build_scan_result(
+        invoices,
+        payments,
+        source_invoice_file=DEMO_INVOICE_SOURCE,
+        source_payment_file=DEMO_PAYMENT_SOURCE,
+    )
+
+
+def build_scan_result(
+    invoices: list[dict],
+    payments: list[dict],
+    *,
+    source_invoice_file: str,
+    source_payment_file: str,
+) -> dict:
     case_results = (
         (
             "CASE_1_DUPLICATE_INVOICE",
@@ -177,11 +194,73 @@ def demo_scan_all() -> dict:
     alerts.sort(key=alert_sort_key)
     return {
         "status": "ok",
-        "source_invoice_file": DEMO_INVOICE_SOURCE,
-        "source_payment_file": DEMO_PAYMENT_SOURCE,
+        "source_invoice_file": source_invoice_file,
+        "source_payment_file": source_payment_file,
         "total_invoices": len(invoices),
         "total_payments": len(payments),
         "total_alerts": len(alerts),
         "case_summary": case_summary,
         "alerts": alerts,
     }
+
+
+def _validate_xlsx_upload(upload: UploadFile, label: str) -> str:
+    filename = Path(upload.filename or "").name
+    if not filename:
+        raise HTTPException(status_code=400, detail=f"Thiếu tên file {label}.")
+    if Path(filename).suffix.casefold() != ALLOWED_UPLOAD_SUFFIX:
+        raise HTTPException(
+            status_code=400,
+            detail=f"File {label} phải có định dạng .xlsx.",
+        )
+    return filename
+
+
+@app.post("/demo/scan-uploaded")
+async def scan_uploaded_files(
+    invoice_file: UploadFile | None = File(default=None),
+    payment_file: UploadFile | None = File(default=None),
+) -> dict:
+    if invoice_file is None or payment_file is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Vui lòng tải lên đủ file hóa đơn và file thanh toán.",
+        )
+
+    invoice_filename = _validate_xlsx_upload(invoice_file, "hóa đơn")
+    payment_filename = _validate_xlsx_upload(payment_file, "thanh toán")
+
+    with TemporaryDirectory(prefix="taxgpt-upload-") as temporary_directory:
+        temporary_path = Path(temporary_directory)
+        invoice_path = temporary_path / "invoices.xlsx"
+        payment_path = temporary_path / "payments.xlsx"
+        invoice_path.write_bytes(await invoice_file.read())
+        payment_path.write_bytes(await payment_file.read())
+
+        try:
+            invoices = load_invoices_from_excel(str(invoice_path))
+        except (FileNotFoundError, InvoiceExcelError) as exc:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File hóa đơn không hợp lệ: {exc}",
+            ) from exc
+
+        try:
+            payments = load_payments_from_excel(str(payment_path))
+        except (FileNotFoundError, PaymentExcelError) as exc:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File thanh toán không hợp lệ: {exc}",
+            ) from exc
+
+    result = build_scan_result(
+        invoices,
+        payments,
+        source_invoice_file=invoice_filename,
+        source_payment_file=payment_filename,
+    )
+    result["uploaded_files"] = {
+        "invoice_file": invoice_filename,
+        "payment_file": payment_filename,
+    }
+    return result
