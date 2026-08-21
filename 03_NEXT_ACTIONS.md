@@ -3,8 +3,8 @@
 ## Trạng thái hiện tại
 
 - 5/5 case MVP đã có backend slice ở mức parser/rule/API/test: hóa đơn trùng; sai MST/tên người mua; VAT không khớp phép tính; hóa đơn ngoài kỳ dữ liệu đang rà soát; hóa đơn giá trị lớn thiếu chứng từ thanh toán không dùng tiền mặt.
-- API tổng hợp `GET /demo/scan-all` đã hoàn thành tại commit `667bf24`; toàn bộ test backend đạt `33 passed, 1 warning`.
-- Streamlit Dashboard đã kết nối scan-all tại commit `a13dfd1` và được cải thiện cho thao tác demo tại commit `67d6a4a`. Dashboard hiển thị 12 hóa đơn, 6 giao dịch thanh toán, 9 cảnh báo, bảng tổng hợp 5 case, bộ lọc và evidence chi tiết.
+- API tổng hợp `GET /demo/scan-all` đã hoàn thành tại commit `667bf24`; toàn bộ test hồi quy hiện đạt `37 passed, 1 warning`.
+- Streamlit Dashboard đã kết nối scan-all tại commit `a13dfd1`, được cải thiện cho thao tác demo tại commit `67d6a4a` và phân biệt nguồn kết quả tại commit `abd9738`. Dashboard hiện có “Chế độ 1: Dữ liệu demo cố định” và “Chế độ 2: File Excel tải lên”; kết quả ghi rõ nguồn dữ liệu và hiển thị tên hai file khi có `uploaded_files`.
 - Khi backend chưa chạy, Dashboard hiển thị lỗi thân thiện và không crash. Git working tree sạch sau các commit đã nêu.
 - **Prototype demo local không RAG: `[x]` đạt** với phạm vi `Excel demo cố định → backend scan-all → Streamlit dashboard hiển thị bảng cảnh báo`.
 - README hướng dẫn clone/cài/test/chạy backend/frontend/demo đã hoàn thành tại commit `21976fc`; repo hiện đủ hướng dẫn để người khác chạy lại prototype local bằng hai terminal.
@@ -26,36 +26,35 @@
 - `[x]` README hướng dẫn chạy prototype demo local bằng hai terminal; commit `21976fc`.
 - `[x]` Có legal draft mapping cho 5 case MVP; commit `ee099db`. Đây chưa phải kiểm chứng pháp lý hoàn tất.
 - `[x]` GD2-04 upload hai file Excel thật ở mức prototype qua Streamlit và `POST /demo/scan-uploaded`; kết quả kiểm tra `12 / 6 / 9`; commit `f84cc1f`.
+- `[x]` Cải thiện Dashboard upload result labels: phân biệt Chế độ 1/Chế độ 2, ghi rõ nguồn kết quả và tên file upload; commit `abd9738`; test đạt `37 passed, 1 warning`.
 
 ## Thứ tự ưu tiên
 
-### P1 — Cập nhật README hướng dẫn upload file thật
+### P1 — Chuẩn bị kịch bản demo/video ngắn
 
-- Bổ sung cách chọn hai file `.xlsx`, thao tác nút “Chạy rà soát file tải lên” và kết quả kỳ vọng `12 / 6 / 9` với hai file demo.
-- Ghi rõ yêu cầu sheet/header/schema hiện tại, các lỗi đầu vào được hỗ trợ và giới hạn kích thước/định dạng.
-- Giữ riêng hướng dẫn luồng demo cố định; không mô tả prototype upload như sản phẩm hoàn chỉnh.
+- Chuẩn bị luồng trình diễn hai chế độ: demo cố định và upload hai file `.xlsx`.
+- Trong mỗi luồng, đọc số liệu `12 / 6 / 9`, chỉ rõ nguồn kết quả, lọc cảnh báo và mở evidence.
+- Nêu rõ đây là prototype local không RAG và không thay thế tư vấn chuyên nghiệp; chỉ quay video khi kịch bản đã được chạy thử ổn định.
 
-### P2 — Cải thiện dashboard sau upload
-
-- Phân biệt rõ hai luồng “demo cố định” và “file tải lên” trên giao diện.
-- Hiển thị `uploaded_files` thân thiện hơn và giúp người dùng nhận biết kết quả đang xem thuộc nguồn nào.
-- Không mở rộng thành redesign lớn trước khi luồng upload hiện tại được dùng thử ổn định.
-
-### P3 — Rà độc lập nội dung legal draft, không mở RAG
+### P2 — Rà độc lập nội dung legal draft, không mở RAG
 
 - Rà độc lập nguồn tạo, luật hiện hành, điều/khoản, ngoại lệ và các case Low/Medium.
 - Xác nhận rõ phần đã đối chiếu, phần còn thiếu và người chịu trách nhiệm chốt chuyên môn; không coi nhãn High/Medium/Low của AI là kết luận pháp lý.
 - **Không mở RAG cho bất kỳ case nào cho đến khi legal draft được rà độc lập.** Không ghi pháp lý hoàn tất nếu chưa có bằng chứng rà soát.
 
-### P4 — Chuẩn bị video demo ngắn hoặc kịch bản thuyết trình demo
+### P3 — Cải thiện schema validation và upload file lỗi nếu cần
 
-- Chuẩn bị luồng trình diễn: khởi động hai terminal → chạy rà soát → đọc số liệu `12 / 6 / 9` → lọc cảnh báo → mở evidence.
-- Có thể ưu tiên kịch bản viết trước; chỉ quay video khi giao diện và luồng demo đã ổn định.
-- Nêu rõ đây là prototype local không RAG và không thay thế tư vấn chuyên nghiệp.
+- Rà lại thông báo lỗi cho thiếu sheet, sai header, thiếu cột, workbook hỏng và file không phải `.xlsx`.
+- Chỉ bổ sung khi có tình huống lỗi cụ thể; không thay đổi rule engine hoặc mở rộng định dạng ngoài phạm vi.
 
-### P5 — RAG pháp lý + AI explanation sau khi pháp lý được kiểm chứng
+### P4 — Chuẩn bị dữ liệu demo bổ sung hoặc tình huống lỗi
 
-- Chỉ bắt đầu sau khi P3 hoàn tất rà soát độc lập và có đủ căn cứ pháp lý sạch cho phạm vi MVP.
+- Chuẩn bị file mẫu nhỏ cho các trường hợp thiếu sheet/header/cột hoặc workbook không hợp lệ nếu cần trình diễn error handling.
+- Không dùng dữ liệu doanh nghiệp thật và không tự thêm rule nghiệp vụ mới.
+
+### P5 — RAG pháp lý + AI explanation chỉ sau khi legal review sạch
+
+- Chỉ bắt đầu sau khi P2 hoàn tất rà soát độc lập và có đủ căn cứ pháp lý sạch cho phạm vi MVP.
 - Trả trích dẫn nguồn và từ chối kết luận khi không đủ căn cứ.
 - AI explanation chỉ giải thích cảnh báo và gợi ý rà soát, không thay chuyên gia thuế đưa ra kết luận pháp lý.
 
@@ -66,9 +65,9 @@
 
 ## Bước tiếp theo cụ thể
 
-**Bước đã hoàn thành:** GD2-04 upload hai file Excel thật ở mức prototype; endpoint `POST /demo/scan-uploaded` và Streamlit đã hoạt động, kết quả kiểm tra đạt `12 / 6 / 9`, toàn bộ test đạt `37 passed, 1 warning`.
+**Bước đã hoàn thành:** Dashboard đã phân biệt hai chế độ demo/upload và hiển thị đúng nguồn kết quả, tên file upload; commit `abd9738`. Upload hai file demo vẫn đạt `12 / 6 / 9`; toàn bộ test đạt `37 passed, 1 warning`.
 
-**Bước đầu phiên sau:** thực hiện P1 — cập nhật README hướng dẫn upload file thật. P2 cải thiện cách hiển thị nguồn upload có thể chuẩn bị song song; P3 legal review độc lập tiếp tục là điều kiện bắt buộc trước RAG.
+**Bước đầu phiên sau:** thực hiện P1 — chuẩn bị và chạy thử kịch bản demo/video ngắn cho cả hai chế độ. P2 legal review độc lập có thể tiến hành song song nhưng vẫn là điều kiện bắt buộc trước RAG.
 
 ## Ước lượng tiến độ
 

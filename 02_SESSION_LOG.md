@@ -282,3 +282,13 @@
 - **Giới hạn:** Đây là upload mức prototype `.xlsx` theo sheet/header/schema hiện tại, chưa phải xử lý dữ liệu mọi định dạng. Chưa tối ưu file lớn; chưa hỗ trợ XML/PDF/OCR, RAG, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
 - **Vấn đề phát sinh:** FastAPI upload cần `python-multipart`; dependency đã được bổ sung vào `requirements.txt`. Warning pytest hiện tại là cảnh báo deprecation của TestClient và không làm test thất bại.
 - **Quyết định:** Đạt GD2-04 ở mức prototype `.xlsx`. Giữ nguyên luồng demo cố định và toàn bộ endpoint cũ. RAG tiếp tục **LOCKED toàn bộ 5 case**; legal draft vẫn chỉ là AI draft, chưa phải kiểm chứng pháp lý cuối cùng.
+
+### 21/08/2026 — GD2-04-UI — Cải thiện Dashboard phân biệt demo và upload
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Streamlit và pytest.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Sửa `frontend/streamlit_app/app.py` để phân biệt rõ “Chế độ 1: Dữ liệu demo cố định” và “Chế độ 2: File Excel tải lên”. Phần kết quả xác định và hiển thị nguồn là dữ liệu demo cố định hoặc file tải lên; khi response có `uploaded_files`, Dashboard hiển thị tên file hóa đơn và file thanh toán đã tải lên.
+- **Kết quả/Output:** Giữ nguyên metric, bảng tổng hợp 5 case, bộ lọc case/severity, cảnh báo và evidence. Upload hai file demo vẫn cho kết quả `12 hóa đơn / 6 giao dịch thanh toán / 9 cảnh báo`. Toàn bộ suite trước commit đạt `37 passed, 1 warning`. Thay đổi được lưu tại commit `abd9738` (`Improve dashboard upload result labels`); Git working tree sạch sau commit.
+- **Giới hạn:** Đây là cải thiện nhãn và nguồn kết quả ở mức demo, không phải redesign lớn hoặc sản phẩm hoàn chỉnh. Upload vẫn chỉ hỗ trợ `.xlsx` theo sheet/header/schema hiện tại; chưa hỗ trợ XML/PDF/OCR, file lớn, RAG, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
+- **Vấn đề phát sinh:** Không có lỗi hồi quy được ghi nhận; warning pytest hiện tại không làm test thất bại.
+- **Quyết định:** Đạt GD2-04-UI ở mức demo. RAG tiếp tục **LOCKED toàn bộ 5 case**; legal draft vẫn chỉ là AI draft, chưa phải kiểm chứng pháp lý cuối cùng.
