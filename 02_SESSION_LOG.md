@@ -272,3 +272,13 @@
 - **Giới hạn:** Đây là bản nháp do AI tạo, chưa phải nội dung đã kiểm chứng pháp lý. Chưa có Khánh/Gemini Pro hoặc người có chuyên môn rà soát độc lập. Nhãn High/Medium/Low là đánh giá sơ bộ của AI, chưa phải xác nhận pháp lý cuối cùng.
 - **Vấn đề phát sinh:** Cần kiểm tra độc lập nguồn tạo, luật hiện hành, hiệu lực, điều/khoản và ưu tiên các case có nhãn Low/Medium trước khi dùng nội dung cho RAG hoặc tuyên bố pháp lý.
 - **Quyết định:** RAG vẫn **LOCKED cho cả 5 case, kể cả case có nhãn High confidence**. Không ghi nhận Khánh đã hoàn thành GD1.5-P1 và chưa xác nhận pháp lý hoàn tất.
+
+### 21/08/2026 — GD2-04 — Upload file Excel thật cho hóa đơn và payment
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, FastAPI, Streamlit, httpx, pytest và `python-multipart`.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Sửa `backend/app/main.py`, `frontend/streamlit_app/app.py`, `requirements.txt` và thêm `backend/tests/test_scan_uploaded.py`. Backend có endpoint mới `POST /demo/scan-uploaded`, nhận `invoice_file` và `payment_file`; Streamlit có mục “Rà soát file Excel tải lên” để chọn hai file `.xlsx`. Endpoint dùng file tạm, cleanup sau xử lý và trả lỗi HTTP 400 thân thiện khi thiếu file, sai định dạng hoặc workbook/schema không hợp lệ.
+- **Kết quả/Output:** Response giữ cấu trúc gần giống `/demo/scan-all`, gồm `total_invoices`, `total_payments`, `total_alerts`, `case_summary`, `alerts`, `source_invoice_file`, `source_payment_file` và `uploaded_files`. Test thủ công với `data-mau/excel/sample_invoices_mvp.xlsx` và `data-mau/bank_statements/sample_bank_payments_mvp.xlsx` cho kết quả `12 hóa đơn / 6 giao dịch thanh toán / 9 cảnh báo`. Toàn bộ suite đạt `37 passed, 1 warning`. Thay đổi được lưu tại commit `f84cc1f` (`Implement uploaded Excel scan workflow`); Git working tree sạch sau commit.
+- **Giới hạn:** Đây là upload mức prototype `.xlsx` theo sheet/header/schema hiện tại, chưa phải xử lý dữ liệu mọi định dạng. Chưa tối ưu file lớn; chưa hỗ trợ XML/PDF/OCR, RAG, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
+- **Vấn đề phát sinh:** FastAPI upload cần `python-multipart`; dependency đã được bổ sung vào `requirements.txt`. Warning pytest hiện tại là cảnh báo deprecation của TestClient và không làm test thất bại.
+- **Quyết định:** Đạt GD2-04 ở mức prototype `.xlsx`. Giữ nguyên luồng demo cố định và toàn bộ endpoint cũ. RAG tiếp tục **LOCKED toàn bộ 5 case**; legal draft vẫn chỉ là AI draft, chưa phải kiểm chứng pháp lý cuối cùng.
