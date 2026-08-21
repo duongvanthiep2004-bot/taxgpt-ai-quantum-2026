@@ -292,3 +292,13 @@
 - **Giới hạn:** Đây là cải thiện nhãn và nguồn kết quả ở mức demo, không phải redesign lớn hoặc sản phẩm hoàn chỉnh. Upload vẫn chỉ hỗ trợ `.xlsx` theo sheet/header/schema hiện tại; chưa hỗ trợ XML/PDF/OCR, file lớn, RAG, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
 - **Vấn đề phát sinh:** Không có lỗi hồi quy được ghi nhận; warning pytest hiện tại không làm test thất bại.
 - **Quyết định:** Đạt GD2-04-UI ở mức demo. RAG tiếp tục **LOCKED toàn bộ 5 case**; legal draft vẫn chỉ là AI draft, chưa phải kiểm chứng pháp lý cuối cùng.
+
+### 21/08/2026 — GD2-04a — Củng cố schema validation cho upload Excel
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Python, pandas, openpyxl, FastAPI và pytest.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Sửa `backend/app/parsers/excel_parser.py`, `backend/app/parsers/payment_parser.py` và `backend/tests/test_scan_uploaded.py`. Validation mới phân biệt workbook hỏng, thiếu sheet `invoices`, thiếu sheet `payments`, thiếu một cột hoặc nhiều cột bắt buộc; thông báo lỗi tiếng Việt rõ hơn và response không lộ traceback hoặc đường dẫn file tạm.
+- **Kết quả/Output:** Bổ sung test upload cho workbook hỏng, thiếu từng sheet và thiếu cột bắt buộc. Upload hai file demo vẫn trả `12 hóa đơn / 6 giao dịch thanh toán / 9 cảnh báo`. Toàn bộ suite đạt `41 passed, 1 warning`. Thay đổi được lưu tại commit `3bd1471` (`Improve uploaded Excel schema validation`); Git working tree sạch sau commit.
+- **Giới hạn:** GD2-04a chỉ củng cố validation cho `.xlsx` theo sheet/header/schema hiện tại, không mở rộng định dạng. Chưa kiểm tra sâu kiểu dữ liệu từng ô, chưa giới hạn dung lượng file và chưa hỗ trợ XML/PDF/OCR hoặc ngoại lệ nghiệp vụ nâng cao.
+- **Vấn đề phát sinh:** Warning pytest hiện tại là cảnh báo deprecation của TestClient và không làm test thất bại. Không đổi rule engine, frontend hoặc legal draft.
+- **Quyết định:** Đạt GD2-04a. RAG tiếp tục **LOCKED toàn bộ 5 case**; chưa triển khai AI explanation và chưa xác nhận pháp lý hoàn tất.
