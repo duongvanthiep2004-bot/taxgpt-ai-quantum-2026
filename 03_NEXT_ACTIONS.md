@@ -11,9 +11,11 @@
 - **GD2-04 upload file thật: `[x]` hoàn thành ở mức prototype `.xlsx`** tại commit `f84cc1f`. Streamlit nhận file hóa đơn và payment; backend xử lý qua `POST /demo/scan-uploaded`; test với hai file demo cho kết quả `12 / 6 / 9`; toàn bộ suite đạt `37 passed, 1 warning`.
 - Luồng demo cố định `GET /demo/scan-all` và các endpoint cũ vẫn được giữ nguyên. `requirements.txt` đã có `python-multipart`; Git working tree sạch sau commit.
 - Đây chưa phải sản phẩm hoàn chỉnh. Upload hiện chỉ hỗ trợ `.xlsx` với sheet/header/schema hiện tại; chưa tối ưu file lớn, chưa hỗ trợ XML/PDF/OCR, RAG pháp lý, AI explanation hoặc xử lý ngoại lệ nghiệp vụ nâng cao.
+- **GD2-04a schema validation:** Chưa hoàn thành và là ưu tiên kỹ thuật tiếp theo khi quay lại luồng code; tập trung thiếu sheet, sai header, thiếu cột, workbook hỏng và file không phải `.xlsx`.
 - Legal draft đã có tại `van-ban-luat/processed/GD1_5_P_LEGAL_DRAFT_mapping_5_cases.md`, commit `ee099db` (`Add legal draft mapping for MVP cases`). Nguồn tạo là VSCode AI theo prompt điều phối của ChatGPT Plus.
 - Chưa có Khánh/Gemini Pro hoặc người có chuyên môn rà soát độc lập; chưa có human/legal final review và chưa xác nhận pháp lý hoàn tất. Nhãn High/Medium/Low trong draft chỉ là đánh giá sơ bộ của AI.
 - RAG và AI explanation chưa triển khai. RAG **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence, cho đến khi legal draft được rà soát độc lập.
+- **Kết quả Vòng 1:** Chưa xác nhận; cần kiểm tra Dashboard cuộc thi và email/biên nhận chính thức.
 - Ngôn ngữ rule phải tiếp tục chỉ cảnh báo “có dấu hiệu”, “cần rà soát”; không kết luận gian lận, vi phạm, hóa đơn vô hiệu, không được khấu trừ, bị xử phạt hoặc bị loại chi phí.
 
 ## Hạng mục vừa hoàn thành
@@ -39,10 +41,12 @@
 ### P2 — Rà độc lập nội dung legal draft, không mở RAG
 
 - Rà độc lập nguồn tạo, luật hiện hành, điều/khoản, ngoại lệ và các case Low/Medium.
+- Ưu tiên mở văn bản gốc trên Cổng văn bản Chính phủ hoặc nguồn chính thức. Có thể dùng Thư Viện Pháp Luật để tra cứu phụ, nhưng không dùng làm nguồn chốt cuối.
+- Khánh phải tự đọc điều/khoản trên văn bản gốc và ghi xác nhận; không copy nguyên văn nội dung AI làm kết quả rà soát.
 - Xác nhận rõ phần đã đối chiếu, phần còn thiếu và người chịu trách nhiệm chốt chuyên môn; không coi nhãn High/Medium/Low của AI là kết luận pháp lý.
 - **Không mở RAG cho bất kỳ case nào cho đến khi legal draft được rà độc lập.** Không ghi pháp lý hoàn tất nếu chưa có bằng chứng rà soát.
 
-### P3 — Cải thiện schema validation và upload file lỗi nếu cần
+### P3 — GD2-04a: Cải thiện schema validation và upload file lỗi nếu cần
 
 - Rà lại thông báo lỗi cho thiếu sheet, sai header, thiếu cột, workbook hỏng và file không phải `.xlsx`.
 - Chỉ bổ sung khi có tình huống lỗi cụ thể; không thay đổi rule engine hoặc mở rộng định dạng ngoài phạm vi.
@@ -67,7 +71,7 @@
 
 **Bước đã hoàn thành:** Dashboard đã phân biệt hai chế độ demo/upload và hiển thị đúng nguồn kết quả, tên file upload; commit `abd9738`. Upload hai file demo vẫn đạt `12 / 6 / 9`; toàn bộ test đạt `37 passed, 1 warning`.
 
-**Bước đầu phiên sau:** thực hiện P1 — chuẩn bị và chạy thử kịch bản demo/video ngắn cho cả hai chế độ. P2 legal review độc lập có thể tiến hành song song nhưng vẫn là điều kiện bắt buộc trước RAG.
+**Bước đầu phiên sau:** thực hiện P1 — chuẩn bị và chạy thử kịch bản demo/video ngắn cho cả hai chế độ. P2 legal review độc lập có thể tiến hành song song nhưng vẫn là điều kiện bắt buộc trước RAG. Khi quay lại kỹ thuật, GD2-04a là ưu tiên tiếp theo.
 
 ## Ước lượng tiến độ
 

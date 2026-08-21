@@ -1,10 +1,12 @@
 # 01_PROJECT_GOALS.md — Mục tiêu & chia nhỏ dự án
 
-**Cập nhật lần cuối:** 18/08/2026
+**Cập nhật lần cuối:** 21/08/2026 (sau khi hoàn thành upload Excel thật và cập nhật roadmap pháp lý/kỹ thuật)
 **Mục tiêu tổng thể:** Xây dựng và nộp dự thi TaxGPT — trợ lý AI phát hiện rủi ro thuế và tuân thủ chứng từ cho SMEs — tại AI-Quantum Challenge 2026, HVTC.
 **Ràng buộc thời gian cứng (từ thể lệ, không thay đổi được):**
 
-| Mốc | Ngày | Còn lại (từ 09/07) |
+> Bảng dưới giữ khoảng cách ngày tính từ mốc tham chiếu ban đầu 09/07/2026; không phải số ngày còn lại tại 21/08/2026.
+
+| Mốc | Ngày | Ghi chú thời điểm |
 |---|---|---|
 | Hạn nộp hồ sơ Vòng 1 | 30/07/2026 | **21 ngày** |
 | Phỏng vấn sơ loại | 09/08/2026 | 31 ngày |
@@ -59,6 +61,7 @@
 - **Giới hạn GD2-04:** Chỉ hỗ trợ `.xlsx` với sheet/header/schema hiện tại; chưa tối ưu cho file lớn; chưa hỗ trợ XML/PDF/OCR, RAG, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
 - **Trạng thái pháp lý:** Có legal draft do VSCode AI tạo theo prompt điều phối của ChatGPT Plus tại `van-ban-luat/processed/GD1_5_P_LEGAL_DRAFT_mapping_5_cases.md`, commit `ee099db` (`Add legal draft mapping for MVP cases`). Chưa có Khánh/Gemini Pro hoặc người có chuyên môn rà soát độc lập; chưa xác nhận pháp lý hoàn tất.
 - **Trạng thái kiểm soát:** Legal draft: đã có. Human/legal review: chưa có. RAG: **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence.
+- **Kết quả Vòng 1:** Chưa xác nhận. Cần kiểm tra Dashboard cuộc thi và email/biên nhận chính thức trước khi cập nhật trạng thái.
 
 ### Ước lượng tiến độ từ sau phiên 17/08/2026
 
@@ -120,6 +123,7 @@
 | GD2-02 | Hoàn thiện API tổng hợp scan-all cho 5 case MVP | VSCode AI | 5/5 case MVP và API `GET /demo/scan-all` đã có code/test; toàn bộ suite đạt 33 passed, 1 warning | [x] |
 | GD2-03 | Hoàn thiện dashboard demo local | VSCode AI | Dashboard local đã gọi scan-all, hiển thị tổng quan/bảng cảnh báo; phân biệt chế độ demo cố định và file tải lên, đồng thời hiển thị nguồn kết quả và tên file upload; commit `abd9738` | [x] Hoàn thành ở mức demo |
 | GD2-04 | Upload file thật cho Excel hóa đơn và payment | VSCode AI | Streamlit nhận hai file `.xlsx`; backend xử lý qua `POST /demo/scan-uploaded`, kiểm tra đầu vào và trả kết quả khớp `12 / 6 / 9` với hai file demo; commit `f84cc1f`; test đạt `37 passed, 1 warning` | [x] Hoàn thành ở mức prototype `.xlsx` |
+| GD2-04a | Củng cố schema validation và xử lý file upload lỗi | VSCode AI | Rà và bổ sung test/thông báo lỗi cho thiếu sheet, sai header, thiếu cột, workbook hỏng và file không phải `.xlsx` khi có tình huống cụ thể | [ ] Ưu tiên kỹ thuật tiếp theo |
 | GD2-05 | Xây RAG: nạp luật vào ChromaDB, tách chunk, gắn metadata | Gemini Pro + VSCode AI | Chỉ bắt đầu sau khi legal draft được rà soát độc lập; hiện **LOCKED toàn bộ 5 case** | [!] |
 | GD2-06 | Test 15–20 tình huống thực tế | Con người + VSCode AI | Bảng kết quả test | [ ] |
 | GD2-07 | Viết báo cáo giải pháp 8–12 trang | ChatGPT Plus → Con người | File báo cáo hoàn chỉnh | [ ] |
