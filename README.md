@@ -19,7 +19,7 @@ Phiên bản hiện tại đã có upload file thật ở mức prototype `.xlsx
 | Backend 5/5 case MVP | Done |
 | API tổng hợp `GET /demo/scan-all` | Done |
 | Streamlit demo dashboard | Done |
-| Test backend | `37 passed, 1 warning` |
+| Test backend | `42 passed, 1 warning` |
 | Upload file thật | Done ở mức prototype `.xlsx` qua `POST /demo/scan-uploaded` |
 | RAG pháp lý | Chưa có / **LOCKED toàn bộ 5 case** |
 | AI explanation | Chưa có |
@@ -52,7 +52,7 @@ pytest
 Kết quả kỳ vọng:
 
 ```text
-37 passed, 1 warning
+42 passed, 1 warning
 ```
 
 ## Chạy backend — Terminal 1
@@ -102,6 +102,8 @@ Mở Dashboard tại <http://localhost:8501>.
 7. Nếu dùng hai file demo của repo, kết quả kỳ vọng là **12 hóa đơn / 6 giao dịch thanh toán / 9 cảnh báo**.
 
 Luồng upload không thay thế nút **“Chạy rà soát dữ liệu demo”**; người dùng có thể tiếp tục dùng luồng demo cố định.
+
+Có thể dùng hai template `data-mau/excel/template_invoices_mvp.xlsx` và `data-mau/bank_statements/template_bank_payments_mvp.xlsx` để chuẩn bị file đúng định dạng. Các template chỉ phục vụ demo/prototype.
 
 ## API demo
 

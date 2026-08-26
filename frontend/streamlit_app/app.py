@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import httpx
 import pandas as pd
 import streamlit as st
@@ -5,6 +7,16 @@ import streamlit as st
 
 SCAN_ALL_URL = "http://127.0.0.1:8000/demo/scan-all"
 SCAN_UPLOADED_URL = "http://127.0.0.1:8000/demo/scan-uploaded"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+INVOICE_TEMPLATE_PATH = (
+    PROJECT_ROOT / "data-mau" / "excel" / "template_invoices_mvp.xlsx"
+)
+PAYMENT_TEMPLATE_PATH = (
+    PROJECT_ROOT
+    / "data-mau"
+    / "bank_statements"
+    / "template_bank_payments_mvp.xlsx"
+)
 BACKEND_NOT_RUNNING_MESSAGE = (
     "Backend chưa chạy. Vui lòng chạy "
     "uvicorn backend.app.main:app --reload"
@@ -53,6 +65,26 @@ def scan_uploaded_files(invoice_file, payment_file) -> dict | None:
     except ValueError:
         st.error("Backend trả về dữ liệu không đúng định dạng JSON.")
     return None
+
+
+def render_template_download(
+    container,
+    label: str,
+    template_path: Path,
+) -> None:
+    try:
+        template_data = template_path.read_bytes()
+    except OSError:
+        container.warning(f"Chưa có sẵn {label.lower()}. Vui lòng thử lại sau.")
+        return
+
+    container.download_button(
+        label,
+        data=template_data,
+        file_name=template_path.name,
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        use_container_width=True,
+    )
 
 
 def build_case_summary_table(case_summary: dict) -> pd.DataFrame:
@@ -119,6 +151,18 @@ if st.button("Chạy rà soát dữ liệu demo", type="primary"):
 st.divider()
 st.subheader("Chế độ 2: File Excel tải lên")
 st.caption("Rà soát file Excel tải lên theo sheet, header và schema hiện tại.")
+st.write("Tải file theo template nếu chưa có dữ liệu đúng định dạng.")
+invoice_template_column, payment_template_column = st.columns(2)
+render_template_download(
+    invoice_template_column,
+    "Tải template hóa đơn",
+    INVOICE_TEMPLATE_PATH,
+)
+render_template_download(
+    payment_template_column,
+    "Tải template thanh toán",
+    PAYMENT_TEMPLATE_PATH,
+)
 upload_invoice_column, upload_payment_column = st.columns(2)
 uploaded_invoice_file = upload_invoice_column.file_uploader(
     "File hóa đơn Excel (.xlsx)",
