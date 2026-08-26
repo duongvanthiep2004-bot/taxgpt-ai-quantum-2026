@@ -18,7 +18,7 @@
 - Chưa có independent legal review hoặc human/legal final review và chưa xác nhận pháp lý hoàn tất. Đội trưởng/nhóm hiện tại sẽ tự rà nội bộ sơ bộ trên văn bản gốc; nhãn High/Medium/Low trong draft vẫn chỉ là đánh giá sơ bộ của AI.
 - Theo quyết định ngày 26/08/2026, đội trưởng/nhóm hiện tại chủ động đảm nhận toàn bộ nhiệm vụ để không chậm tiến độ. Khánh, Thế Anh hoặc thành viên khác nếu tham gia lại sẽ review phụ/kiểm tra chéo và không còn là blocker của tiến độ chính.
 - RAG và AI explanation chưa triển khai. RAG **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence, cho đến khi có bảng đối chiếu và bằng chứng rà văn bản gốc đủ sạch.
-- **Kết quả Vòng 1:** Chưa xác nhận; cần kiểm tra Dashboard cuộc thi và email/biên nhận chính thức.
+- **Trạng thái sơ loại/Vòng 1:** BTC hoãn sơ loại/Vòng 1 tới `09/09/2026`; đội chưa thi nên chưa có kết quả. Đây không phải trường hợp kết quả đã có nhưng chưa được kiểm tra.
 - Ngôn ngữ rule phải tiếp tục chỉ cảnh báo “có dấu hiệu”, “cần rà soát”; không kết luận gian lận, vi phạm, hóa đơn vô hiệu, không được khấu trừ, bị xử phạt hoặc bị loại chi phí.
 
 ## Hạng mục vừa hoàn thành
@@ -38,10 +38,10 @@
 
 ## Thứ tự ưu tiên
 
-### P1 — Kiểm tra kết quả Vòng 1 trên Dashboard/email/nhóm BTC
+### P1 — Chuẩn bị cho sơ loại/Vòng 1 ngày 09/09/2026
 
-- Kiểm tra Dashboard cuộc thi, email, nhóm Ban tổ chức và biên nhận chính thức.
-- Chỉ cập nhật trạng thái Vòng 1 khi có bằng chứng xác nhận.
+- Chuẩn bị checklist, giữ repo sạch, xác nhận Dashboard/backend chạy được và soạn lời giới thiệu ngắn.
+- Theo dõi thông báo chính thức trên Dashboard/email/nhóm BTC; chưa ghi nhận kết quả khi đội chưa thi.
 
 ### P2 — Tự rà pháp lý Case 3 trước trên văn bản gốc chính thức
 
@@ -53,19 +53,19 @@
 - Tiếp tục đối chiếu Case 2 và Case 4 trên văn bản gốc chính thức sau Case 3.
 - Ghi riêng căn cứ đã xác minh, điểm còn thiếu và nội dung cần kiểm tra chéo sau.
 
-### P4 — Tự rà Case 1 và Case 5, giữ mức thận trọng cao
+### P4 — Cải thiện backend nhỏ nếu cần
 
-- Đối chiếu Case 1 và Case 5 sau cùng, giữ ngôn ngữ và kết luận ở mức thận trọng cao.
-- Không coi nhãn confidence hiện có là bằng chứng pháp lý.
+- Có thể hiển thị số dòng lỗi trong validation hoặc giới hạn dung lượng file nếu cần cho độ ổn định trước sơ loại.
+- Không mở rộng backend ngoài nhu cầu trình diễn trước mắt.
 
-### P5 — Chỉ xem xét RAG/AI explanation sau khi có bảng rà pháp lý sạch
+### P5 — Chuẩn bị slide/script sơ loại nếu BTC yêu cầu
 
-- Chỉ xem xét sau khi P2–P4 tạo được bảng đối chiếu có nguồn gốc, hiệu lực và điều/khoản đủ rõ cho phạm vi MVP.
-- RAG hiện vẫn **LOCKED toàn bộ 5 case**; AI explanation chưa triển khai.
+- Chuẩn bị slide ngắn, script giới thiệu và phương án demo dự phòng theo yêu cầu chính thức của BTC.
+- Không gọi tài liệu chuẩn bị là hồ sơ đã được BTC chấp thuận nếu chưa có xác nhận.
 
-### P6 — Kỹ thuật tiếp theo nếu cần
+### P6 — RAG/AI explanation và định dạng mở rộng để sau
 
-- Có thể thêm số dòng lỗi trong validation và giới hạn dung lượng file khi cần.
+- Chỉ xem xét RAG/AI explanation sau khi legal review đủ sạch; RAG hiện vẫn **LOCKED toàn bộ 5 case**.
 - XML/PDF/OCR để sau; không gọi prototype hiện tại là hệ thống xử lý mọi định dạng.
 
 Khánh và Thế Anh nếu tham gia lại sẽ chuyển sang vai trò review phụ/kiểm tra chéo; họ không còn là blocker của tiến độ chính.
@@ -74,7 +74,7 @@ Khánh và Thế Anh nếu tham gia lại sẽ chuyển sang vai trò review ph�
 
 **Bước đã hoàn thành:** GD2-04c đã bổ sung edge cases và data quality cơ bản cho upload `.xlsx`; commit `eae11a3`. Demo vẫn đạt `12 / 6 / 9`, hai template vẫn đọc được, toàn bộ test đạt `50 passed, 1 warning`; Git working tree sạch sau commit.
 
-**Bước đầu phiên sau:** thực hiện P1 — kiểm tra kết quả Vòng 1 trên Dashboard/email/nhóm BTC. Sau đó đội trưởng/nhóm hiện tại tự rà Case 3 trên văn bản gốc chính thức theo P2; không chờ thành viên khác và không mở RAG.
+**Bước đầu phiên sau:** thực hiện P1 — chuẩn bị checklist, repo sạch, Dashboard/backend chạy được và lời giới thiệu ngắn cho sơ loại/Vòng 1 ngày 09/09/2026. Song song, đội trưởng/nhóm hiện tại tự rà Case 3 theo P2; không chờ thành viên khác và không mở RAG.
 
 ## Ước lượng tiến độ
 

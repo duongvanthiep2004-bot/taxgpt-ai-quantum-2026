@@ -2,15 +2,15 @@
 
 **Cập nhật lần cuối:** 26/08/2026 (sau quyết định đội trưởng/nhóm hiện tại chủ động đảm nhận toàn bộ nhiệm vụ để tăng tốc)
 **Mục tiêu tổng thể:** Xây dựng và nộp dự thi TaxGPT — trợ lý AI phát hiện rủi ro thuế và tuân thủ chứng từ cho SMEs — tại AI-Quantum Challenge 2026, HVTC.
-**Ràng buộc thời gian cứng (từ thể lệ, không thay đổi được):**
+**Mốc thời gian cuộc thi:**
 
-> Bảng dưới giữ khoảng cách ngày tính từ mốc tham chiếu ban đầu 09/07/2026; không phải số ngày còn lại tại 21/08/2026.
+> BTC đã hoãn sơ loại/Vòng 1 tới 09/09/2026. Đội chưa thi sơ loại và chưa có kết quả; các mốc sau Vòng 1 giữ theo kế hoạch gốc cho tới khi có thông báo chính thức mới.
 
 | Mốc | Ngày | Ghi chú thời điểm |
 |---|---|---|
 | Hạn nộp hồ sơ Vòng 1 | 30/07/2026 | **21 ngày** |
-| Phỏng vấn sơ loại | 09/08/2026 | 31 ngày |
-| Công bố kết quả Vòng 1 | 20/08/2026 | 42 ngày |
+| Thi sơ loại/Vòng 1 | 09/09/2026 | BTC đã hoãn tới ngày này; đội chưa thi |
+| Công bố kết quả Vòng 1 | Chưa xác nhận lịch mới | Chưa thi nên chưa có kết quả |
 | Kick-off Vòng 2 | 25/08/2026 | 47 ngày |
 | Hạn nộp sản phẩm Vòng 2 | 10/10/2026 | 93 ngày |
 | Thuyết trình Vòng 2 | 25/10/2026 | 108 ngày |
@@ -64,7 +64,8 @@
 - **Giới hạn GD2-04/GD2-04a/GD2-04b/GD2-04c:** Chỉ hỗ trợ `.xlsx` với sheet/header/schema hiện tại; message chưa chỉ rõ số dòng lỗi; chưa giới hạn dung lượng file; chưa hỗ trợ XML/PDF/OCR, RAG, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
 - **Trạng thái pháp lý:** Có legal draft do VSCode AI tạo theo prompt điều phối của ChatGPT Plus tại `van-ban-luat/processed/GD1_5_P_LEGAL_DRAFT_mapping_5_cases.md`, commit `ee099db` (`Add legal draft mapping for MVP cases`). Chưa có Khánh/Gemini Pro hoặc người có chuyên môn rà soát độc lập; chưa xác nhận pháp lý hoàn tất.
 - **Trạng thái kiểm soát:** Legal draft: đã có. Human/legal review: chưa có. RAG: **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence.
-- **Kết quả Vòng 1:** Chưa xác nhận. Cần kiểm tra Dashboard cuộc thi và email/biên nhận chính thức trước khi cập nhật trạng thái.
+- **Trạng thái sơ loại/Vòng 1:** BTC hoãn sơ loại/Vòng 1 tới 09/09/2026; đội chưa thi sơ loại và chưa có kết quả. Theo dõi thông báo chính thức và chuẩn bị cho sơ loại ngày 09/09/2026.
+- **Tác động kế hoạch:** Khoảng thời gian bổ sung trước 09/09/2026 được dùng để củng cố prototype, tự rà pháp lý sơ bộ trên văn bản gốc và hoàn thiện hồ sơ/lời trình bày; không thay đổi trạng thái legal review hoặc mở RAG.
 
 ### Ước lượng tiến độ từ sau phiên 17/08/2026
 
@@ -114,18 +115,18 @@
 | GD1-09 | Viết mục khai báo AI dựa trên 02_SESSION_LOG.md | Con người | Đoạn khai báo AI cho phiếu đăng ký | [ ] |
 | GD1-10 | Rà soát cuối & nộp hồ sơ | Con người | Hồ sơ đã nộp trên hệ thống, có biên nhận | [ ] |
 
-## GIAI ĐOẠN CHỜ — Chuẩn bị trước cho Vòng 2 (30/07 – 20/08)
+## GIAI ĐOẠN CHỜ — Chuẩn bị sơ loại/Vòng 1 (30/07 – 09/09)
 
-**Ưu tiên hiện tại:** Đội trưởng/nhóm hiện tại chủ động thực hiện các việc còn lại, trước mắt kiểm tra kết quả Vòng 1 rồi tự rà pháp lý sơ bộ từ Case 3 trên văn bản gốc. Không chờ thành viên khác và không triển khai RAG khi chưa có bằng chứng rà nguồn đủ sạch.
+**Ưu tiên hiện tại:** Theo dõi thông báo chính thức và chuẩn bị cho sơ loại/Vòng 1 ngày 09/09/2026, đồng thời củng cố prototype, tự rà pháp lý sơ bộ từ Case 3 trên văn bản gốc và hoàn thiện hồ sơ/lời trình bày. Không chờ thành viên khác và không triển khai RAG khi chưa có bằng chứng rà nguồn đủ sạch.
 
 | ID | Việc | Phụ trách | Output/DoD | Trạng thái |
 |---|---|---|---|---|
 | GDC-01 | Code module đọc XML/PDF hóa đơn | VSCode AI | Module chạy được với dữ liệu mẫu | [ ] |
 | GDC-02 | Code rule engine cơ bản cho 5 case | VSCode AI | 5/5 case MVP đã có backend slice ở mức parser/rule/API/test; scan-all đã hoàn thành; toàn bộ suite hồi quy hiện đạt 50 passed, 1 warning | [x] |
 | GDC-03 | Mở rộng ngân hàng văn bản pháp luật cho case 2–5 | Gemini Pro | Bảng luật mở rộng | [ ] |
-| GDC-04 | Luyện phỏng vấn sơ loại (nếu được gọi 09/08) | ChatGPT Plus (đóng vai giám khảo) | Ghi âm/ghi chú buổi luyện tập | [ ] |
+| GDC-04 | Luyện phỏng vấn sơ loại ngày 09/09/2026 | Đội trưởng/nhóm hiện tại + ChatGPT Plus (đóng vai giám khảo) | Checklist, lời giới thiệu, ghi âm/ghi chú buổi luyện tập | [ ] |
 
-## GIAI ĐOẠN 2 — Vòng 2: Prototype (25/08 – 10/10)
+## GIAI ĐOẠN 2 — Prototype/Vòng 2 (lịch cũ 25/08 – 10/10; chờ BTC cập nhật sau sơ loại)
 
 | ID | Việc | Phụ trách | Output/DoD | Trạng thái |
 |---|---|---|---|---|

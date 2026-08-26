@@ -332,3 +332,12 @@
 - **Giới hạn:** Phần pháp lý tự rà chỉ là **internal legal review sơ bộ**, không được gọi là independent legal review hoặc kiểm chứng pháp lý độc lập; không ghi nhận pháp lý đã hoàn tất nếu chưa có bằng chứng phù hợp.
 - **Ưu tiên trước mắt:** Kiểm tra kết quả Vòng 1 trên Dashboard/email/nhóm Ban tổ chức, sau đó đội trưởng/nhóm hiện tại tự rà Case 3 trên văn bản gốc chính thức trước khi tiếp tục các case khác.
 - **Trạng thái kiểm soát:** RAG vẫn **LOCKED toàn bộ 5 case** và chỉ được xem xét sau khi có bảng đối chiếu cùng bằng chứng rà văn bản gốc đủ sạch.
+
+### 26/08/2026 — Cập nhật lịch sơ loại/Vòng 1
+
+- **Nguồn thông tin:** Cập nhật trực tiếp từ đội trưởng theo thông báo của Ban tổ chức.
+- **Thông tin mới:** BTC hoãn thời gian tổ chức sơ loại/Vòng 1 tới ngày `09/09/2026`. Đội chưa thi sơ loại nên chưa có kết quả Vòng 1; không ghi nhận trạng thái đã qua, đã trượt hoặc có kết quả đang chờ kiểm tra.
+- **Tác động:** Nhóm có thêm thời gian trước 09/09/2026 để nâng chất prototype, tự rà pháp lý sơ bộ Case 3 trên văn bản gốc chính thức và chuẩn bị checklist, lời giới thiệu, thuyết trình/hồ sơ cho sơ loại.
+- **Quyết định:** Tiếp tục mô hình đội trưởng/nhóm hiện tại chủ động đảm nhận các nhiệm vụ chính. Theo dõi thông báo chính thức của BTC và chuẩn bị để Dashboard/repo chạy ổn định trong ngày sơ loại.
+- **Giới hạn:** Legal draft vẫn chưa được rà soát độc lập; phần tự rà chỉ là internal legal review sơ bộ.
+- **Trạng thái kiểm soát:** RAG vẫn **LOCKED toàn bộ 5 case**.
