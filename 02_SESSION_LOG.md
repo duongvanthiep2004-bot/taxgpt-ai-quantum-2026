@@ -312,3 +312,13 @@
 - **Giới hạn:** Template bám theo sheet/header/schema hiện tại và không phải chuẩn dữ liệu pháp lý chính thức. Upload vẫn chỉ hỗ trợ `.xlsx`; chưa kiểm tra sâu kiểu dữ liệu từng ô, chưa giới hạn dung lượng file, chưa hỗ trợ XML/PDF/OCR, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
 - **Vấn đề phát sinh:** Không có lỗi hồi quy được ghi nhận; warning pytest hiện tại không làm test thất bại. Legal draft vẫn chưa được rà soát độc lập.
 - **Quyết định:** Đạt GD2-04b. RAG tiếp tục **LOCKED toàn bộ 5 case** và chỉ được xem xét sau khi legal review sạch.
+
+### 21/08/2026 — GD2-04c — Upload edge cases and data quality checks
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Python, pandas, openpyxl, FastAPI và pytest.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Sửa `backend/app/parsers/excel_parser.py`, `backend/app/parsers/payment_parser.py` và `backend/tests/test_scan_uploaded.py`. Parser mới từ chối sheet đúng header nhưng không có dòng dữ liệu, bỏ dòng trống hoàn toàn, phát hiện giá trị bắt buộc bị trống, kiểm tra ngày cơ bản tại `invoice_date`/`payment_date` và kiểm tra số tiền cơ bản tại `net_amount`/`vat_amount`/`total_amount`/`amount`.
+- **Kết quả/Output:** Message HTTP 400 vẫn thân thiện, không lộ traceback hoặc đường dẫn file tạm. Không đổi API response field, rule engine, frontend hoặc legal draft. Luồng demo vẫn đạt `12 hóa đơn / 6 giao dịch thanh toán / 9 cảnh báo`; hai template vẫn đọc được. Toàn bộ suite đạt `50 passed, 1 warning`. Thay đổi được lưu tại commit `eae11a3` (`Add upload data quality checks`); Git working tree sạch sau commit.
+- **Giới hạn:** Đây là kiểm tra data quality cơ bản cho upload `.xlsx`, chưa phải validation dữ liệu đầy đủ. Message chưa chỉ rõ số dòng lỗi; chưa giới hạn dung lượng file; chưa hỗ trợ XML/PDF/OCR, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
+- **Vấn đề phát sinh:** Không có lỗi hồi quy được ghi nhận; warning pytest hiện tại không làm test thất bại. Legal draft vẫn chưa được rà soát độc lập.
+- **Quyết định:** Đạt GD2-04c. RAG tiếp tục **LOCKED toàn bộ 5 case**.
