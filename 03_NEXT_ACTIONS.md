@@ -15,8 +15,9 @@
 - **GD2-04b template Excel cho upload: `[x]` hoàn thành** tại commit `e45ae30`. Repo có template hóa đơn và thanh toán đúng schema parser; Dashboard có hai nút tải template; README đã cập nhật hướng dẫn. Template chỉ phục vụ prototype `.xlsx`, không phải chuẩn dữ liệu pháp lý chính thức.
 - **GD2-04c upload edge cases và data quality: `[x]` hoàn thành** tại commit `eae11a3`. Parser xử lý header-only, dòng trống, ô bắt buộc trống, ngày và số tiền không hợp lệ; demo vẫn đạt `12 / 6 / 9`, template vẫn đọc được và suite hiện đạt `50 passed, 1 warning`.
 - Legal draft đã có tại `van-ban-luat/processed/GD1_5_P_LEGAL_DRAFT_mapping_5_cases.md`, commit `ee099db` (`Add legal draft mapping for MVP cases`). Nguồn tạo là VSCode AI theo prompt điều phối của ChatGPT Plus.
-- Chưa có Khánh/Gemini Pro hoặc người có chuyên môn rà soát độc lập; chưa có human/legal final review và chưa xác nhận pháp lý hoàn tất. Nhãn High/Medium/Low trong draft chỉ là đánh giá sơ bộ của AI.
-- RAG và AI explanation chưa triển khai. RAG **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence, cho đến khi legal draft được rà soát độc lập.
+- Chưa có independent legal review hoặc human/legal final review và chưa xác nhận pháp lý hoàn tất. Đội trưởng/nhóm hiện tại sẽ tự rà nội bộ sơ bộ trên văn bản gốc; nhãn High/Medium/Low trong draft vẫn chỉ là đánh giá sơ bộ của AI.
+- Theo quyết định ngày 26/08/2026, đội trưởng/nhóm hiện tại chủ động đảm nhận toàn bộ nhiệm vụ để không chậm tiến độ. Khánh, Thế Anh hoặc thành viên khác nếu tham gia lại sẽ review phụ/kiểm tra chéo và không còn là blocker của tiến độ chính.
+- RAG và AI explanation chưa triển khai. RAG **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence, cho đến khi có bảng đối chiếu và bằng chứng rà văn bản gốc đủ sạch.
 - **Kết quả Vòng 1:** Chưa xác nhận; cần kiểm tra Dashboard cuộc thi và email/biên nhận chính thức.
 - Ngôn ngữ rule phải tiếp tục chỉ cảnh báo “có dấu hiệu”, “cần rà soát”; không kết luận gian lận, vi phạm, hóa đơn vô hiệu, không được khấu trừ, bị xử phạt hoặc bị loại chi phí.
 
@@ -42,44 +43,45 @@
 - Kiểm tra Dashboard cuộc thi, email, nhóm Ban tổ chức và biên nhận chính thức.
 - Chỉ cập nhật trạng thái Vòng 1 khi có bằng chứng xác nhận.
 
-### P2 — Giao Khánh rà độc lập legal draft, bắt đầu Case 3 trước
+### P2 — Tự rà pháp lý Case 3 trước trên văn bản gốc chính thức
 
-- Bắt đầu từ Case 3, sau đó rà độc lập nguồn tạo, luật hiện hành, điều/khoản, ngoại lệ và các case còn lại.
-- Ưu tiên văn bản gốc hoặc nguồn chính thức; Khánh tự đọc và ghi xác nhận.
-- **Không mở RAG cho bất kỳ case nào cho đến khi legal draft được rà độc lập.**
+- Đội trưởng/nhóm hiện tại tự đối chiếu Case 3 với văn bản gốc chính thức, ghi rõ nguồn, hiệu lực, điều/khoản và điểm chưa chắc chắn.
+- Kết quả chỉ là internal legal review sơ bộ, không gọi là kiểm chứng pháp lý độc lập.
 
-### P3 — Cải thiện upload UX nếu cần
+### P3 — Tự rà Case 2 và Case 4
 
-- Hiển thị message lỗi rõ hơn trên Dashboard nếu trải nghiệm thực tế cho thấy cần thiết.
-- Có thể thêm hướng dẫn ngắn để người dùng sửa file theo lỗi backend trả về.
+- Tiếp tục đối chiếu Case 2 và Case 4 trên văn bản gốc chính thức sau Case 3.
+- Ghi riêng căn cứ đã xác minh, điểm còn thiếu và nội dung cần kiểm tra chéo sau.
 
-### P4 — Nếu tiếp tục backend, thêm số dòng lỗi trong validation
+### P4 — Tự rà Case 1 và Case 5, giữ mức thận trọng cao
 
-- Bổ sung số dòng Excel có lỗi trong message mà không lộ đường dẫn file tạm hoặc traceback.
-- Chỉ triển khai nếu tiếp tục ưu tiên backend upload.
+- Đối chiếu Case 1 và Case 5 sau cùng, giữ ngôn ngữ và kết luận ở mức thận trọng cao.
+- Không coi nhãn confidence hiện có là bằng chứng pháp lý.
 
-### P5 — Chuẩn bị RAG/AI explanation chỉ sau khi legal review sạch
+### P5 — Chỉ xem xét RAG/AI explanation sau khi có bảng rà pháp lý sạch
 
-- Chỉ bắt đầu sau khi P2 hoàn tất rà soát độc lập và có đủ căn cứ pháp lý sạch cho phạm vi MVP.
-- RAG hiện vẫn `LOCKED`; AI explanation chưa triển khai.
+- Chỉ xem xét sau khi P2–P4 tạo được bảng đối chiếu có nguồn gốc, hiệu lực và điều/khoản đủ rõ cho phạm vi MVP.
+- RAG hiện vẫn **LOCKED toàn bộ 5 case**; AI explanation chưa triển khai.
 
-### P6 — XML/PDF/OCR để sau
+### P6 — Kỹ thuật tiếp theo nếu cần
 
-- Chưa mở rộng định dạng trước khi upload UX, validation số dòng lỗi và legal review được xử lý theo ưu tiên.
-- Không gọi prototype hiện tại là hệ thống xử lý mọi định dạng.
+- Có thể thêm số dòng lỗi trong validation và giới hạn dung lượng file khi cần.
+- XML/PDF/OCR để sau; không gọi prototype hiện tại là hệ thống xử lý mọi định dạng.
+
+Khánh và Thế Anh nếu tham gia lại sẽ chuyển sang vai trò review phụ/kiểm tra chéo; họ không còn là blocker của tiến độ chính.
 
 ## Bước tiếp theo cụ thể
 
 **Bước đã hoàn thành:** GD2-04c đã bổ sung edge cases và data quality cơ bản cho upload `.xlsx`; commit `eae11a3`. Demo vẫn đạt `12 / 6 / 9`, hai template vẫn đọc được, toàn bộ test đạt `50 passed, 1 warning`; Git working tree sạch sau commit.
 
-**Bước đầu phiên sau:** thực hiện P1 — kiểm tra kết quả Vòng 1 trên Dashboard/email/nhóm BTC. Đồng thời giao Khánh bắt đầu rà độc lập legal draft từ Case 3 theo P2; không mở RAG.
+**Bước đầu phiên sau:** thực hiện P1 — kiểm tra kết quả Vòng 1 trên Dashboard/email/nhóm BTC. Sau đó đội trưởng/nhóm hiện tại tự rà Case 3 trên văn bản gốc chính thức theo P2; không chờ thành viên khác và không mở RAG.
 
 ## Ước lượng tiến độ
 
 - **Mức 1 — Prototype demo local không RAG:** `[x]` đạt ngày 18/08/2026.
-- **Mức 2 — RAG pháp lý + trích dẫn + AI explanation:** phụ thuộc kiểm chứng pháp lý; nếu pháp lý xong trong tuần này thì cần thêm khoảng 2–3 phiên, ước tính 1–1.5 tuần.
+- **Mức 2 — RAG pháp lý + trích dẫn + AI explanation:** phụ thuộc chất lượng bảng đối chiếu và bằng chứng rà văn bản gốc; internal legal review sơ bộ không được coi là kiểm chứng pháp lý độc lập.
 - **Tổng mức trình diễn đầy đủ:** khoảng 1.5–2 tuần nếu pháp lý không bị trì hoãn.
-- **Rủi ro lớn nhất hiện tại:** kiểm chứng pháp lý, không phải kỹ thuật backend.
+- **Rủi ro lớn nhất hiện tại:** chất lượng và khả năng kiểm tra lại căn cứ pháp lý, không phải kỹ thuật backend.
 
 ## Chưa ưu tiên ở giai đoạn hiện tại
 
@@ -88,7 +90,7 @@
 - Thanh toán từng phần/gộp và bù trừ công nợ.
 - Các mở rộng này xếp sau upload file, ổn định Dashboard và chuẩn bị kịch bản trình diễn.
 
-RAG cũng không được triển khai sớm chỉ để làm đẹp demo; điều kiện bắt buộc vẫn là hoàn tất kiểm chứng pháp lý.
+RAG cũng không được triển khai sớm chỉ để làm đẹp demo; điều kiện bắt buộc vẫn là có bảng đối chiếu và bằng chứng rà văn bản gốc đủ sạch cho phạm vi sử dụng.
 
 ## Nguyên tắc thực hiện
 

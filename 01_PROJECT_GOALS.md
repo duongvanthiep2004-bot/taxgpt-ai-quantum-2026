@@ -1,6 +1,6 @@
 # 01_PROJECT_GOALS.md — Mục tiêu & chia nhỏ dự án
 
-**Cập nhật lần cuối:** 21/08/2026 (sau khi hoàn thành data quality cơ bản cho upload Excel và cập nhật roadmap pháp lý/kỹ thuật)
+**Cập nhật lần cuối:** 26/08/2026 (sau quyết định đội trưởng/nhóm hiện tại chủ động đảm nhận toàn bộ nhiệm vụ để tăng tốc)
 **Mục tiêu tổng thể:** Xây dựng và nộp dự thi TaxGPT — trợ lý AI phát hiện rủi ro thuế và tuân thủ chứng từ cho SMEs — tại AI-Quantum Challenge 2026, HVTC.
 **Ràng buộc thời gian cứng (từ thể lệ, không thay đổi được):**
 
@@ -81,6 +81,13 @@
 | Phạm Đình Khánh | 23021022 | Phụ trách nghiệp vụ thuế & dữ liệu | Chọn case rủi ro, dữ liệu mẫu, kiểm tra logic nghiệp vụ |
 | Vũ Thế Anh | 24020837 | Phụ trách kiểm thử & thuyết trình | Test sản phẩm, ghi lỗi, slide, luyện phản biện |
 
+### Quyết định điều phối mới — 26/08/2026
+
+- Tạm thời đội trưởng/nhóm hiện tại chủ động đảm nhận toàn bộ nhiệm vụ kỹ thuật, tài liệu, rà soát pháp lý sơ bộ và chuẩn bị cuộc thi; không chờ thành viên khác để tránh chậm tiến độ.
+- Nếu Khánh, Thế Anh hoặc thành viên khác tham gia lại, họ chuyển sang review phụ, đối chiếu hoặc kiểm tra chéo sau; việc tham gia lại không còn là blocker của tiến độ chính.
+- Phần pháp lý do đội trưởng/nhóm hiện tại tự rà chỉ là **internal legal review sơ bộ**, không được gọi là kiểm chứng pháp lý độc lập và không xác nhận pháp lý đã hoàn tất.
+- RAG tiếp tục **LOCKED toàn bộ 5 case**. Không mở RAG nếu chưa có bảng đối chiếu và bằng chứng rà văn bản gốc đủ sạch cho phạm vi dự kiến sử dụng.
+
 ### 5 case MVP đã chốt cho TaxGPT (cập nhật GD0-03)
 
 | STT | Case rủi ro | Mô tả ngắn | Lý do chọn cho prototype |
@@ -109,7 +116,7 @@
 
 ## GIAI ĐOẠN CHỜ — Chuẩn bị trước cho Vòng 2 (30/07 – 20/08)
 
-**Ưu tiên hiện tại:** Chuẩn bị kịch bản demo/video ngắn cho hai chế độ dữ liệu. Có thể tiếp tục cải thiện schema validation và tình huống file lỗi khi cần. Không triển khai RAG trước khi legal draft được rà soát độc lập và căn cứ pháp lý được người có chuyên môn xác nhận.
+**Ưu tiên hiện tại:** Đội trưởng/nhóm hiện tại chủ động thực hiện các việc còn lại, trước mắt kiểm tra kết quả Vòng 1 rồi tự rà pháp lý sơ bộ từ Case 3 trên văn bản gốc. Không chờ thành viên khác và không triển khai RAG khi chưa có bằng chứng rà nguồn đủ sạch.
 
 | ID | Việc | Phụ trách | Output/DoD | Trạng thái |
 |---|---|---|---|---|
@@ -129,7 +136,7 @@
 | GD2-04a | Củng cố schema validation và xử lý file upload lỗi | VSCode AI | Phân biệt workbook hỏng, thiếu sheet `invoices`/`payments`, thiếu một hoặc nhiều cột; lỗi tiếng Việt không lộ traceback/đường dẫn file tạm; commit `3bd1471`; test đạt `41 passed, 1 warning` | [x] Hoàn thành, không mở rộng định dạng |
 | GD2-04b | Tạo template Excel cho upload | VSCode AI | Hai template hóa đơn/thanh toán đúng sheet/header/schema parser; Dashboard có nút tải, README có hướng dẫn; commit `e45ae30`; suite hiện đạt `42 passed, 1 warning` | [x] Hoàn thành ở mức prototype `.xlsx` |
 | GD2-04c | Kiểm tra edge cases và data quality cơ bản cho upload | VSCode AI | Từ chối header-only, bỏ dòng trống, kiểm tra ô bắt buộc, ngày và số tiền; commit `eae11a3`; demo/template không hồi quy; suite hiện đạt `50 passed, 1 warning` | [x] Hoàn thành ở mức validation cơ bản `.xlsx` |
-| GD2-05 | Xây RAG: nạp luật vào ChromaDB, tách chunk, gắn metadata | Gemini Pro + VSCode AI | Chỉ bắt đầu sau khi legal draft được rà soát độc lập; hiện **LOCKED toàn bộ 5 case** | [!] |
+| GD2-05 | Xây RAG: nạp luật vào ChromaDB, tách chunk, gắn metadata | Đội trưởng/nhóm hiện tại + AI kỹ thuật | Chỉ xem xét sau khi có bảng đối chiếu và bằng chứng rà văn bản gốc đủ sạch; hiện **LOCKED toàn bộ 5 case** | [!] |
 | GD2-06 | Test 15–20 tình huống thực tế | Con người + VSCode AI | Bảng kết quả test | [ ] |
 | GD2-07 | Viết báo cáo giải pháp 8–12 trang | ChatGPT Plus → Con người | File báo cáo hoàn chỉnh | [ ] |
 | GD2-08 | Làm slide + quay video demo dự phòng | Con người | Slide + video | [ ] |

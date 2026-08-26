@@ -322,3 +322,13 @@
 - **Giới hạn:** Đây là kiểm tra data quality cơ bản cho upload `.xlsx`, chưa phải validation dữ liệu đầy đủ. Message chưa chỉ rõ số dòng lỗi; chưa giới hạn dung lượng file; chưa hỗ trợ XML/PDF/OCR, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
 - **Vấn đề phát sinh:** Không có lỗi hồi quy được ghi nhận; warning pytest hiện tại không làm test thất bại. Legal draft vẫn chưa được rà soát độc lập.
 - **Quyết định:** Đạt GD2-04c. RAG tiếp tục **LOCKED toàn bộ 5 case**.
+
+### 26/08/2026 — Quyết định tự đảm nhận toàn bộ nhiệm vụ để tăng tốc
+
+- **AI/công cụ dùng:** ChatGPT/Codex hỗ trợ điều phối và cập nhật tài liệu dự án.
+- **Người thực hiện:** Đội trưởng/nhóm TaxGPT hiện tại.
+- **Lý do:** Nhóm không muốn tiếp tục mất thời gian chờ đợi; tiến độ rà soát pháp lý của Khánh sau thời gian dài chưa có kết quả thực chất để làm đầu vào cho bước tiếp theo.
+- **Quyết định:** Đội trưởng/nhóm hiện tại chủ động làm tiếp toàn bộ phần kỹ thuật, rà soát pháp lý sơ bộ, tài liệu, hồ sơ và chuẩn bị cuộc thi. Khánh, Thế Anh hoặc thành viên khác nếu tham gia lại sẽ review phụ hoặc kiểm tra chéo sau, không còn là blocker của tiến độ chính.
+- **Giới hạn:** Phần pháp lý tự rà chỉ là **internal legal review sơ bộ**, không được gọi là independent legal review hoặc kiểm chứng pháp lý độc lập; không ghi nhận pháp lý đã hoàn tất nếu chưa có bằng chứng phù hợp.
+- **Ưu tiên trước mắt:** Kiểm tra kết quả Vòng 1 trên Dashboard/email/nhóm Ban tổ chức, sau đó đội trưởng/nhóm hiện tại tự rà Case 3 trên văn bản gốc chính thức trước khi tiếp tục các case khác.
+- **Trạng thái kiểm soát:** RAG vẫn **LOCKED toàn bộ 5 case** và chỉ được xem xét sau khi có bảng đối chiếu cùng bằng chứng rà văn bản gốc đủ sạch.
