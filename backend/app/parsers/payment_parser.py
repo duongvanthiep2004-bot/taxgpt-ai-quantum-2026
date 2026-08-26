@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from math import isfinite
 from pathlib import Path
 from zipfile import BadZipFile
 
@@ -15,6 +16,11 @@ REQUIRED_PAYMENT_COLUMNS = {
     "payment_method",
     "related_invoice_no",
 }
+REQUIRED_PAYMENT_VALUE_COLUMNS = (
+    "payment_ref",
+    "payment_date",
+    "amount",
+)
 
 
 class PaymentExcelError(ValueError):
@@ -45,6 +51,63 @@ def _missing_columns_message(missing_columns: set[str]) -> str:
     if len(missing_columns) == 1:
         return f"File thanh toán thiếu cột bắt buộc: {missing}"
     return f"File thanh toán thiếu các cột bắt buộc: {missing}"
+
+
+def _is_blank(value: object) -> bool:
+    return bool(pd.isna(value)) or (
+        isinstance(value, str) and not value.strip()
+    )
+
+
+def _parse_date(value: object) -> date | None:
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    if not isinstance(value, str) or not value.strip():
+        return None
+
+    parsed = pd.to_datetime(value.strip(), errors="coerce")
+    if pd.isna(parsed):
+        return None
+    return parsed.date()
+
+
+def _parse_number(value: object) -> int | float | None:
+    if isinstance(value, bool):
+        return None
+    parsed = pd.to_numeric(value, errors="coerce")
+    if pd.isna(parsed) or not isfinite(float(parsed)):
+        return None
+    return parsed.item() if hasattr(parsed, "item") else parsed
+
+
+def _validate_payment_data(payments_frame: pd.DataFrame) -> pd.DataFrame:
+    payments_frame = payments_frame.dropna(how="all").copy()
+    if payments_frame.empty:
+        raise PaymentExcelError("File thanh toán không có dòng dữ liệu.")
+
+    for column in REQUIRED_PAYMENT_VALUE_COLUMNS:
+        if payments_frame[column].map(_is_blank).any():
+            raise PaymentExcelError(
+                f"File thanh toán có dữ liệu trống ở cột bắt buộc: {column}"
+            )
+
+    parsed_dates = payments_frame["payment_date"].map(_parse_date)
+    if parsed_dates.isna().any():
+        raise PaymentExcelError(
+            "File thanh toán có ngày không hợp lệ ở cột payment_date."
+        )
+    payments_frame["payment_date"] = parsed_dates
+
+    parsed_amounts = payments_frame["amount"].map(_parse_number)
+    if parsed_amounts.isna().any():
+        raise PaymentExcelError(
+            "File thanh toán có số tiền không hợp lệ ở cột amount."
+        )
+    payments_frame["amount"] = parsed_amounts
+
+    return payments_frame
 
 
 def _to_python_value(value: object) -> object:
@@ -96,7 +159,7 @@ def load_payments_from_excel(file_path: str) -> list[dict]:
     if missing_columns:
         raise PaymentExcelError(_missing_columns_message(missing_columns))
 
-    payments_frame = payments_frame.dropna(how="all")
+    payments_frame = _validate_payment_data(payments_frame)
     return [
         {column: _to_python_value(value) for column, value in row.items()}
         for row in payments_frame.to_dict(orient="records")

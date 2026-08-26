@@ -33,16 +33,68 @@ PAYMENT_TEMPLATE_FILE = (
     / "template_bank_payments_mvp.xlsx"
 )
 client = TestClient(app)
+INVOICE_HEADERS = ["invoice_id", "invoice_no", "invoice_date", "total_amount"]
+PAYMENT_HEADERS = [
+    "payment_ref",
+    "payment_date",
+    "amount",
+    "payment_method",
+    "related_invoice_no",
+]
 
 
-def build_workbook(sheet_name: str, headers: list[str]) -> bytes:
+def build_workbook(
+    sheet_name: str,
+    headers: list[str],
+    rows: list[list[object]] | None = None,
+) -> bytes:
     workbook = Workbook()
     worksheet = workbook.active
     worksheet.title = sheet_name
     worksheet.append(headers)
+    for row in rows or []:
+        worksheet.append(row)
     output = BytesIO()
     workbook.save(output)
     return output.getvalue()
+
+
+def post_invoice_workbook(invoice_workbook: bytes):
+    with PAYMENT_FILE.open("rb") as payment_file:
+        return client.post(
+            "/demo/scan-uploaded",
+            files={
+                "invoice_file": (
+                    "invoices.xlsx",
+                    invoice_workbook,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+                "payment_file": (
+                    PAYMENT_FILE.name,
+                    payment_file,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+            },
+        )
+
+
+def post_payment_workbook(payment_workbook: bytes):
+    with INVOICE_FILE.open("rb") as invoice_file:
+        return client.post(
+            "/demo/scan-uploaded",
+            files={
+                "invoice_file": (
+                    INVOICE_FILE.name,
+                    invoice_file,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+                "payment_file": (
+                    "payments.xlsx",
+                    payment_workbook,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+            },
+        )
 
 
 def test_excel_templates_are_readable_by_current_parsers() -> None:
@@ -55,6 +107,114 @@ def test_excel_templates_are_readable_by_current_parsers() -> None:
     assert set(payments[0]) == REQUIRED_PAYMENT_COLUMNS
     assert invoices[0]["invoice_id"].startswith("DEMO-")
     assert payments[0]["payment_ref"].startswith("DEMO-")
+
+
+def test_scan_uploaded_rejects_invoice_with_header_only() -> None:
+    response = post_invoice_workbook(build_workbook("invoices", INVOICE_HEADERS))
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File hóa đơn không hợp lệ: File hóa đơn không có dòng dữ liệu."
+    )
+
+
+def test_scan_uploaded_rejects_payment_with_header_only() -> None:
+    response = post_payment_workbook(build_workbook("payments", PAYMENT_HEADERS))
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File thanh toán không hợp lệ: File thanh toán không có dòng dữ liệu."
+    )
+
+
+def test_scan_uploaded_rejects_blank_invoice_id() -> None:
+    workbook = build_workbook(
+        "invoices",
+        INVOICE_HEADERS,
+        [[None, "DEMO-0001", "2026-01-15", 1_000_000]],
+    )
+    response = post_invoice_workbook(workbook)
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File hóa đơn không hợp lệ: "
+        "File hóa đơn có dữ liệu trống ở cột bắt buộc: invoice_id"
+    )
+
+
+def test_scan_uploaded_rejects_blank_payment_amount() -> None:
+    workbook = build_workbook(
+        "payments",
+        PAYMENT_HEADERS,
+        [["DEMO-PAY-001", "2026-01-16", None, "bank_transfer", "DEMO-0001"]],
+    )
+    response = post_payment_workbook(workbook)
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File thanh toán không hợp lệ: "
+        "File thanh toán có dữ liệu trống ở cột bắt buộc: amount"
+    )
+
+
+def test_scan_uploaded_rejects_invalid_invoice_date() -> None:
+    workbook = build_workbook(
+        "invoices",
+        INVOICE_HEADERS,
+        [["DEMO-INV-001", "DEMO-0001", "not-a-date", 1_000_000]],
+    )
+    response = post_invoice_workbook(workbook)
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File hóa đơn không hợp lệ: "
+        "File hóa đơn có ngày không hợp lệ ở cột invoice_date."
+    )
+
+
+def test_scan_uploaded_rejects_invalid_payment_date() -> None:
+    workbook = build_workbook(
+        "payments",
+        PAYMENT_HEADERS,
+        [["DEMO-PAY-001", "not-a-date", 1_000_000, "bank_transfer", "DEMO-0001"]],
+    )
+    response = post_payment_workbook(workbook)
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File thanh toán không hợp lệ: "
+        "File thanh toán có ngày không hợp lệ ở cột payment_date."
+    )
+
+
+def test_scan_uploaded_rejects_invalid_invoice_total_amount() -> None:
+    workbook = build_workbook(
+        "invoices",
+        INVOICE_HEADERS,
+        [["DEMO-INV-001", "DEMO-0001", "2026-01-15", "not-a-number"]],
+    )
+    response = post_invoice_workbook(workbook)
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File hóa đơn không hợp lệ: "
+        "File hóa đơn có số tiền không hợp lệ ở cột total_amount."
+    )
+
+
+def test_scan_uploaded_rejects_invalid_payment_amount() -> None:
+    workbook = build_workbook(
+        "payments",
+        PAYMENT_HEADERS,
+        [["DEMO-PAY-001", "2026-01-16", "not-a-number", "bank_transfer", "DEMO-0001"]],
+    )
+    response = post_payment_workbook(workbook)
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File thanh toán không hợp lệ: "
+        "File thanh toán có số tiền không hợp lệ ở cột amount."
+    )
 
 
 def test_scan_uploaded_returns_same_totals_as_demo() -> None:
