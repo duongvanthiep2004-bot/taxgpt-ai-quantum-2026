@@ -302,3 +302,13 @@
 - **Giới hạn:** GD2-04a chỉ củng cố validation cho `.xlsx` theo sheet/header/schema hiện tại, không mở rộng định dạng. Chưa kiểm tra sâu kiểu dữ liệu từng ô, chưa giới hạn dung lượng file và chưa hỗ trợ XML/PDF/OCR hoặc ngoại lệ nghiệp vụ nâng cao.
 - **Vấn đề phát sinh:** Warning pytest hiện tại là cảnh báo deprecation của TestClient và không làm test thất bại. Không đổi rule engine, frontend hoặc legal draft.
 - **Quyết định:** Đạt GD2-04a. RAG tiếp tục **LOCKED toàn bộ 5 case**; chưa triển khai AI explanation và chưa xác nhận pháp lý hoàn tất.
+
+### 21/08/2026 — GD2-04b — Tạo template Excel cho upload
+
+- **AI/công cụ dùng:** AI kỹ thuật triển khai trong VSCode/Codex, Python, openpyxl, Streamlit và pytest.
+- **Người thực hiện:** Đội TaxGPT phối hợp với AI kỹ thuật.
+- **Việc đã làm:** Tạo `data-mau/excel/template_invoices_mvp.xlsx` với sheet `invoices` và `data-mau/bank_statements/template_bank_payments_mvp.xlsx` với sheet `payments`, đúng header/schema bắt buộc của parser hiện tại. Sửa `frontend/streamlit_app/app.py` để thêm nút tải template hóa đơn và template thanh toán, đồng thời hiển thị cảnh báo thân thiện nếu file template chưa tồn tại. Cập nhật `README.md` với hướng dẫn dùng template và bổ sung test nhẹ trong `backend/tests/test_scan_uploaded.py` để xác nhận parser đọc được hai file.
+- **Kết quả/Output:** Hai template phục vụ prototype `.xlsx` đã được thêm; Dashboard cho phép tải trực tiếp từng template; README đã có đường dẫn và lưu ý phạm vi demo/prototype. Toàn bộ suite đạt `42 passed, 1 warning`. Thay đổi được lưu tại commit `e45ae30` (`Add Excel upload templates`); Git working tree sạch sau commit.
+- **Giới hạn:** Template bám theo sheet/header/schema hiện tại và không phải chuẩn dữ liệu pháp lý chính thức. Upload vẫn chỉ hỗ trợ `.xlsx`; chưa kiểm tra sâu kiểu dữ liệu từng ô, chưa giới hạn dung lượng file, chưa hỗ trợ XML/PDF/OCR, AI explanation hoặc ngoại lệ nghiệp vụ nâng cao.
+- **Vấn đề phát sinh:** Không có lỗi hồi quy được ghi nhận; warning pytest hiện tại không làm test thất bại. Legal draft vẫn chưa được rà soát độc lập.
+- **Quyết định:** Đạt GD2-04b. RAG tiếp tục **LOCKED toàn bộ 5 case** và chỉ được xem xét sau khi legal review sạch.

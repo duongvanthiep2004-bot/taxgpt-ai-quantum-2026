@@ -3,15 +3,16 @@
 ## Trạng thái hiện tại
 
 - 5/5 case MVP đã có backend slice ở mức parser/rule/API/test: hóa đơn trùng; sai MST/tên người mua; VAT không khớp phép tính; hóa đơn ngoài kỳ dữ liệu đang rà soát; hóa đơn giá trị lớn thiếu chứng từ thanh toán không dùng tiền mặt.
-- API tổng hợp `GET /demo/scan-all` đã hoàn thành tại commit `667bf24`; toàn bộ test hồi quy hiện đạt `41 passed, 1 warning`.
+- API tổng hợp `GET /demo/scan-all` đã hoàn thành tại commit `667bf24`; toàn bộ test hồi quy hiện đạt `42 passed, 1 warning`.
 - Streamlit Dashboard đã kết nối scan-all tại commit `a13dfd1`, được cải thiện cho thao tác demo tại commit `67d6a4a` và phân biệt nguồn kết quả tại commit `abd9738`. Dashboard hiện có “Chế độ 1: Dữ liệu demo cố định” và “Chế độ 2: File Excel tải lên”; kết quả ghi rõ nguồn dữ liệu và hiển thị tên hai file khi có `uploaded_files`.
 - Khi backend chưa chạy, Dashboard hiển thị lỗi thân thiện và không crash. Git working tree sạch sau các commit đã nêu.
 - **Prototype demo local không RAG: `[x]` đạt** với phạm vi `Excel demo cố định → backend scan-all → Streamlit dashboard hiển thị bảng cảnh báo`.
 - README hướng dẫn clone/cài/test/chạy backend/frontend/demo đã hoàn thành tại commit `21976fc`; repo hiện đủ hướng dẫn để người khác chạy lại prototype local bằng hai terminal.
-- **GD2-04 upload file thật: `[x]` hoàn thành ở mức prototype `.xlsx`** tại commit `f84cc1f`. Streamlit nhận file hóa đơn và payment; backend xử lý qua `POST /demo/scan-uploaded`; test với hai file demo cho kết quả `12 / 6 / 9`; toàn bộ suite hồi quy hiện đạt `41 passed, 1 warning`.
+- **GD2-04 upload file thật: `[x]` hoàn thành ở mức prototype `.xlsx`** tại commit `f84cc1f`. Streamlit nhận file hóa đơn và payment; backend xử lý qua `POST /demo/scan-uploaded`; test với hai file demo cho kết quả `12 / 6 / 9`; toàn bộ suite hồi quy hiện đạt `42 passed, 1 warning`.
 - Luồng demo cố định `GET /demo/scan-all` và các endpoint cũ vẫn được giữ nguyên. `requirements.txt` đã có `python-multipart`; Git working tree sạch sau commit.
 - Đây chưa phải sản phẩm hoàn chỉnh. Upload hiện chỉ hỗ trợ `.xlsx` với sheet/header/schema hiện tại; chưa kiểm tra sâu kiểu dữ liệu từng ô, chưa giới hạn dung lượng file, chưa hỗ trợ XML/PDF/OCR, RAG pháp lý, AI explanation hoặc xử lý ngoại lệ nghiệp vụ nâng cao.
 - **GD2-04a schema validation: `[x]` hoàn thành** tại commit `3bd1471`. Backend phân biệt workbook hỏng, thiếu sheet `invoices`/`payments` và thiếu một hoặc nhiều cột bắt buộc; lỗi không lộ traceback hoặc đường dẫn file tạm. Upload demo vẫn đạt `12 / 6 / 9`.
+- **GD2-04b template Excel cho upload: `[x]` hoàn thành** tại commit `e45ae30`. Repo có template hóa đơn và thanh toán đúng schema parser; Dashboard có hai nút tải template; README đã cập nhật hướng dẫn. Template chỉ phục vụ prototype `.xlsx`, không phải chuẩn dữ liệu pháp lý chính thức.
 - Legal draft đã có tại `van-ban-luat/processed/GD1_5_P_LEGAL_DRAFT_mapping_5_cases.md`, commit `ee099db` (`Add legal draft mapping for MVP cases`). Nguồn tạo là VSCode AI theo prompt điều phối của ChatGPT Plus.
 - Chưa có Khánh/Gemini Pro hoặc người có chuyên môn rà soát độc lập; chưa có human/legal final review và chưa xác nhận pháp lý hoàn tất. Nhãn High/Medium/Low trong draft chỉ là đánh giá sơ bộ của AI.
 - RAG và AI explanation chưa triển khai. RAG **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence, cho đến khi legal draft được rà soát độc lập.
@@ -30,30 +31,31 @@
 - `[x]` GD2-04 upload hai file Excel thật ở mức prototype qua Streamlit và `POST /demo/scan-uploaded`; kết quả kiểm tra `12 / 6 / 9`; commit `f84cc1f`.
 - `[x]` Cải thiện Dashboard upload result labels: phân biệt Chế độ 1/Chế độ 2, ghi rõ nguồn kết quả và tên file upload; commit `abd9738`; test đạt `37 passed, 1 warning`.
 - `[x]` GD2-04a củng cố schema validation cho upload `.xlsx`; commit `3bd1471`; toàn bộ test đạt `41 passed, 1 warning`.
+- `[x]` GD2-04b tạo hai template Excel, thêm nút tải trên Dashboard và cập nhật README; commit `e45ae30`; toàn bộ test đạt `42 passed, 1 warning`.
 
 ## Thứ tự ưu tiên
 
-### P1 — Tạo template Excel mẫu hoặc thêm nút tải template
-
-- Chuẩn bị template hóa đơn và thanh toán đúng sheet/header/schema hiện tại để người dùng điền dữ liệu.
-- Có thể bổ sung nút tải template trên Dashboard sau khi chốt cấu trúc; không thay đổi rule engine.
-
-### P2 — Tạo dữ liệu lỗi hoặc edge cases bổ sung nếu cần
+### P1 — Tạo dữ liệu lỗi/edge cases bổ sung cho upload nếu cần
 
 - Bổ sung tình huống sai kiểu dữ liệu, ô trống quan trọng, file lớn hoặc cấu trúc gần đúng nếu cần kiểm tra thực tế.
 - Ưu tiên tạo trong test hoặc tempfile; không dùng dữ liệu doanh nghiệp thật.
 
-### P3 — Rà độc lập legal draft với Khánh, không mở RAG
+### P2 — Kiểm tra kết quả Vòng 1 trên Dashboard/email/nhóm BTC
 
-- Rà độc lập nguồn tạo, luật hiện hành, điều/khoản, ngoại lệ và các case Low/Medium.
+- Kiểm tra Dashboard cuộc thi, email, nhóm Ban tổ chức và biên nhận chính thức.
+- Chỉ cập nhật trạng thái Vòng 1 khi có bằng chứng xác nhận.
+
+### P3 — Giao Khánh rà độc lập legal draft, bắt đầu Case 3, không mở RAG
+
+- Bắt đầu từ Case 3, sau đó rà độc lập nguồn tạo, luật hiện hành, điều/khoản, ngoại lệ và các case còn lại.
 - Ưu tiên mở văn bản gốc trên Cổng văn bản Chính phủ hoặc nguồn chính thức. Có thể dùng Thư Viện Pháp Luật để tra cứu phụ, nhưng không dùng làm nguồn chốt cuối.
 - Khánh phải tự đọc điều/khoản trên văn bản gốc và ghi xác nhận; không copy nguyên văn nội dung AI làm kết quả rà soát.
 - **Không mở RAG cho bất kỳ case nào cho đến khi legal draft được rà độc lập.** Không ghi pháp lý hoàn tất nếu chưa có bằng chứng rà soát.
 
-### P4 — Kiểm tra kết quả Vòng 1 trên Dashboard/email
+### P4 — Cải thiện kiểm tra kiểu dữ liệu từng ô và giới hạn dung lượng file nếu cần
 
-- Kiểm tra Dashboard cuộc thi, email và biên nhận chính thức.
-- Chỉ cập nhật trạng thái Vòng 1 khi có bằng chứng xác nhận.
+- Bổ sung validation kiểu dữ liệu và giới hạn dung lượng khi có nhu cầu thực tế hoặc test edge case cho thấy cần thiết.
+- Giữ phạm vi upload `.xlsx` theo schema/header hiện tại.
 
 ### P5 — Chuẩn bị RAG/AI explanation chỉ sau khi legal review sạch
 
@@ -62,14 +64,14 @@
 
 ### P6 — XML/PDF/OCR để sau
 
-- Chưa mở rộng định dạng trước khi template `.xlsx`, dữ liệu lỗi và legal review được xử lý theo ưu tiên.
+- Chưa mở rộng định dạng trước khi dữ liệu lỗi, validation upload và legal review được xử lý theo ưu tiên.
 - Không gọi prototype hiện tại là hệ thống xử lý mọi định dạng.
 
 ## Bước tiếp theo cụ thể
 
-**Bước đã hoàn thành:** GD2-04a đã củng cố schema validation cho upload `.xlsx`; commit `3bd1471`. Upload hai file demo vẫn đạt `12 / 6 / 9`; toàn bộ test đạt `41 passed, 1 warning`.
+**Bước đã hoàn thành:** GD2-04b đã tạo hai template Excel đúng schema parser, thêm nút tải template trên Dashboard và cập nhật README; commit `e45ae30`. Toàn bộ test đạt `42 passed, 1 warning`; Git working tree sạch sau commit.
 
-**Bước đầu phiên sau:** thực hiện P1 — tạo template Excel mẫu cho hóa đơn và thanh toán hoặc thiết kế nút tải template trên Dashboard. P3 legal review độc lập có thể tiến hành song song nhưng vẫn là điều kiện bắt buộc trước RAG.
+**Bước đầu phiên sau:** thực hiện P1 — tạo dữ liệu lỗi/edge cases bổ sung cho upload nếu cần. Đồng thời kiểm tra kết quả Vòng 1 theo P2; giao Khánh bắt đầu rà độc lập legal draft từ Case 3 theo P3 nhưng không mở RAG.
 
 ## Ước lượng tiến độ
 
