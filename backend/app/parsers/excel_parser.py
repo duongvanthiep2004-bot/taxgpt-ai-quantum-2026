@@ -21,7 +21,13 @@ REQUIRED_INVOICE_VALUE_COLUMNS = (
     "invoice_date",
     "total_amount",
 )
-INVOICE_AMOUNT_COLUMNS = ("net_amount", "vat_amount", "total_amount")
+INVOICE_AMOUNT_COLUMNS = (
+    "taxable_amount",
+    "net_amount",
+    "vat_rate",
+    "vat_amount",
+    "total_amount",
+)
 
 
 class InvoiceExcelError(ValueError):
@@ -110,6 +116,16 @@ def _validate_invoice_data(invoices_frame: pd.DataFrame) -> pd.DataFrame:
                 f"File hóa đơn có số tiền không hợp lệ ở cột {column}."
             )
         invoices_frame[column] = parsed_numbers
+
+    has_taxable_amount = "taxable_amount" in invoices_frame.columns
+    has_net_amount = "net_amount" in invoices_frame.columns
+    if has_taxable_amount and has_net_amount:
+        if (invoices_frame["taxable_amount"] != invoices_frame["net_amount"]).any():
+            raise InvoiceExcelError(
+                "File hóa đơn có taxable_amount và net_amount không khớp nhau."
+            )
+    elif has_net_amount:
+        invoices_frame["taxable_amount"] = invoices_frame["net_amount"]
 
     return invoices_frame
 

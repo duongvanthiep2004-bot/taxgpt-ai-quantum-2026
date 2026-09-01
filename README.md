@@ -105,6 +105,8 @@ Luồng upload không thay thế nút **“Chạy rà soát dữ liệu demo”*
 
 Có thể dùng hai template `data-mau/excel/template_invoices_mvp.xlsx` và `data-mau/bank_statements/template_bank_payments_mvp.xlsx` để chuẩn bị file đúng định dạng. Các template chỉ phục vụ demo/prototype.
 
+Case 3 dùng `taxable_amount` làm field nội bộ chuẩn. Upload cũng chấp nhận `net_amount` và tự mapping sang `taxable_amount` khi chưa có field chuẩn; nếu file có cả hai field nhưng giá trị không khớp, hệ thống trả lỗi dữ liệu rõ ràng.
+
 ## API demo
 
 - `GET /health`

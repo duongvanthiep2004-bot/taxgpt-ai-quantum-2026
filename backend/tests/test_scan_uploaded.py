@@ -1,6 +1,7 @@
 from io import BytesIO
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 from openpyxl import Workbook
 
@@ -103,7 +104,12 @@ def test_excel_templates_are_readable_by_current_parsers() -> None:
 
     assert len(invoices) == 1
     assert len(payments) == 1
-    assert set(invoices[0]) == REQUIRED_INVOICE_COLUMNS
+    assert REQUIRED_INVOICE_COLUMNS <= set(invoices[0])
+    assert {"taxable_amount", "vat_rate", "vat_amount"} <= set(invoices[0])
+    assert "net_amount" not in invoices[0]
+    assert invoices[0]["taxable_amount"] == 1_000_000
+    assert invoices[0]["vat_rate"] == 0.1
+    assert invoices[0]["vat_amount"] == 100_000
     assert set(payments[0]) == REQUIRED_PAYMENT_COLUMNS
     assert invoices[0]["invoice_id"].startswith("DEMO-")
     assert payments[0]["payment_ref"].startswith("DEMO-")
@@ -246,6 +252,152 @@ def test_scan_uploaded_returns_same_totals_as_demo() -> None:
     }
     assert len(payload["case_summary"]) == 5
     assert len(payload["alerts"]) == 9
+    assert payload["case_summary"]["CASE_3_VAT_MISMATCH"]["total_alerts"] == 2
+    assert {
+        alert["invoice_id"]
+        for alert in payload["alerts"]
+        if alert["case_id"] == "CASE_3_VAT_MISMATCH"
+    } == {"INV-DEMO-007", "INV-DEMO-008"}
+
+
+def test_scan_uploaded_maps_net_amount_for_unlabelled_case_3_invoice() -> None:
+    workbook = build_workbook(
+        "invoices",
+        [
+            "invoice_id",
+            "invoice_no",
+            "invoice_date",
+            "total_amount",
+            "net_amount",
+            "vat_rate",
+            "vat_amount",
+        ],
+        [["INV-NET-001", "NET-0001", "2026-01-15", 1_090, 1_000, 10, 90]],
+    )
+
+    response = post_invoice_workbook(workbook)
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["case_summary"]["CASE_3_VAT_MISMATCH"]["total_alerts"] == 1
+    case_3_alerts = [
+        alert
+        for alert in payload["alerts"]
+        if alert["case_id"] == "CASE_3_VAT_MISMATCH"
+    ]
+    assert len(case_3_alerts) == 1
+    assert case_3_alerts[0]["invoice_id"] == "INV-NET-001"
+    assert case_3_alerts[0]["evidence"]["taxable_amount"] == 1_000
+
+
+def test_invoice_parser_keeps_net_amount_when_adding_taxable_amount(tmp_path: Path) -> None:
+    workbook_path = tmp_path / "invoices.xlsx"
+    workbook_path.write_bytes(
+        build_workbook(
+            "invoices",
+            [
+                "invoice_id",
+                "invoice_no",
+                "invoice_date",
+                "total_amount",
+                "net_amount",
+                "vat_rate",
+                "vat_amount",
+            ],
+            [["INV-NET-002", "NET-0002", "2026-01-15", 1_100, 1_000, 10, 100]],
+        )
+    )
+
+    invoice = load_invoices_from_excel(str(workbook_path))[0]
+
+    assert invoice["net_amount"] == 1_000
+    assert invoice["taxable_amount"] == 1_000
+
+
+def test_scan_uploaded_rejects_conflicting_taxable_and_net_amount() -> None:
+    workbook = build_workbook(
+        "invoices",
+        [
+            "invoice_id",
+            "invoice_no",
+            "invoice_date",
+            "total_amount",
+            "taxable_amount",
+            "net_amount",
+            "vat_rate",
+            "vat_amount",
+        ],
+        [
+            [
+                "INV-CONFLICT-001",
+                "CONFLICT-0001",
+                "2026-01-15",
+                1_100,
+                1_000,
+                900,
+                10,
+                100,
+            ]
+        ],
+    )
+
+    response = post_invoice_workbook(workbook)
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File hóa đơn không hợp lệ: "
+        "File hóa đơn có taxable_amount và net_amount không khớp nhau."
+    )
+
+
+def test_scan_uploaded_accepts_matching_taxable_and_net_amount() -> None:
+    workbook = build_workbook(
+        "invoices",
+        [
+            "invoice_id",
+            "invoice_no",
+            "invoice_date",
+            "total_amount",
+            "taxable_amount",
+            "net_amount",
+            "vat_rate",
+            "vat_amount",
+        ],
+        [
+            [
+                "INV-MATCH-001",
+                "MATCH-0001",
+                "2026-01-15",
+                1_090,
+                1_000,
+                1_000.0,
+                10,
+                90,
+            ]
+        ],
+    )
+
+    response = post_invoice_workbook(workbook)
+
+    assert response.status_code == 200
+    assert response.json()["case_summary"]["CASE_3_VAT_MISMATCH"]["total_alerts"] == 1
+
+
+@pytest.mark.parametrize("column", ["taxable_amount", "net_amount", "vat_rate", "vat_amount"])
+def test_scan_uploaded_rejects_invalid_optional_case_3_number(column: str) -> None:
+    workbook = build_workbook(
+        "invoices",
+        ["invoice_id", "invoice_no", "invoice_date", "total_amount", column],
+        [["INV-INVALID-001", "INVALID-0001", "2026-01-15", 1_100, "not-a-number"]],
+    )
+
+    response = post_invoice_workbook(workbook)
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == (
+        "File hóa đơn không hợp lệ: "
+        f"File hóa đơn có số tiền không hợp lệ ở cột {column}."
+    )
 
 
 def test_scan_uploaded_rejects_non_xlsx_file() -> None:

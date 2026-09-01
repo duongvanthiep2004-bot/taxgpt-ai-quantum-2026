@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 from backend.app.main import app
@@ -71,14 +72,13 @@ def test_case_3_rule_calculates_expected_sample_differences() -> None:
     assert evidence_by_invoice["INV-DEMO-008"]["difference"] == 60_000
 
 
-def test_case_3_rule_accepts_percentage_style_rate() -> None:
+def test_case_3_rule_detects_unlabelled_invoice_with_percentage_style_rate() -> None:
     invoices = [
         {
             "invoice_id": "INV-PERCENT-001",
             "taxable_amount": 1_000,
             "vat_rate": 10,
             "vat_amount": 90,
-            "expected_risk_case": "CASE_3_VAT_CALC_MISMATCH",
             "note": "Dữ liệu kiểm thử thuế suất dạng phần trăm.",
         }
     ]
@@ -88,6 +88,21 @@ def test_case_3_rule_accepts_percentage_style_rate() -> None:
     assert len(alerts) == 1
     assert alerts[0]["evidence"]["recalculated_vat"] == 100
     assert alerts[0]["evidence"]["difference"] == 10
+
+
+@pytest.mark.parametrize("missing_field", ["taxable_amount", "vat_rate", "vat_amount"])
+def test_case_3_rule_skips_invoice_missing_required_calculation_field(
+    missing_field: str,
+) -> None:
+    invoice = {
+        "invoice_id": "INV-INCOMPLETE-001",
+        "taxable_amount": 1_000,
+        "vat_rate": 0.1,
+        "vat_amount": 90,
+    }
+    invoice.pop(missing_field)
+
+    assert detect_vat_mismatch([invoice]) == []
 
 
 def test_case_3_demo_api_returns_expected_payload() -> None:
