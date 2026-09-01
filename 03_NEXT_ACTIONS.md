@@ -38,43 +38,44 @@
 
 ## Thứ tự ưu tiên
 
-### P1 — Chuẩn bị cho sơ loại/Vòng 1 ngày 09/09/2026
+### P1 — Chuẩn bị sơ loại 09/09 và kích hoạt Thế Anh kiểm tra chéo tối thiểu
 
 - Chuẩn bị checklist, giữ repo sạch, xác nhận Dashboard/backend chạy được và soạn lời giới thiệu ngắn.
-- Theo dõi thông báo chính thức trên Dashboard/email/nhóm BTC; chưa ghi nhận kết quả khi đội chưa thi.
+- Đề nghị Thế Anh đọc bảng đối chiếu Case 3, hỏi lại căn cứ, test 15–20 tình huống và hỗ trợ checklist/demo sơ loại.
+- Vai trò của Thế Anh là review phụ/kiểm tra chéo, không phải blocker. Nếu Thế Anh chưa phản hồi, Thiệp vẫn tiếp tục nhưng phải đánh dấu rủi ro self-review cao hơn.
 
-### P2 — Tự rà pháp lý Case 3 trước trên văn bản gốc chính thức
+### P2 — Thiệp tự rà pháp lý Case 3 trên văn bản gốc và tạo bảng đối chiếu
 
-- Đội trưởng/nhóm hiện tại tự đối chiếu Case 3 với văn bản gốc chính thức, ghi rõ nguồn, hiệu lực, điều/khoản và điểm chưa chắc chắn.
+- Thiệp tự đối chiếu Case 3 với văn bản gốc chính thức, tạo bảng đối chiếu ghi rõ nguồn, hiệu lực, điều/khoản và điểm chưa chắc chắn.
 - Kết quả chỉ là internal legal review sơ bộ, không gọi là kiểm chứng pháp lý độc lập.
 
-### P3 — Tự rà Case 2 và Case 4
+### P3 — Theo dõi BTC để xác nhận lịch Vòng 2/kick-off/hạn nộp
 
-- Tiếp tục đối chiếu Case 2 và Case 4 trên văn bản gốc chính thức sau Case 3.
-- Ghi riêng căn cứ đã xác minh, điểm còn thiếu và nội dung cần kiểm tra chéo sau.
+- Theo dõi thông báo chính thức trên Dashboard/email/nhóm BTC để xác nhận lịch Vòng 2, kick-off và hạn nộp có dịch theo Vòng 1 hay không.
+- Chưa tự giả định giữ nguyên mốc cũ; đội chưa thi và chưa có kết quả Vòng 1.
 
-### P4 — Cải thiện backend nhỏ nếu cần
+### P4 — Nếu còn thời gian: GD2-04d hiển thị số dòng lỗi và giới hạn dung lượng file
 
-- Có thể hiển thị số dòng lỗi trong validation hoặc giới hạn dung lượng file nếu cần cho độ ổn định trước sơ loại.
+- Hiển thị số dòng lỗi trong validation và bổ sung giới hạn dung lượng file nếu còn thời gian trước sơ loại.
 - Không mở rộng backend ngoài nhu cầu trình diễn trước mắt.
 
-### P5 — Chuẩn bị slide/script sơ loại nếu BTC yêu cầu
+### P5 — Chuẩn bị script/demo/checklist sơ loại
 
-- Chuẩn bị slide ngắn, script giới thiệu và phương án demo dự phòng theo yêu cầu chính thức của BTC.
+- Chuẩn bị script giới thiệu, luồng demo, checklist vận hành và phương án demo dự phòng; bổ sung slide ngắn nếu BTC yêu cầu.
 - Không gọi tài liệu chuẩn bị là hồ sơ đã được BTC chấp thuận nếu chưa có xác nhận.
 
-### P6 — RAG/AI explanation và định dạng mở rộng để sau
+### P6 — RAG/AI explanation chỉ sau khi bảng đối chiếu đủ sạch và được kiểm tra chéo
 
-- Chỉ xem xét RAG/AI explanation sau khi legal review đủ sạch; RAG hiện vẫn **LOCKED toàn bộ 5 case**.
+- Chỉ xem xét RAG/AI explanation sau khi bảng đối chiếu đủ sạch và đã có kiểm tra chéo; RAG hiện vẫn **LOCKED toàn bộ 5 case**.
 - XML/PDF/OCR để sau; không gọi prototype hiện tại là hệ thống xử lý mọi định dạng.
 
-Khánh và Thế Anh nếu tham gia lại sẽ chuyển sang vai trò review phụ/kiểm tra chéo; họ không còn là blocker của tiến độ chính.
+Khánh và Thế Anh nếu tham gia lại chỉ giữ vai trò review phụ/kiểm tra chéo; họ không phải blocker của tiến độ chính.
 
 ## Bước tiếp theo cụ thể
 
 **Bước đã hoàn thành:** GD2-04c đã bổ sung edge cases và data quality cơ bản cho upload `.xlsx`; commit `eae11a3`. Demo vẫn đạt `12 / 6 / 9`, hai template vẫn đọc được, toàn bộ test đạt `50 passed, 1 warning`; Git working tree sạch sau commit.
 
-**Bước đầu phiên sau:** thực hiện P1 — chuẩn bị checklist, repo sạch, Dashboard/backend chạy được và lời giới thiệu ngắn cho sơ loại/Vòng 1 ngày 09/09/2026. Song song, đội trưởng/nhóm hiện tại tự rà Case 3 theo P2; không chờ thành viên khác và không mở RAG.
+**Bước đầu phiên sau:** thực hiện P1 — chuẩn bị sơ loại ngày 09/09/2026 và kích hoạt Thế Anh kiểm tra chéo tối thiểu. Song song, Thiệp tự rà Case 3, tạo bảng đối chiếu theo P2 và theo dõi BTC về lịch Vòng 2 theo P3; nếu Thế Anh chưa phản hồi thì vẫn tiếp tục, đánh dấu rủi ro self-review cao hơn và không mở RAG.
 
 ## Ước lượng tiến độ
 

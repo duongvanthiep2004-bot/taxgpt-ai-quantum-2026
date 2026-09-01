@@ -341,3 +341,11 @@
 - **Quyết định:** Tiếp tục mô hình đội trưởng/nhóm hiện tại chủ động đảm nhận các nhiệm vụ chính. Theo dõi thông báo chính thức của BTC và chuẩn bị để Dashboard/repo chạy ổn định trong ngày sơ loại.
 - **Giới hạn:** Legal draft vẫn chưa được rà soát độc lập; phần tự rà chỉ là internal legal review sơ bộ.
 - **Trạng thái kiểm soát:** RAG vẫn **LOCKED toàn bộ 5 case**.
+
+### 26/08/2026 — Rà soát nhận xét AI quan sát và cập nhật rủi ro điều phối
+
+- **Đánh giá kỹ thuật:** AI quan sát đánh giá phần kỹ thuật đang ở trạng thái tốt; toàn bộ suite đạt `50 passed, 1 warning`, upload validation và template Excel hoạt động ổn định trong phạm vi prototype hiện tại.
+- **Rủi ro điều phối:** Cần bổ sung cảnh báo rủi ro quá tải và tự duyệt khi đội trưởng chủ động đảm nhận toàn bộ nhiệm vụ chính.
+- **Kiểm tra chéo tối thiểu:** Cần kích hoạt lại Thế Anh để đọc bảng đối chiếu Case 3, hỏi lại căn cứ, test 15–20 tình huống và hỗ trợ checklist/demo sơ loại. Đây là review phụ/kiểm tra chéo, không phải blocker; nếu chưa có phản hồi, Thiệp vẫn tiếp tục và đánh dấu rủi ro self-review cao hơn.
+- **Lịch cuộc thi:** Tiếp tục theo dõi thông báo chính thức của BTC để xác nhận lịch Vòng 2, kick-off và hạn nộp có dịch theo Vòng 1 hay không; không tự giả định giữ nguyên mốc cũ.
+- **Trạng thái kiểm soát:** RAG vẫn **LOCKED toàn bộ 5 case**. Phần pháp lý đội trưởng tự rà chỉ là **internal review sơ bộ**, không phải rà soát độc lập và không đồng nghĩa pháp lý đã hoàn tất.

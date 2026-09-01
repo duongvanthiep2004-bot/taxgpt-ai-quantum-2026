@@ -4,17 +4,17 @@
 **Mục tiêu tổng thể:** Xây dựng và nộp dự thi TaxGPT — trợ lý AI phát hiện rủi ro thuế và tuân thủ chứng từ cho SMEs — tại AI-Quantum Challenge 2026, HVTC.
 **Mốc thời gian cuộc thi:**
 
-> BTC đã hoãn sơ loại/Vòng 1 tới 09/09/2026. Đội chưa thi sơ loại và chưa có kết quả; các mốc sau Vòng 1 giữ theo kế hoạch gốc cho tới khi có thông báo chính thức mới.
+> BTC đã hoãn sơ loại/Vòng 1 tới 09/09/2026. Đội chưa thi sơ loại và chưa có kết quả. Lịch Vòng 2, kick-off và hạn nộp sau thay đổi này chưa được BTC xác nhận có dịch theo hay không; không tự giả định các mốc cũ vẫn giữ nguyên.
 
 | Mốc | Ngày | Ghi chú thời điểm |
 |---|---|---|
 | Hạn nộp hồ sơ Vòng 1 | 30/07/2026 | **21 ngày** |
 | Thi sơ loại/Vòng 1 | 09/09/2026 | BTC đã hoãn tới ngày này; đội chưa thi |
 | Công bố kết quả Vòng 1 | Chưa xác nhận lịch mới | Chưa thi nên chưa có kết quả |
-| Kick-off Vòng 2 | 25/08/2026 | 47 ngày |
-| Hạn nộp sản phẩm Vòng 2 | 10/10/2026 | 93 ngày |
-| Thuyết trình Vòng 2 | 25/10/2026 | 108 ngày |
-| Chung kết | 10/11/2026 | 124 ngày |
+| Kick-off Vòng 2 | Mốc cũ: 25/08/2026 | Chưa xác nhận lịch mới sau khi Vòng 1 bị hoãn |
+| Hạn nộp sản phẩm Vòng 2 | Mốc cũ: 10/10/2026 | Chưa xác nhận có dịch theo Vòng 1 hay không |
+| Thuyết trình Vòng 2 | Mốc cũ: 25/10/2026 | Chưa xác nhận có dịch theo Vòng 1 hay không |
+| Chung kết | Mốc cũ: 10/11/2026 | Chưa xác nhận có dịch theo Vòng 1 hay không |
 
 **Quy ước Task ID:** `GD<số giai đoạn>-<số thứ tự>`. Trạng thái: `[ ]` chưa làm · `[~]` đang làm · `[x]` xong · `[!]` bị chặn (blocked).
 
@@ -85,7 +85,9 @@
 ### Quyết định điều phối mới — 26/08/2026
 
 - Tạm thời đội trưởng/nhóm hiện tại chủ động đảm nhận toàn bộ nhiệm vụ kỹ thuật, tài liệu, rà soát pháp lý sơ bộ và chuẩn bị cuộc thi; không chờ thành viên khác để tránh chậm tiến độ.
-- Nếu Khánh, Thế Anh hoặc thành viên khác tham gia lại, họ chuyển sang review phụ, đối chiếu hoặc kiểm tra chéo sau; việc tham gia lại không còn là blocker của tiến độ chính.
+- Đây là giải pháp cần thiết để giữ tiến độ nhưng tạo **rủi ro quá tải và tự duyệt ở mức cao** cho đội trưởng. Rủi ro phụ thuộc vào một người, thiếu phân tách người làm/người duyệt đã được cảnh báo từ đầu dự án và nay đã thành hiện thực ở mức cao hơn.
+- Nên kích hoạt lại Thế Anh ở mức kiểm tra chéo tối thiểu: đọc bảng đối chiếu Case 3, hỏi lại căn cứ, test 15–20 tình huống và hỗ trợ checklist/demo sơ loại.
+- Nếu Thế Anh, Khánh hoặc thành viên khác tham gia lại, họ chỉ giữ vai trò review phụ, đối chiếu hoặc kiểm tra chéo; việc phản hồi hay tham gia lại của họ không phải blocker của tiến độ chính.
 - Phần pháp lý do đội trưởng/nhóm hiện tại tự rà chỉ là **internal legal review sơ bộ**, không được gọi là kiểm chứng pháp lý độc lập và không xác nhận pháp lý đã hoàn tất.
 - RAG tiếp tục **LOCKED toàn bộ 5 case**. Không mở RAG nếu chưa có bảng đối chiếu và bằng chứng rà văn bản gốc đủ sạch cho phạm vi dự kiến sử dụng.
 
