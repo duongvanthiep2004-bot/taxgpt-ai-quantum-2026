@@ -3,17 +3,17 @@
 ## Trạng thái hiện tại
 
 - 5/5 case MVP đã có backend slice ở mức parser/rule/API/test: hóa đơn trùng; sai MST/tên người mua; VAT không khớp phép tính; hóa đơn ngoài kỳ dữ liệu đang rà soát; hóa đơn giá trị lớn thiếu chứng từ thanh toán không dùng tiền mặt.
-- API tổng hợp `GET /demo/scan-all` đã hoàn thành tại commit `667bf24`; toàn bộ test hồi quy hiện đạt `50 passed, 1 warning`.
+- API tổng hợp `GET /demo/scan-all` đã hoàn thành tại commit `667bf24`; toàn bộ test hồi quy hiện đạt `61 passed, 1 warning`.
 - Streamlit Dashboard đã kết nối scan-all tại commit `a13dfd1`, được cải thiện cho thao tác demo tại commit `67d6a4a` và phân biệt nguồn kết quả tại commit `abd9738`. Dashboard hiện có “Chế độ 1: Dữ liệu demo cố định” và “Chế độ 2: File Excel tải lên”; kết quả ghi rõ nguồn dữ liệu và hiển thị tên hai file khi có `uploaded_files`.
 - Khi backend chưa chạy, Dashboard hiển thị lỗi thân thiện và không crash. Git working tree sạch sau các commit đã nêu.
 - **Prototype demo local không RAG: `[x]` đạt** với phạm vi `Excel demo cố định → backend scan-all → Streamlit dashboard hiển thị bảng cảnh báo`.
 - README hướng dẫn clone/cài/test/chạy backend/frontend/demo đã hoàn thành tại commit `21976fc`; repo hiện đủ hướng dẫn để người khác chạy lại prototype local bằng hai terminal.
-- **GD2-04 upload file thật: `[x]` hoàn thành ở mức prototype `.xlsx`** tại commit `f84cc1f`. Streamlit nhận file hóa đơn và payment; backend xử lý qua `POST /demo/scan-uploaded`; test với hai file demo cho kết quả `12 / 6 / 9`; toàn bộ suite hồi quy hiện đạt `50 passed, 1 warning`.
+- **GD2-04 upload file thật: `[x]` hoàn thành ở mức prototype `.xlsx`** tại commit `f84cc1f`. Streamlit nhận file hóa đơn và payment; backend xử lý qua `POST /demo/scan-uploaded`; test với hai file demo cho kết quả `12 / 6 / 9`; toàn bộ suite hồi quy hiện đạt `61 passed, 1 warning`.
 - Luồng demo cố định `GET /demo/scan-all` và các endpoint cũ vẫn được giữ nguyên. `requirements.txt` đã có `python-multipart`; Git working tree sạch sau commit.
 - Đây chưa phải sản phẩm hoàn chỉnh. Upload hiện chỉ hỗ trợ `.xlsx` với sheet/header/schema hiện tại và mới có data quality cơ bản; message chưa chỉ rõ số dòng lỗi, chưa giới hạn dung lượng file, chưa hỗ trợ XML/PDF/OCR, RAG pháp lý, AI explanation hoặc xử lý ngoại lệ nghiệp vụ nâng cao.
 - **GD2-04a schema validation: `[x]` hoàn thành** tại commit `3bd1471`. Backend phân biệt workbook hỏng, thiếu sheet `invoices`/`payments` và thiếu một hoặc nhiều cột bắt buộc; lỗi không lộ traceback hoặc đường dẫn file tạm. Upload demo vẫn đạt `12 / 6 / 9`.
 - **GD2-04b template Excel cho upload: `[x]` hoàn thành** tại commit `e45ae30`. Repo có template hóa đơn và thanh toán đúng schema parser; Dashboard có hai nút tải template; README đã cập nhật hướng dẫn. Template chỉ phục vụ prototype `.xlsx`, không phải chuẩn dữ liệu pháp lý chính thức.
-- **GD2-04c upload edge cases và data quality: `[x]` hoàn thành** tại commit `eae11a3`. Parser xử lý header-only, dòng trống, ô bắt buộc trống, ngày và số tiền không hợp lệ; demo vẫn đạt `12 / 6 / 9`, template vẫn đọc được và suite hiện đạt `50 passed, 1 warning`.
+- **GD2-04c upload edge cases và data quality: `[x]` hoàn thành** tại commit `eae11a3`. Parser xử lý header-only, dòng trống, ô bắt buộc trống, ngày và số tiền không hợp lệ; demo vẫn đạt `12 / 6 / 9`, template vẫn đọc được và suite hiện đạt `61 passed, 1 warning`.
 - Legal draft đã có tại `van-ban-luat/processed/GD1_5_P_LEGAL_DRAFT_mapping_5_cases.md`, commit `ee099db` (`Add legal draft mapping for MVP cases`). Nguồn tạo là VSCode AI theo prompt điều phối của ChatGPT Plus.
 - Chưa có independent legal review hoặc human/legal final review và chưa xác nhận pháp lý hoàn tất. Đội trưởng/nhóm hiện tại sẽ tự rà nội bộ sơ bộ trên văn bản gốc; nhãn High/Medium/Low trong draft vẫn chỉ là đánh giá sơ bộ của AI.
 - Theo quyết định ngày 26/08/2026, đội trưởng/nhóm hiện tại chủ động đảm nhận toàn bộ nhiệm vụ để không chậm tiến độ. Khánh, Thế Anh hoặc thành viên khác nếu tham gia lại sẽ review phụ/kiểm tra chéo và không còn là blocker của tiến độ chính.
@@ -35,36 +35,36 @@
 - `[x]` GD2-04a củng cố schema validation cho upload `.xlsx`; commit `3bd1471`; toàn bộ test đạt `41 passed, 1 warning`.
 - `[x]` GD2-04b tạo hai template Excel, thêm nút tải trên Dashboard và cập nhật README; commit `e45ae30`; toàn bộ test đạt `42 passed, 1 warning`.
 - `[x]` GD2-04c bổ sung edge cases và data quality cơ bản cho upload `.xlsx`; commit `eae11a3`; demo/template không hồi quy; toàn bộ test đạt `50 passed, 1 warning`.
+- `[x]` GD2-CASE3-FIX chuẩn hóa `taxable_amount`/`net_amount`, bỏ phụ thuộc `expected_risk_case`, cập nhật template và test upload; commit `a60f7bc`; toàn bộ suite đạt `61 passed, 1 warning`.
 
 ## Thứ tự ưu tiên
 
-### P1 — Chuẩn bị sơ loại 09/09 và kích hoạt Thế Anh kiểm tra chéo tối thiểu
+### P1 — Tiếp tục Case 3 legal review trên văn bản gốc chính thức
 
-- Chuẩn bị checklist, giữ repo sạch, xác nhận Dashboard/backend chạy được và soạn lời giới thiệu ngắn.
-- Đề nghị Thế Anh đọc bảng đối chiếu Case 3, hỏi lại căn cứ, test 15–20 tình huống và hỗ trợ checklist/demo sơ loại.
-- Vai trò của Thế Anh là review phụ/kiểm tra chéo, không phải blocker. Nếu Thế Anh chưa phản hồi, Thiệp vẫn tiếp tục nhưng phải đánh dấu rủi ro self-review cao hơn.
+- Đối chiếu giá tính thuế, thuế suất và nội dung liên quan trên văn bản gốc chính thức; ghi rõ nguồn, hiệu lực, điều/khoản và điểm chưa chắc chắn.
+- Kết quả vẫn chỉ là internal legal review sơ bộ; chưa gọi là kiểm chứng pháp lý độc lập hoặc pháp lý đã hoàn tất.
 
-### P2 — Thiệp tự rà pháp lý Case 3 trên văn bản gốc và tạo bảng đối chiếu
+### P2 — Chuẩn bị bảng đối chiếu Case 3 và kiểm tra chéo
 
-- Thiệp tự đối chiếu Case 3 với văn bản gốc chính thức, tạo bảng đối chiếu ghi rõ nguồn, hiệu lực, điều/khoản và điểm chưa chắc chắn.
-- Kết quả chỉ là internal legal review sơ bộ, không gọi là kiểm chứng pháp lý độc lập.
+- Hoàn thiện bảng đối chiếu Case 3 và nhờ Thế Anh kiểm tra chéo nếu liên hệ được.
+- Thế Anh là review phụ, không phải blocker; nếu chưa phản hồi, Thiệp vẫn tiếp tục và đánh dấu rủi ro self-review cao hơn.
 
 ### P3 — Theo dõi BTC để xác nhận lịch Vòng 2/kick-off/hạn nộp
 
 - Theo dõi thông báo chính thức trên Dashboard/email/nhóm BTC để xác nhận lịch Vòng 2, kick-off và hạn nộp có dịch theo Vòng 1 hay không.
 - Chưa tự giả định giữ nguyên mốc cũ; đội chưa thi và chưa có kết quả Vòng 1.
 
-### P4 — Nếu còn thời gian: GD2-04d hiển thị số dòng lỗi và giới hạn dung lượng file
+### P4 — Kỹ thuật sau nếu cần: kiểm tra tổng tiền hoặc số dòng lỗi
 
-- Hiển thị số dòng lỗi trong validation và bổ sung giới hạn dung lượng file nếu còn thời gian trước sơ loại.
-- Không mở rộng backend ngoài nhu cầu trình diễn trước mắt.
+- Chỉ cân nhắc kiểm tra `total_amount = taxable_amount + vat_amount` sau khi chốt ngoại lệ làm tròn, nhiều dòng, nhiều thuế suất và chiết khấu.
+- Có thể bổ sung số dòng lỗi trong validation; không mở rộng backend trước khi chốt hành vi mong muốn.
 
-### P5 — Chuẩn bị script/demo/checklist sơ loại
+### P5 — Chuẩn bị checklist/script sơ loại 09/09
 
 - Chuẩn bị script giới thiệu, luồng demo, checklist vận hành và phương án demo dự phòng; bổ sung slide ngắn nếu BTC yêu cầu.
 - Không gọi tài liệu chuẩn bị là hồ sơ đã được BTC chấp thuận nếu chưa có xác nhận.
 
-### P6 — RAG/AI explanation chỉ sau khi bảng đối chiếu đủ sạch và được kiểm tra chéo
+### P6 — RAG/AI explanation chỉ sau khi Case 3 legal review đủ sạch và được kiểm tra chéo
 
 - Chỉ xem xét RAG/AI explanation sau khi bảng đối chiếu đủ sạch và đã có kiểm tra chéo; RAG hiện vẫn **LOCKED toàn bộ 5 case**.
 - XML/PDF/OCR để sau; không gọi prototype hiện tại là hệ thống xử lý mọi định dạng.
@@ -73,9 +73,9 @@ Khánh và Thế Anh nếu tham gia lại chỉ giữ vai trò review phụ/ki�
 
 ## Bước tiếp theo cụ thể
 
-**Bước đã hoàn thành:** GD2-04c đã bổ sung edge cases và data quality cơ bản cho upload `.xlsx`; commit `eae11a3`. Demo vẫn đạt `12 / 6 / 9`, hai template vẫn đọc được, toàn bộ test đạt `50 passed, 1 warning`; Git working tree sạch sau commit.
+**Bước đã hoàn thành:** GD2-CASE3-FIX đã chuẩn hóa `taxable_amount`/`net_amount`, bỏ phụ thuộc `expected_risk_case`, cập nhật template/test upload tại commit `a60f7bc`; toàn bộ suite đạt `61 passed, 1 warning` và Git working tree sạch sau commit.
 
-**Bước đầu phiên sau:** thực hiện P1 — chuẩn bị sơ loại ngày 09/09/2026 và kích hoạt Thế Anh kiểm tra chéo tối thiểu. Song song, Thiệp tự rà Case 3, tạo bảng đối chiếu theo P2 và theo dõi BTC về lịch Vòng 2 theo P3; nếu Thế Anh chưa phản hồi thì vẫn tiếp tục, đánh dấu rủi ro self-review cao hơn và không mở RAG.
+**Bước đầu phiên sau:** thực hiện P1 — tiếp tục Case 3 legal review trên văn bản gốc chính thức và hoàn thiện bảng đối chiếu theo P2. Song song, theo dõi BTC về lịch Vòng 2 theo P3 và chuẩn bị checklist/script sơ loại 09/09 theo P5; không mở RAG.
 
 ## Ước lượng tiến độ
 

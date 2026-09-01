@@ -20,19 +20,17 @@ TaxGPT phát hiện dấu hiệu số tiền thuế GTGT không khớp với ph�
 
 ## 3. Logic kỹ thuật hiện tại
 
-Ở mức khái quát, Case 3 hướng tới kiểm tra các quan hệ số học sau:
+Sau fix tại commit `a60f7bc`, logic kỹ thuật hiện tại là:
 
-- So sánh `vat_amount` với `net_amount × vat_rate`.
-- So sánh `total_amount` với `net_amount + vat_amount`.
-
-Qua đối chiếu rule hiện tại tại `backend/app/rules/vat_mismatch.py`:
-
-- Code đang dùng trường `taxable_amount` thay cho `net_amount` để tính lại tiền thuế.
+- `taxable_amount` là field nội bộ chuẩn cho Case 3.
+- Parser giữ `taxable_amount` nếu file cung cấp field này. Nếu chỉ có `net_amount`, parser bổ sung `taxable_amount` từ `net_amount` và vẫn giữ field gốc.
+- Nếu file có cả `taxable_amount` và `net_amount` nhưng hai giá trị không tương đương sau parse số, parser/API trả lỗi dữ liệu rõ ràng.
+- Rule chạy trên mọi invoice có đủ `taxable_amount`, `vat_rate`, `vat_amount`; không còn phụ thuộc vào `expected_risk_case`.
 - Thuế suất lớn hơn `1` được hiểu theo dạng phần trăm và chia cho `100`; thuế suất không lớn hơn `1` được dùng trực tiếp.
 - Rule phát cảnh báo khi `abs(vat_amount - taxable_amount × vat_rate)` lớn hơn ngưỡng sai lệch.
 - Ngưỡng sai lệch mặc định hiện tại là `1.0` theo đơn vị số tiền trong dữ liệu.
-- Rule hiện chưa kiểm tra quan hệ `total_amount = net_amount + vat_amount`.
-- Cần đối chiếu lại sự khác nhau giữa `taxable_amount` trong rule và `net_amount` trong dữ liệu upload trước khi mở rộng hoặc diễn giải logic.
+- Nếu thiếu một trong ba field tính toán, rule bỏ qua dòng đó mà không kết luận.
+- Rule hiện chưa kiểm tra quan hệ `total_amount = taxable_amount + vat_amount`.
 
 Ngưỡng `1.0` là tham số kỹ thuật hiện tại, không được mô tả là ngưỡng pháp luật. Việc làm tròn theo nghiệp vụ hoặc theo hóa đơn gốc chưa được xác minh pháp lý trong review này.
 

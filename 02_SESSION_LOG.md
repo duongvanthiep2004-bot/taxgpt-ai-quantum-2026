@@ -349,3 +349,13 @@
 - **Kiểm tra chéo tối thiểu:** Cần kích hoạt lại Thế Anh để đọc bảng đối chiếu Case 3, hỏi lại căn cứ, test 15–20 tình huống và hỗ trợ checklist/demo sơ loại. Đây là review phụ/kiểm tra chéo, không phải blocker; nếu chưa có phản hồi, Thiệp vẫn tiếp tục và đánh dấu rủi ro self-review cao hơn.
 - **Lịch cuộc thi:** Tiếp tục theo dõi thông báo chính thức của BTC để xác nhận lịch Vòng 2, kick-off và hạn nộp có dịch theo Vòng 1 hay không; không tự giả định giữ nguyên mốc cũ.
 - **Trạng thái kiểm soát:** RAG vẫn **LOCKED toàn bộ 5 case**. Phần pháp lý đội trưởng tự rà chỉ là **internal review sơ bộ**, không phải rà soát độc lập và không đồng nghĩa pháp lý đã hoàn tất.
+
+### 01/09/2026 — GD2-CASE3-FIX — Align Case 3 VAT rule with uploaded data
+
+- **Commit:** `a60f7bc` (`Align Case 3 VAT rule with uploaded data`), sau audit tại commit `98ac621`.
+- **Kết quả test:** Toàn bộ suite đạt `61 passed, 1 warning`; Git working tree sạch sau commit.
+- **Hành vi parser mới:** `taxable_amount` là field nội bộ chuẩn; nếu chỉ có `net_amount`, parser mapping sang `taxable_amount` và giữ field gốc. Nếu cả hai field tồn tại nhưng lệch nhau, parser/API trả lỗi rõ ràng. Các field số Case 3 được kiểm tra kiểu cơ bản khi tồn tại.
+- **Hành vi rule mới:** Case 3 chạy trên mọi dòng có đủ `taxable_amount`, `vat_rate`, `vat_amount`, không còn phụ thuộc `expected_risk_case`; dòng thiếu field được bỏ qua an toàn. Tolerance vẫn là `1.0`, chỉ là tham số kỹ thuật.
+- **Template/test:** Template hóa đơn đã bổ sung `taxable_amount`, `vat_rate`, `vat_amount`; test upload assert riêng đúng 2 cảnh báo Case 3 và bao phủ mapping/xung đột field.
+- **Giới hạn còn lại:** Chưa kiểm tra `total_amount = taxable_amount + vat_amount`; chưa xử lý đầy đủ ngoại lệ làm tròn, nhiều dòng và chiết khấu. Legal review vẫn `Pending`, chưa có rà soát độc lập.
+- **Trạng thái kiểm soát:** RAG vẫn **LOCKED toàn bộ 5 case**.

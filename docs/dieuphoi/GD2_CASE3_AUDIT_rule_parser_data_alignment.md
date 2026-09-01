@@ -262,7 +262,7 @@ Có thể bổ sung `abs(total_amount - (taxable_amount + vat_amount)) > toleran
 - Dùng chung hay tách tolerance cho tiền thuế và tổng tiền.
 - Wording/evidence riêng để người dùng biết phép kiểm tra nào bị lệch.
 
-## 10. Khuyến nghị cụ thể cho bước sửa code tiếp theo
+### 9.1 Khuyến nghị cụ thể cho bước sửa code tiếp theo
 
 Khuyến nghị ưu tiên **Phương án C**, triển khai theo thứ tự:
 
@@ -274,3 +274,22 @@ Khuyến nghị ưu tiên **Phương án C**, triển khai theo thứ tự:
 6. Sau khi alignment trên ổn định, cân nhắc Phương án D như một cảnh báo kỹ thuật riêng.
 
 **Có cần sửa code ở bước sau:** Có. Ít nhất cần sửa hợp đồng parser/rule và điều kiện nhãn trước khi tuyên bố Case 3 hỗ trợ upload thực. Việc sửa code không nằm trong phạm vi audit hiện tại.
+
+## 10. Cập nhật sau fix a60f7bc
+
+GD2-CASE3-FIX đã hoàn thành tại commit `a60f7bc` (`Align Case 3 VAT rule with uploaded data`). Toàn bộ suite đạt `61 passed, 1 warning`.
+
+Các phát hiện audit đã được xử lý:
+
+- `expected_risk_case` không còn là điều kiện bắt buộc; rule chạy trên mọi dòng có đủ `taxable_amount`, `vat_rate`, `vat_amount`.
+- Parser mapping `net_amount` sang field nội bộ chuẩn `taxable_amount` nếu chưa có `taxable_amount`, đồng thời vẫn giữ `net_amount`.
+- Nếu `taxable_amount` và `net_amount` cùng tồn tại nhưng không tương đương sau parse số, parser/API trả lỗi rõ ràng.
+- Template hóa đơn đã bổ sung `taxable_amount`, `vat_rate`, `vat_amount`; không thêm `net_amount` để tránh nhầm.
+- Test upload đã assert riêng Case 3 có đúng 2 cảnh báo cho `INV-DEMO-007` và `INV-DEMO-008`, đồng thời bao phủ mapping, xung đột field và dòng không có nhãn demo.
+
+Phần chưa xử lý:
+
+- Rule chưa kiểm tra `total_amount = taxable_amount + vat_amount`.
+- Chưa xử lý đầy đủ ngoại lệ làm tròn, hóa đơn nhiều dòng, nhiều mức thuế suất và chiết khấu.
+- Legal review vẫn `Pending`; chưa có rà soát pháp lý độc lập.
+- RAG vẫn **LOCKED toàn bộ 5 case**.
