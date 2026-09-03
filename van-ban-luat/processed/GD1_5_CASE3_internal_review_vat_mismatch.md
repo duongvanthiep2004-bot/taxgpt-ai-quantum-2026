@@ -42,7 +42,7 @@ Ngưỡng `1.0` là tham số kỹ thuật hiện tại, không được mô t�
 | Thuế suất GTGT | Luật 48/2024/QH15 | Khoản 1, khoản 2, khoản 3 và khoản 4 Điều 9 | Luật quy định các mức 0%, 5%, 10%; nếu có nhiều loại hàng hóa, dịch vụ với mức khác nhau thì phải khai theo từng mức, trường hợp không xác định được thì áp dụng nguyên tắc tại khoản 4. | Đã xác minh trực tiếp trên văn bản gốc | Case 3 chỉ kiểm tra phép nhân theo `vat_rate` đầu vào, chưa xác định thuế suất đó có đúng đối tượng hay không. |
 | Quan hệ giữa giá tính thuế, thuế suất và số thuế | Luật 48/2024/QH15 | Điểm b khoản 1 Điều 11 | Nội dung được ghi nhận là cơ sở tham chiếu cho phương pháp khấu trừ và số thuế GTGT đầu ra. Trong phạm vi TaxGPT, nội dung này chỉ được dùng để hỗ trợ cảnh báo kỹ thuật giữa giá trị tính thuế, thuế suất và tiền thuế. | Đã xác minh trực tiếp trên văn bản gốc | Chưa dùng để kết luận sai phạm pháp lý. |
 | Phương pháp tính trực tiếp | Luật 48/2024/QH15 | Điều 12 | Luật còn quy định phương pháp trực tiếp, trong đó số thuế có thể được xác định theo tỷ lệ phần trăm trên doanh thu hoặc theo giá trị gia tăng. | Đã xác minh trực tiếp trên văn bản gốc | Rule hiện không nhận diện phương pháp tính thuế; có nguy cơ áp phép nhân của Case 3 cho dữ liệu thuộc phương pháp khác. |
-| Nội dung sửa đổi/bổ sung | Luật 149/2025/QH15 — Luật sửa đổi, bổ sung một số điều của Luật Thuế GTGT | Pending | Pending | Pending | Cần rà xem có sửa đổi nội dung ảnh hưởng đến Case 3 hay không. |
+| Nội dung sửa đổi/bổ sung | Luật 149/2025/QH15 — Luật sửa đổi, bổ sung một số điều của Luật Thuế GTGT | Khoản 1, khoản 2 và khoản 3 Điều 1; Điều 2 | Sửa khoản 1 và khoản 25 Điều 5; sửa khoản 5 Điều 9; bãi bỏ khoản 3 Điều 12 và điểm c khoản 9 Điều 15 của Luật 48/2024/QH15. Luật có hiệu lực từ 01/01/2026. | Đã xác minh trực tiếp trên bản ký chính thức | Khoản 5 Điều 9 liên quan cách xác định thuế suất cho phế phẩm, phụ phẩm, phế liệu; việc bãi bỏ khoản 3 Điều 12 thu hẹp một trường hợp phương pháp trực tiếp. Không xác định thấy Luật 149 sửa trực tiếp Điều 6, Điều 7 hoặc Điều 11 trong phạm vi rà hiện tại. |
 | Giá tính thuế, thuế suất và phương pháp khấu trừ | Nghị định 181/2025/NĐ-CP | Các Điều 5–14; Điều 17–21 (mới xác định được phạm vi điều trên trang toàn văn chính thức) | Nguồn Chính phủ cho thấy các Điều 5–14 hướng dẫn nhiều trường hợp giá tính thuế; Điều 17–19 liên quan thuế suất; Điều 20–21 liên quan phương pháp khấu trừ. | Pending | Đã mở bản ký chính thức nhưng PDF scan chưa trích đọc tin cậy từng khoản. Cần đối chiếu trực tiếp nội dung chi tiết, nhất là giá tính thuế đặc thù, trước khi chốt ảnh hưởng tới Case 3. |
 | Nội dung sửa đổi/bổ sung | Nghị định 359/2025/NĐ-CP | Khoản 1 và khoản 2 Điều 1 (phạm vi sửa đổi xác định từ nguồn Chính phủ) | Nguồn Chính phủ mô tả việc bổ sung khoản 1b sau khoản 1 Điều 4 và bãi bỏ khoản 3 Điều 39 của Nghị định 181/2025/NĐ-CP; chưa thấy nội dung trực tiếp thay đổi phép tính Case 3 trong phạm vi rà hiện tại. | Pending | Bản ký là PDF scan; cần kiểm tra chéo trực tiếp câu chữ và tình trạng hiệu lực trước khi kết luận không ảnh hưởng. |
 | Nội dung sửa đổi/bổ sung | Nghị định 144/2026/NĐ-CP | Pending | Nguồn Chính phủ cho thấy văn bản sửa nhiều quy định GTGT, trong đó có nội dung liên quan Nghị định 181/2025/NĐ-CP. Chưa xác định chắc chắn toàn bộ ảnh hưởng trực tiếp tới giá tính thuế/Case 3. | Pending | Bản ký là PDF scan; phải rà chi tiết các điều sửa đổi, đặc biệt trường hợp giá tính thuế đặc thù, và kiểm tra chéo hiệu lực. |
@@ -84,7 +84,7 @@ Wording không được dùng:
 ## 7. Đánh giá sơ bộ Case 3
 
 - Technical confidence: High, vì logic số học có thể kiểm tra được.
-- Legal confidence: Pending. Đã ghi nhận điểm b khoản 1 Điều 11 Luật 48/2024/QH15 làm cơ sở tham chiếu cho phương pháp khấu trừ và số thuế GTGT đầu ra, nhưng chưa rà đủ ngoại lệ, văn bản sửa đổi và chưa có kiểm tra chéo.
+- Legal confidence: Pending. Đã ghi nhận điểm b khoản 1 Điều 11 Luật 48/2024/QH15 làm cơ sở tham chiếu cho phương pháp khấu trừ và số thuế GTGT đầu ra, đồng thời đã rà riêng Luật 149/2025/QH15; tuy nhiên, chưa rà đủ ngoại lệ, các văn bản sửa đổi/hướng dẫn khác và chưa có kiểm tra chéo.
 - Product wording: Safe warning only.
 - RAG status: LOCKED.
 
@@ -106,7 +106,7 @@ Việc đáp ứng các điều kiện trên chỉ cho phép cân nhắc; không
 ## 9. Việc cần làm tiếp
 
 - Đối chiếu trực tiếp từng khoản liên quan trong bản ký Nghị định 181/2025/NĐ-CP, Nghị định 359/2025/NĐ-CP và Nghị định 144/2026/NĐ-CP; giữ `Pending` cho đến khi đọc đủ tin cậy.
-- Rà Luật 149/2025/QH15 để xác định có sửa đổi nội dung ảnh hưởng đến Case 3 hay không.
+- Luật 149/2025/QH15 đã được rà riêng tại Mục 11; tiếp tục giữ thận trọng với tác động của thay đổi thuế suất và phạm vi phương pháp trực tiếp cho đến khi có kiểm tra chéo.
 - Kiểm tra tình trạng hiệu lực và các văn bản sửa đổi/hợp nhất áp dụng tại thời điểm sử dụng sản phẩm.
 - Xác định rõ cách nhận diện phương pháp khấu trừ so với phương pháp trực tiếp trước khi mở rộng phạm vi kết luận của Case 3.
 - Đưa Thế Anh kiểm tra chéo nếu liên hệ được.
@@ -119,7 +119,7 @@ Việc đáp ứng các điều kiện trên chỉ cho phép cân nhắc; không
 ### 10.1. Nguồn đã mở
 
 - [Luật Thuế GTGT 48/2024/QH15](https://vanban.chinhphu.vn/?classid=1&docid=212476&orggroupid=1&pageid=27160): đã mở trang hồ sơ và PDF gốc trên Cổng Thông tin điện tử Chính phủ; đã đối chiếu trực tiếp Điều 6, khoản 1 Điều 7, Điều 9, điểm b khoản 1 Điều 11 và Điều 12.
-- Luật 149/2025/QH15 — Luật sửa đổi, bổ sung một số điều của Luật Thuế GTGT: chưa rà trực tiếp trong bước này; trạng thái `Pending`, cần xác định nội dung có ảnh hưởng đến Case 3 hay không.
+- Luật 149/2025/QH15 — Luật sửa đổi, bổ sung một số điều của Luật Thuế GTGT: tại thời điểm ghi chú 01/09 chưa rà trực tiếp; đã được rà riêng trên bản ký chính thức ngày 03/09/2026 tại Mục 11.
 - [Nghị định 181/2025/NĐ-CP](https://vanban.chinhphu.vn/?classid=1&docid=214336&pageid=27160): đã mở trang hồ sơ, bản ký chính thức và trang toàn văn của Chính phủ. Đã xác định sơ bộ nhóm điều liên quan nhưng bản ký là PDF scan, chưa đọc tin cậy từng khoản nên phần chi tiết vẫn `Pending`.
 - [Nghị định 359/2025/NĐ-CP](https://vanban.chinhphu.vn/?classid=1&docid=216388&pageid=27160&typegroupid=4): đã mở trang hồ sơ, bản ký chính thức và bài giới thiệu nội dung mới trên nguồn Chính phủ. Bản ký là PDF scan; ảnh hưởng cuối cùng tới Case 3 vẫn `Pending`.
 - [Nghị định 144/2026/NĐ-CP](https://vanban.chinhphu.vn/?classid=1&docid=218020&orggroupid=2&pageid=27160): đã mở trang hồ sơ, bản ký chính thức và trang toàn văn/tóm tắt trên nguồn Chính phủ. Bản ký là PDF scan; chưa đối chiếu đủ từng điều sửa đổi nên vẫn `Pending`.
@@ -140,3 +140,46 @@ Việc đáp ứng các điều kiện trên chỉ cho phép cân nhắc; không
 - Chưa có kiểm tra chéo bởi Thế Anh/Khánh/người khác.
 - Legal confidence vẫn `Pending`; không gọi review này là hoàn tất.
 - Không đủ điều kiện mở RAG. RAG và AI explanation tiếp tục `LOCKED`.
+
+## 11. Rà Luật 149/2025/QH15 ngày 03/09/2026
+
+### 11.1. Nguồn và mức độ đọc
+
+- Nguồn chốt: [hồ sơ Luật 149/2025/QH15 trên Cổng Thông tin điện tử Chính phủ](https://vanban.chinhphu.vn/?docid=216588&pageid=27160) và [PDF bản ký chính thức](https://datafiles.chinhphu.vn/cpp/files/vbpq/2026/01/luat149.signed.pdf).
+- Đã mở và đối chiếu đủ 2 trang của bản ký. Hồ sơ chính thức ghi Luật được ban hành ngày 11/12/2025 và có hiệu lực từ 01/01/2026.
+- Nguồn phụ trợ tra nhanh: [bài giới thiệu điểm mới trên chuyên trang Xây dựng chính sách, pháp luật của Báo điện tử Chính phủ](https://xaydungchinhsach.chinhphu.vn/nhung-diem-moi-cua-luat-thue-gia-tri-gia-tang-sua-doi-2025-119260110094146844.htm). Nguồn này chỉ dùng hỗ trợ định vị nội dung; không thay thế bản ký và không phải nguồn chốt.
+
+### 11.2. Các nội dung Luật 149 sửa đổi, bổ sung hoặc bãi bỏ
+
+| Căn cứ Luật 149 | Quy định của Luật 48 bị tác động | Tóm tắt ngắn | Ảnh hưởng tới Case 3 | Mức chắc chắn |
+|---|---|---|---|---|
+| Điểm a khoản 1 Điều 1 | Khoản 1 Điều 5 | Sửa nhóm sản phẩm nông, lâm, chăn nuôi, thủy sản không chịu thuế và bổ sung trường hợp giao dịch giữa doanh nghiệp/hợp tác xã/liên hiệp hợp tác xã không phải kê khai, tính nộp thuế nhưng được khấu trừ đầu vào. | Có thể ảnh hưởng phạm vi áp dụng: không nên chạy cảnh báo phép nhân một cách máy móc cho dữ liệu thuộc nhóm không chịu thuế/không phải kê khai, tính nộp. Không sửa công thức lõi của rule. | Cao về nội dung sửa; Trung bình về đánh giá tác động sản phẩm |
+| Điểm b khoản 1 Điều 1 | Khoản 25 Điều 5 | Nâng ngưỡng doanh thu năm của hàng hóa, dịch vụ do hộ/cá nhân sản xuất, kinh doanh thuộc diện không chịu thuế lên 500 triệu đồng; đồng thời quy định lại các nhóm khác trong khoản này. | Có thể làm thay đổi phạm vi chứng từ/dữ liệu mà Case 3 nên áp dụng; không sửa phép tính `taxable_amount × vat_rate`. | Cao về nội dung sửa; Trung bình về đánh giá tác động sản phẩm |
+| Khoản 2 Điều 1 | Khoản 5 Điều 9 | Quy định lại thuế suất đối với phế phẩm, phụ phẩm, phế liệu thu hồi trong quá trình sản xuất theo mặt hàng tương ứng. | Có liên quan trực tiếp đến cơ sở pháp lý của giá trị `vat_rate` nếu dữ liệu thuộc nhóm này. Rule hiện chỉ dùng thuế suất đầu vào, không xác định thuế suất đó có đúng pháp luật; chưa xác định thấy thay đổi trực tiếp đối với phép nhân lõi. | Cao về nội dung sửa; Trung bình về đánh giá tác động sản phẩm |
+| Khoản 3 Điều 1 | Khoản 3 Điều 12 | Bãi bỏ quy định về phương pháp khoán thuế đối với hộ, cá nhân sản xuất, kinh doanh không thực hiện hoặc thực hiện không đầy đủ chế độ kế toán, hóa đơn, chứng từ. | Tác động trực tiếp đến một phần phạm vi phương pháp trực tiếp từ 01/01/2026, nhưng không bãi bỏ toàn bộ Điều 12. Case 3 vẫn phải nhận diện phương pháp tính thuế trước khi mở rộng phạm vi. | Cao về nội dung bãi bỏ; Trung bình về đánh giá tác động sản phẩm |
+| Khoản 3 Điều 1 | Điểm c khoản 9 Điều 15 | Bãi bỏ một điều kiện liên quan đến hoàn thuế. | Chưa xác định thấy ảnh hưởng trực tiếp trong phạm vi rà hiện tại đối với phép so sánh của Case 3. | Cao |
+| Điều 2 | Hiệu lực thi hành | Luật có hiệu lực từ 01/01/2026; không xác định thấy điều khoản chuyển tiếp riêng trong 2 trang Luật 149. | Việc đánh giá chứng từ trước/sau mốc hiệu lực phải dùng quy định phù hợp theo thời điểm. | Cao |
+
+### 11.3. Kiểm tra riêng các nhóm điều của Case 3
+
+- **Điều 6 — căn cứ tính thuế:** Không xác định thấy sửa đổi trực tiếp trong phạm vi rà hiện tại.
+- **Điều 7 — giá tính thuế:** Không xác định thấy sửa đổi trực tiếp trong phạm vi rà hiện tại.
+- **Điều 9 — thuế suất:** Có. Khoản 2 Điều 1 Luật 149 sửa khoản 5 Điều 9 như nêu tại Mục 11.2.
+- **Điều 11 — phương pháp khấu trừ:** Không xác định thấy sửa đổi trực tiếp trong phạm vi rà hiện tại. Việc khoản 1 Điều 5 mới nhắc đến khấu trừ thuế đầu vào không đồng nghĩa Luật 149 sửa trực tiếp Điều 11.
+- **Điều 12 — phương pháp trực tiếp:** Có. Khoản 3 Điều 1 Luật 149 bãi bỏ khoản 3 Điều 12; các phần còn lại của Điều 12 không bị bãi bỏ bởi quy định này.
+- **Hiệu lực/chuyển tiếp:** Điều 2 quy định hiệu lực từ 01/01/2026. Không xác định thấy điều khoản chuyển tiếp riêng trong phạm vi bản ký đã rà.
+
+### 11.4. Kết luận tác động tới Case 3
+
+- Luật 149 có **liên quan trực tiếp đến phạm vi pháp lý của hai input/ngữ cảnh** mà Case 3 đang dùng: khoản 5 Điều 9 ảnh hưởng cách xác định `vat_rate` cho một nhóm hàng hóa cụ thể; việc bãi bỏ khoản 3 Điều 12 thay đổi một phần phạm vi phương pháp trực tiếp.
+- Chưa xác định thấy Luật 149 sửa trực tiếp phép tính lõi `taxable_amount × vat_rate` so với `vat_amount`, sửa Điều 6, Điều 7 hoặc Điều 11, hay quy định ngưỡng sai lệch `1.0` trong phạm vi rà hiện tại. Vì vậy, review này chưa cho thấy cần đổi công thức kỹ thuật hiện tại chỉ do Luật 149.
+- Kết luận thận trọng: **chưa xác định thấy ảnh hưởng trực tiếp đến phép so sánh số học lõi trong phạm vi rà hiện tại**; tuy nhiên, có ảnh hưởng liên quan đến việc xác định thuế suất đầu vào và phạm vi áp dụng. Không ghi nhận kết luận tuyệt đối là “không ảnh hưởng” khi chưa có kiểm tra chéo.
+
+### 11.5. Điểm còn Pending và trạng thái kiểm soát
+
+- Cần đối chiếu sâu văn bản hướng dẫn và các văn bản sửa đổi/hợp nhất có liên quan để xác định cách áp dụng theo thời điểm; riêng Nghị định 181/2025/NĐ-CP, 359/2025/NĐ-CP và 144/2026/NĐ-CP vẫn `Pending` theo phạm vi review hiện tại.
+- Cần xác định cách sản phẩm nhận diện đối tượng không chịu thuế/không phải kê khai, tính nộp; thuế suất đúng; và phương pháp khấu trừ so với phương pháp trực tiếp trước khi mở rộng Case 3.
+- Review này chỉ rà tác động của Luật 149; chưa thay thế việc kiểm tra đầy đủ Luật 48 sau các lần sửa đổi khác hoặc văn bản hợp nhất áp dụng tại thời điểm sử dụng sản phẩm.
+- Chưa có independent legal review và chưa có cross review bởi Thế Anh/Khánh/người khác.
+- **Legal confidence vẫn `Pending`.** Review này không làm Case 3 hoàn tất pháp lý.
+- **RAG/AI explanation vẫn `LOCKED`.**
