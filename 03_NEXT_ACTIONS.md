@@ -15,7 +15,7 @@
 - **GD2-04b template Excel cho upload: `[x]` hoàn thành** tại commit `e45ae30`. Repo có template hóa đơn và thanh toán đúng schema parser; Dashboard có hai nút tải template; README đã cập nhật hướng dẫn. Template chỉ phục vụ prototype `.xlsx`, không phải chuẩn dữ liệu pháp lý chính thức.
 - **GD2-04c upload edge cases và data quality: `[x]` hoàn thành** tại commit `eae11a3`. Parser xử lý header-only, dòng trống, ô bắt buộc trống, ngày và số tiền không hợp lệ; demo vẫn đạt `12 / 6 / 9`, template vẫn đọc được và suite hiện đạt `61 passed, 1 warning`.
 - Legal draft đã có tại `van-ban-luat/processed/GD1_5_P_LEGAL_DRAFT_mapping_5_cases.md`, commit `ee099db` (`Add legal draft mapping for MVP cases`). Nguồn tạo là VSCode AI theo prompt điều phối của ChatGPT Plus.
-- Case 3 đã có initial legal source review **PARTIAL** tại commit `3b4eab3`; Technical alignment **DONE**, Legal confidence **Pending**, independent/cross review chưa có. Chưa có human/legal final review và chưa xác nhận pháp lý hoàn tất; không nâng confidence lên High.
+- Case 3 đã có initial legal source review **PARTIAL** tại commit `3b4eab3` và initial/internal impact review Luật `149/2025/QH15` tại commit `6046577`. Luật 149 sửa khoản 5 Điều 9, liên quan `vat_rate`, và bãi bỏ khoản 3 Điều 12, liên quan phạm vi phương pháp trực tiếp; chưa xác định thấy căn cứ phải đổi công thức kỹ thuật lõi chỉ do Luật 149. Technical alignment **DONE**, Legal confidence **Pending**, independent/cross review chưa có; không gọi Case 3 là hoàn tất pháp lý.
 - Theo quyết định ngày 26/08/2026, đội trưởng/nhóm hiện tại chủ động đảm nhận toàn bộ nhiệm vụ để không chậm tiến độ. Khánh, Thế Anh hoặc thành viên khác nếu tham gia lại sẽ review phụ/kiểm tra chéo và không còn là blocker của tiến độ chính.
 - RAG và AI explanation chưa triển khai. RAG **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence, cho đến khi có bảng đối chiếu và bằng chứng rà văn bản gốc đủ sạch.
 - **Trạng thái sơ loại/Vòng 1:** BTC hoãn sơ loại/Vòng 1 tới `09/09/2026`; đội chưa thi nên chưa có kết quả. Đây không phải trường hợp kết quả đã có nhưng chưa được kiểm tra.
@@ -37,31 +37,32 @@
 - `[x]` GD2-04c bổ sung edge cases và data quality cơ bản cho upload `.xlsx`; commit `eae11a3`; demo/template không hồi quy; toàn bộ test đạt `50 passed, 1 warning`.
 - `[x]` GD2-CASE3-FIX chuẩn hóa `taxable_amount`/`net_amount`, bỏ phụ thuộc `expected_risk_case`, cập nhật template và test upload; commit `a60f7bc`; toàn bộ suite đạt `61 passed, 1 warning`.
 - `[~]` GD1.5-CASE3-LEGAL-SOURCE-REVIEW đã hoàn thành phần initial review ở mức **PARTIAL**; commit `3b4eab3`; Legal confidence vẫn **Pending**.
+- `[x]` GD1.5-CASE3-LAW149-IMPACT-REVIEW đã hoàn thành ở mức initial/internal review; commit `6046577`; không nâng Legal confidence và không mở RAG/AI explanation.
 
 ## Thứ tự ưu tiên
 
-### P1 — Rà Luật 149/2025/QH15 xem có sửa đổi ảnh hưởng Case 3 không
+### P1 — Rà sâu Nghị định 181/2025/NĐ-CP cho Case 3 bằng bản đọc được/tin cậy
 
-- Kiểm tra nội dung sửa đổi, hiệu lực và quan hệ với Luật `48/2024/QH15`; ghi rõ điều/khoản có thể làm thay đổi căn cứ hoặc phạm vi cảnh báo Case 3.
+- Đối chiếu trực tiếp các quy định liên quan đến giá tính thuế, thuế suất và phương pháp khấu trừ; ghi rõ điều/khoản, hiệu lực và điểm còn chưa chắc chắn.
 
-### P2 — Rà sâu Nghị định 181/2025, 359/2025, 144/2026
+### P2 — Rà Nghị định 359/2025/NĐ-CP và 144/2026/NĐ-CP xem có sửa đổi ảnh hưởng Case 3 không
 
-- Chỉ dùng bản đọc được/tin cậy; đối chiếu nguồn, hiệu lực, điều/khoản và giữ **Pending** cho phần chưa đọc đủ tin cậy.
+- Rà trên bản đọc được/tin cậy, đối chiếu với Nghị định `181/2025/NĐ-CP` và giữ **Pending** cho phần chưa xác minh đủ.
 
-### P3 — Xác định phạm vi phương pháp khấu trừ và phương pháp trực tiếp
+### P3 — Xác định rõ phạm vi phương pháp khấu trừ vs phương pháp trực tiếp
 
 - Chốt đối tượng và điều kiện áp dụng của từng phương pháp trước khi mở rộng logic hoặc tuyên bố phạm vi Case 3.
 
-### P4 — Nhờ Thế Anh kiểm tra chéo file Case 3 nếu có thể
+### P4 — Nhờ Thế Anh hoặc người khác kiểm tra chéo file Case 3 nếu có thể
 
-- Đề nghị Thế Anh đọc và hỏi lại căn cứ trong file Case 3. Đây là review phụ/kiểm tra chéo; hiện chưa có và không được ghi nhận là đã hoàn thành.
+- Đề nghị Thế Anh hoặc một người khác đọc và hỏi lại căn cứ trong file Case 3. Đây là review phụ/kiểm tra chéo; hiện chưa có và không được ghi nhận là đã hoàn thành.
 
 ### P5 — Chuẩn bị checklist/script sơ loại 09/09
 
 - Chuẩn bị script giới thiệu, luồng demo, checklist vận hành và phương án demo dự phòng; bổ sung slide ngắn nếu BTC yêu cầu.
 - Không gọi tài liệu chuẩn bị là hồ sơ đã được BTC chấp thuận nếu chưa có xác nhận.
 
-### P6 — Không mở RAG/AI explanation trước khi legal review sạch và có kiểm tra chéo
+### P6 — RAG/AI explanation vẫn LOCKED cho đến khi legal review sạch và có kiểm tra chéo
 
 - Chỉ xem xét RAG/AI explanation sau khi bảng đối chiếu đủ sạch và đã có kiểm tra chéo; RAG hiện vẫn **LOCKED toàn bộ 5 case**.
 - XML/PDF/OCR để sau; không gọi prototype hiện tại là hệ thống xử lý mọi định dạng.
@@ -70,9 +71,9 @@ Khánh và Thế Anh nếu tham gia lại chỉ giữ vai trò review phụ/ki�
 
 ## Bước tiếp theo cụ thể
 
-**Bước đã hoàn thành:** GD2-CASE3-FIX đã chuẩn hóa `taxable_amount`/`net_amount`, bỏ phụ thuộc `expected_risk_case`, cập nhật template/test upload tại commit `a60f7bc`. Initial legal source review Case 3 đã đạt **PARTIAL** tại commit `3b4eab3`; Legal confidence vẫn **Pending**. Toàn bộ suite hiện đạt `61 passed, 1 warning`.
+**Bước đã hoàn thành:** GD2-CASE3-FIX đã chuẩn hóa `taxable_amount`/`net_amount`, bỏ phụ thuộc `expected_risk_case`, cập nhật template/test upload tại commit `a60f7bc`. Initial legal source review Case 3 đã đạt **PARTIAL** tại commit `3b4eab3`; initial/internal impact review Luật 149 đã hoàn thành tại commit `6046577`. Legal confidence vẫn **Pending**; toàn bộ suite hiện đạt `61 passed, 1 warning`.
 
-**Bước đầu phiên sau:** thực hiện P1 — rà Luật `149/2025/QH15`, sau đó rà sâu các nghị định theo P2 và xác định phạm vi hai phương pháp theo P3. Song song, nhờ Thế Anh kiểm tra chéo nếu có thể và chuẩn bị checklist/script sơ loại 09/09; không mở RAG/AI explanation.
+**Bước đầu phiên sau:** thực hiện P1 — rà sâu Nghị định `181/2025/NĐ-CP` bằng bản đọc được/tin cậy, sau đó rà các nghị định sửa đổi theo P2 và xác định phạm vi hai phương pháp theo P3. Song song, nhờ Thế Anh hoặc người khác kiểm tra chéo nếu có thể và chuẩn bị checklist/script sơ loại 09/09; RAG/AI explanation vẫn **LOCKED**.
 
 ## Ước lượng tiến độ
 

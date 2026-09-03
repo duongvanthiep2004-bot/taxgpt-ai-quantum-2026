@@ -370,3 +370,14 @@
 - **Kết quả test kỹ thuật hiện tại:** `61 passed, 1 warning`.
 - **Trạng thái sơ loại/Vòng 1:** Đã hoãn tới `09/09/2026`; đội chưa thi và chưa có kết quả.
 - **Quyết định kiểm soát:** Không nâng Legal confidence lên High. Không mở RAG/AI explanation trước khi legal review sạch và có kiểm tra chéo.
+
+### 03/09/2026 — GD1.5-CASE3-LAW149-IMPACT-REVIEW
+
+- **Commit:** `6046577` (`Review Law 149 impact for Case 3 VAT`).
+- **Phạm vi review:** Đã rà Luật `149/2025/QH15` ở mức initial/internal impact review cho Case 3; không coi đây là independent legal review hoặc kết luận pháp lý cuối cùng.
+- **Phát hiện chính:** Luật 149 sửa khoản 5 Điều 9, liên quan đến cơ sở pháp lý của `vat_rate`, và bãi bỏ khoản 3 Điều 12, liên quan một phần phạm vi phương pháp trực tiếp.
+- **Không xác định thấy trong phạm vi rà hiện tại:** Luật 149 sửa trực tiếp Điều 6, Điều 7 hoặc Điều 11; hoặc có căn cứ phải đổi công thức kỹ thuật lõi `taxable_amount × vat_rate ≈ vat_amount` chỉ do Luật 149.
+- **Giới hạn còn lại:** Nghị định `181/2025/NĐ-CP`, `359/2025/NĐ-CP`, `144/2026/NĐ-CP` còn phải rà bằng bản đọc được/tin cậy; cần xác định rõ phạm vi phương pháp khấu trừ so với phương pháp trực tiếp và có kiểm tra chéo.
+- **Kết quả test kỹ thuật hiện tại:** `61 passed, 1 warning`.
+- **Trạng thái Vòng 1:** Đã hoãn tới `09/09/2026`; đội chưa thi và chưa có kết quả.
+- **Trạng thái kiểm soát:** Legal confidence vẫn **Pending**; chưa có independent/cross review; RAG/AI explanation vẫn **LOCKED**; không gọi Case 3 là hoàn tất pháp lý.
