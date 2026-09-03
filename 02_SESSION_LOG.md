@@ -359,3 +359,14 @@
 - **Template/test:** Template hóa đơn đã bổ sung `taxable_amount`, `vat_rate`, `vat_amount`; test upload assert riêng đúng 2 cảnh báo Case 3 và bao phủ mapping/xung đột field.
 - **Giới hạn còn lại:** Chưa kiểm tra `total_amount = taxable_amount + vat_amount`; chưa xử lý đầy đủ ngoại lệ làm tròn, nhiều dòng và chiết khấu. Legal review vẫn `Pending`, chưa có rà soát độc lập.
 - **Trạng thái kiểm soát:** RAG vẫn **LOCKED toàn bộ 5 case**.
+
+### 01/09/2026 — GD1.5-CASE3-LEGAL-SOURCE-REVIEW partial
+
+- **Commit:** `3b4eab3` (`Update Case 3 legal source review notes`).
+- **Trạng thái Case 3:** Technical alignment: **DONE**; initial legal source review: **PARTIAL**; Legal confidence: **Pending**; independent/cross review: chưa có; RAG/AI explanation: **LOCKED**.
+- **Đã xác minh/ghi nhận:** Luật `48/2024/QH15` có các nội dung liên quan đến căn cứ tính thuế, giá tính thuế, thuế suất, phương pháp khấu trừ và phương pháp trực tiếp.
+- **Giới hạn diễn giải:** Điểm b khoản 1 Điều 11 chỉ được dùng làm cơ sở tham chiếu thận trọng cho cảnh báo kỹ thuật, không dùng để kết luận sai phạm.
+- **Còn Pending:** Rà Luật `149/2025/QH15` để xác định có sửa đổi ảnh hưởng Case 3 hay không; rà sâu Nghị định `181/2025`, `359/2025`, `144/2026` và các phần chi tiết bằng bản đọc được/tin cậy; xác định phạm vi phương pháp khấu trừ so với phương pháp trực tiếp.
+- **Kết quả test kỹ thuật hiện tại:** `61 passed, 1 warning`.
+- **Trạng thái sơ loại/Vòng 1:** Đã hoãn tới `09/09/2026`; đội chưa thi và chưa có kết quả.
+- **Quyết định kiểm soát:** Không nâng Legal confidence lên High. Không mở RAG/AI explanation trước khi legal review sạch và có kiểm tra chéo.
