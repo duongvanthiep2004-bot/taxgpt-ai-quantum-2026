@@ -198,13 +198,11 @@ if result is not None:
     if isinstance(uploaded_files, dict):
         st.info("Nguồn kết quả: File tải lên")
         uploaded_invoice_source, uploaded_payment_source = st.columns(2)
-        uploaded_invoice_source.write(
-            "**File hóa đơn đã tải lên:**",
-            uploaded_files.get("invoice_file", ""),
+        uploaded_invoice_source.markdown(
+            f"**File hóa đơn đã tải lên:** `{uploaded_files.get('invoice_file', '')}`"
         )
-        uploaded_payment_source.write(
-            "**File thanh toán đã tải lên:**",
-            uploaded_files.get("payment_file", ""),
+        uploaded_payment_source.markdown(
+            f"**File thanh toán đã tải lên:** `{uploaded_files.get('payment_file', '')}`"
         )
     else:
         st.info("Nguồn kết quả: Dữ liệu demo cố định")
