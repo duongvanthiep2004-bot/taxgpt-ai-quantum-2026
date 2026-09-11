@@ -2,6 +2,15 @@
 
 ## Trạng thái hiện tại
 
+### Cập nhật điều phối 11/09/2026 — P0 Streamlit upload sample đã hoàn tất
+
+- **P0 `[x]`:** Đã sửa `StreamlitAPIException` khi upload sample tại `frontend/streamlit_app/app.py`. Nguyên nhân là `.write(label, filename)` tạo nhiều phần tử trong một placeholder/column; đã đổi sang `.markdown(f"...")` với một chuỗi duy nhất cho từng cột.
+- **Commit đã push:** `bceda11545ce1837499cd33b78ac909d7b499aa1` — `Fix Streamlit upload result placeholder rendering`. Push GitHub thành công: `b5ebb5f..bceda11 main -> main`.
+- **Git sau push, trước cập nhật điều phối:** Tracked files sạch. Còn untracked `Báo cáo các tài liệu về thuế cho TaxGPT.docx` và `docs/report_assets/`; không commit hai mục này trong nhiệm vụ hiện tại.
+- **Trạng thái giữ nguyên:** Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Vòng 1: **09/09/2026**; theo thông tin đội trưởng cung cấp, đội chưa thi và chưa có kết quả.
+- **Ưu tiên tiếp theo:** P1 kích hoạt Thế Anh tự chạy demo và cross-check 5 case; P2 chuẩn bị demo script sơ loại; P3 chuẩn bị checklist 15–20 kịch bản QA nhanh; P4 sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại.
+
+
 - 5/5 case MVP đã có backend slice ở mức parser/rule/API/test: hóa đơn trùng; sai MST/tên người mua; VAT không khớp phép tính; hóa đơn ngoài kỳ dữ liệu đang rà soát; hóa đơn giá trị lớn thiếu chứng từ thanh toán không dùng tiền mặt.
 - API tổng hợp `GET /demo/scan-all` đã hoàn thành tại commit `667bf24`; toàn bộ test hồi quy hiện đạt `61 passed, 1 warning`.
 - Streamlit Dashboard đã kết nối scan-all tại commit `a13dfd1`, được cải thiện cho thao tác demo tại commit `67d6a4a` và phân biệt nguồn kết quả tại commit `abd9738`. Dashboard hiện có “Chế độ 1: Dữ liệu demo cố định” và “Chế độ 2: File Excel tải lên”; kết quả ghi rõ nguồn dữ liệu và hiển thị tên hai file khi có `uploaded_files`.
@@ -23,6 +32,8 @@
 
 ## Hạng mục vừa hoàn thành
 
+- `[x]` P0 sửa lỗi Streamlit upload sample và push GitHub thành công; commit `bceda11545ce1837499cd33b78ac909d7b499aa1` (`Fix Streamlit upload result placeholder rendering`).
+
 - `[x]` API tổng hợp `GET /demo/scan-all` chạy đủ 5 rule và trả 9 cảnh báo.
 - `[x]` Test scan-all và hồi quy các endpoint case riêng; toàn bộ suite đạt `33 passed, 1 warning`.
 - `[x]` Streamlit demo local gọi scan-all, hiển thị 3 metric, bảng 5 case và bảng 9 cảnh báo.
@@ -41,39 +52,30 @@
 
 ## Thứ tự ưu tiên
 
-### P1 — Rà sâu Nghị định 181/2025/NĐ-CP cho Case 3 bằng bản đọc được/tin cậy
+### P1 — Kích hoạt Thế Anh tự chạy demo và cross-check 5 case
 
-- Đối chiếu trực tiếp các quy định liên quan đến giá tính thuế, thuế suất và phương pháp khấu trừ; ghi rõ điều/khoản, hiệu lực và điểm còn chưa chắc chắn.
+- Thế Anh tự chạy demo local theo README, thử dữ liệu demo cố định và upload sample; đối chiếu kết quả từng case trong 5 case MVP, ghi lại kết quả thực tế và lỗi còn gặp.
+- Đây là việc cần làm, chưa ghi nhận cross-check hoàn tất; không đồng nghĩa kiểm chứng pháp lý độc lập. Nếu chưa có phản hồi, đội trưởng tiếp tục chuẩn bị demo và ghi nhận rủi ro tự kiểm tra.
 
-### P2 — Rà Nghị định 359/2025/NĐ-CP và 144/2026/NĐ-CP xem có sửa đổi ảnh hưởng Case 3 không
+### P2 — Chuẩn bị demo script sơ loại
 
-- Rà trên bản đọc được/tin cậy, đối chiếu với Nghị định `181/2025/NĐ-CP` và giữ **Pending** cho phần chưa xác minh đủ.
+- Chuẩn bị lời giới thiệu, luồng demo, kết quả kỳ vọng, giới hạn prototype và phương án dự phòng; giữ cách diễn đạt cảnh báo thận trọng.
+- Vòng 1: `09/09/2026`; đội chưa thi và chưa có kết quả. Theo dõi thông báo BTC, không tự suy diễn trạng thái từ ngày đã ghi.
 
-### P3 — Xác định rõ phạm vi phương pháp khấu trừ vs phương pháp trực tiếp
+### P3 — Checklist 15–20 kịch bản QA nhanh
 
-- Chốt đối tượng và điều kiện áp dụng của từng phương pháp trước khi mở rộng logic hoặc tuyên bố phạm vi Case 3.
+- Chuẩn bị checklist bao phủ 5 case, demo cố định, upload sample, dữ liệu đầu vào không hợp lệ và backend chưa chạy; ghi kết quả kỳ vọng/thực tế, người kiểm tra và lỗi cần xử lý.
 
-### P4 — Nhờ Thế Anh hoặc người khác kiểm tra chéo file Case 3 nếu có thể
+### P4 — Sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại
 
-- Đề nghị Thế Anh hoặc một người khác đọc và hỏi lại căn cứ trong file Case 3. Đây là review phụ/kiểm tra chéo; hiện chưa có và không được ghi nhận là đã hoàn thành.
-
-### P5 — Chuẩn bị checklist/script sơ loại 09/09
-
-- Chuẩn bị script giới thiệu, luồng demo, checklist vận hành và phương án demo dự phòng; bổ sung slide ngắn nếu BTC yêu cầu.
-- Không gọi tài liệu chuẩn bị là hồ sơ đã được BTC chấp thuận nếu chưa có xác nhận.
-
-### P6 — RAG/AI explanation vẫn LOCKED cho đến khi legal review sạch và có kiểm tra chéo
-
-- Chỉ xem xét RAG/AI explanation sau khi bảng đối chiếu đủ sạch và đã có kiểm tra chéo; RAG hiện vẫn **LOCKED toàn bộ 5 case**.
-- XML/PDF/OCR để sau; không gọi prototype hiện tại là hệ thống xử lý mọi định dạng.
-
-Khánh và Thế Anh nếu tham gia lại chỉ giữ vai trò review phụ/kiểm tra chéo; họ không phải blocker của tiến độ chính.
+- Sau sơ loại, tiếp tục rà Nghị định `359/2025/NĐ-CP`, `144/2026/NĐ-CP`, đối chiếu với `181/2025/NĐ-CP` bằng bản đọc được/tin cậy, làm rõ phạm vi phương pháp khấu trừ/phương pháp trực tiếp và rà các case pháp lý còn lại.
+- Legal confidence vẫn **Pending**. Chưa có independent/cross review; RAG/AI explanation vẫn **LOCKED toàn bộ 5 case** cho đến khi legal review sạch và có kiểm tra chéo.
 
 ## Bước tiếp theo cụ thể
 
-**Bước đã hoàn thành:** GD2-CASE3-FIX đã chuẩn hóa `taxable_amount`/`net_amount`, bỏ phụ thuộc `expected_risk_case`, cập nhật template/test upload tại commit `a60f7bc`. Initial legal source review Case 3 đã đạt **PARTIAL** tại commit `3b4eab3`; initial/internal impact review Luật 149 đã hoàn thành tại commit `6046577`. Legal confidence vẫn **Pending**; toàn bộ suite hiện đạt `61 passed, 1 warning`.
+**Bước đã hoàn thành:** P0 Streamlit upload sample đã sửa và push thành công tại commit `bceda11545ce1837499cd33b78ac909d7b499aa1`. Tracked files sạch sau push, trước cập nhật tài liệu; hai mục báo cáo untracked không được commit trong nhiệm vụ này.
 
-**Bước đầu phiên sau:** thực hiện P1 — rà sâu Nghị định `181/2025/NĐ-CP` bằng bản đọc được/tin cậy, sau đó rà các nghị định sửa đổi theo P2 và xác định phạm vi hai phương pháp theo P3. Song song, nhờ Thế Anh hoặc người khác kiểm tra chéo nếu có thể và chuẩn bị checklist/script sơ loại 09/09; RAG/AI explanation vẫn **LOCKED**.
+**Bước đầu phiên sau:** Kích hoạt Thế Anh tự chạy demo và cross-check 5 case theo P1; tiếp theo chuẩn bị demo script sơ loại và checklist 15–20 kịch bản QA nhanh. Chỉ tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại sau sơ loại theo P4. Legal confidence **Pending**; RAG/AI explanation **LOCKED**.
 
 ## Ước lượng tiến độ
 

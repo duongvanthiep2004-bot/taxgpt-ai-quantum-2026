@@ -381,3 +381,16 @@
 - **Kết quả test kỹ thuật hiện tại:** `61 passed, 1 warning`.
 - **Trạng thái Vòng 1:** Đã hoãn tới `09/09/2026`; đội chưa thi và chưa có kết quả.
 - **Trạng thái kiểm soát:** Legal confidence vẫn **Pending**; chưa có independent/cross review; RAG/AI explanation vẫn **LOCKED**; không gọi Case 3 là hoàn tất pháp lý.
+
+### 11/09/2026 — P0 Streamlit upload sample — Cập nhật điều phối sau push
+
+- **AI/công cụ dùng:** Codex; cập nhật tài liệu theo thông tin người dùng cung cấp và kiểm tra Git local.
+- **Xác nhận workspace:** Root repo TaxGPT có đủ `01_PROJECT_GOALS.md`, `02_SESSION_LOG.md`, `03_NEXT_ACTIONS.md`; HEAD khớp commit bên dưới.
+- **Kết quả P0:** Lỗi `StreamlitAPIException` khi upload sample đã sửa. Nguyên nhân: `.write(label, filename)` tạo nhiều phần tử trong một placeholder/column. Cách sửa: đổi sang `.markdown(f"...")`, một chuỗi duy nhất cho từng cột. File code đã sửa trong commit trước: `frontend/streamlit_app/app.py`.
+- **Commit đã push:** `bceda11545ce1837499cd33b78ac909d7b499aa1` — `Fix Streamlit upload result placeholder rendering`.
+- **Push GitHub:** Thành công với kết quả `b5ebb5f..bceda11 main -> main` theo thông tin người dùng. Tracked files sạch sau push và trước phiên cập nhật tài liệu này.
+- **Untracked còn lại:** `Báo cáo các tài liệu về thuế cho TaxGPT.docx` và `docs/report_assets/`; không sửa hoặc commit hai mục này trong nhiệm vụ hiện tại.
+- **Phạm vi phiên này:** Chỉ cập nhật ba file điều phối; không sửa code hoặc các tài liệu/dữ liệu khác, không commit/push mới. Không chạy lại test ứng dụng trong phiên cập nhật tài liệu.
+- **Trạng thái kiểm soát:** Legal confidence vẫn **Pending**; RAG/AI explanation vẫn **LOCKED toàn bộ 5 case**; không ghi nhận hoàn tất legal review hoặc independent/cross review.
+- **Vòng 1:** `09/09/2026`; theo thông tin đội trưởng cung cấp, đội chưa thi và chưa có kết quả.
+- **Ưu tiên tiếp theo:** P1 kích hoạt Thế Anh tự chạy demo và cross-check 5 case; P2 chuẩn bị demo script sơ loại; P3 checklist 15–20 kịch bản QA nhanh; P4 sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại.

@@ -1,6 +1,6 @@
 # 01_PROJECT_GOALS.md — Mục tiêu & chia nhỏ dự án
 
-**Cập nhật lần cuối:** 03/09/2026 (sau initial/internal impact review Luật 149/2025/QH15 cho Case 3)
+**Cập nhật lần cuối:** 11/09/2026 (cập nhật điều phối sau khi sửa P0 Streamlit upload sample và push GitHub thành công)
 **Mục tiêu tổng thể:** Xây dựng và nộp dự thi TaxGPT — trợ lý AI phát hiện rủi ro thuế và tuân thủ chứng từ cho SMEs — tại AI-Quantum Challenge 2026, HVTC.
 **Mốc thời gian cuộc thi:**
 
@@ -71,6 +71,14 @@
 - **Trạng thái kiểm soát:** Initial legal source review Case 3: **PARTIAL**. Independent/cross review: chưa có. RAG/AI explanation: **LOCKED toàn bộ 5 case**, kể cả case có nhãn High confidence.
 - **Trạng thái sơ loại/Vòng 1:** BTC hoãn sơ loại/Vòng 1 tới 09/09/2026; đội chưa thi sơ loại và chưa có kết quả. Theo dõi thông báo chính thức và chuẩn bị cho sơ loại ngày 09/09/2026.
 - **Tác động kế hoạch:** Khoảng thời gian bổ sung trước 09/09/2026 được dùng để củng cố prototype, tự rà pháp lý sơ bộ trên văn bản gốc và hoàn thiện hồ sơ/lời trình bày; không thay đổi trạng thái legal review hoặc mở RAG.
+
+### Cập nhật điều phối 11/09/2026 — P0 Streamlit upload sample đã hoàn tất
+
+- **P0 `[x]`:** Đã sửa `StreamlitAPIException` khi upload sample tại `frontend/streamlit_app/app.py`. Nguyên nhân là `.write(label, filename)` tạo nhiều phần tử trong một placeholder/column; đã đổi sang `.markdown(f"...")` với một chuỗi duy nhất cho từng cột.
+- **Commit đã push:** `bceda11545ce1837499cd33b78ac909d7b499aa1` — `Fix Streamlit upload result placeholder rendering`. Push GitHub thành công: `b5ebb5f..bceda11 main -> main`.
+- **Git sau push, trước cập nhật điều phối:** Tracked files sạch. Còn untracked `Báo cáo các tài liệu về thuế cho TaxGPT.docx` và `docs/report_assets/`; không commit hai mục này trong nhiệm vụ hiện tại.
+- **Trạng thái giữ nguyên:** Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Vòng 1: **09/09/2026**; theo thông tin đội trưởng cung cấp, đội chưa thi và chưa có kết quả.
+- **Ưu tiên tiếp theo:** P1 kích hoạt Thế Anh tự chạy demo và cross-check 5 case; P2 chuẩn bị demo script sơ loại; P3 chuẩn bị checklist 15–20 kịch bản QA nhanh; P4 sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại.
 
 ### Ước lượng tiến độ từ sau phiên 17/08/2026
 
