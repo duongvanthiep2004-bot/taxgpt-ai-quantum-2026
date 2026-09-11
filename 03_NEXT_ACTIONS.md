@@ -2,18 +2,28 @@
 
 ## Trạng thái hiện tại
 
+### 11/09/2026 — UI dashboard đã refactor thành sidebar 6 mục và đã kiểm thử
+
+- **UI refactor: DONE; QA sau UI refactor: DONE** theo kết quả người dùng cung cấp. Commit đã push lên GitHub/main: `e8f8efc0334a57f7caa4abcbf2972b3e2eb29f5f` — `Refactor Streamlit dashboard navigation`.
+- **Sidebar 6 mục:** Tổng quan; Chạy demo cố định; Upload file Excel; Kết quả rà soát; Evidence chi tiết; Hướng dẫn & giới hạn. Không còn dồn toàn bộ demo/upload/kết quả/evidence trên một màn hình.
+- **Session state:** Chạy demo/upload thành công lưu kết quả để xem ở Kết quả rà soát và Evidence chi tiết. Khi backend/API lỗi, kết quả cũ được xóa, không hiển thị như kết quả mới. Backend-off fallback đã PASS: báo lỗi thân thiện, không giữ 12/6/9 cũ trên màn hình chạy demo.
+- **Kiểm thử được báo cáo:** `python -m pytest`: `61 passed, 1 warning`; backend/frontend khởi động được; sidebar, Tổng quan, demo cố định, upload sample, Kết quả rà soát và evidence Case 3 đều PASS. Demo và upload giữ `12 hóa đơn / 6 giao dịch thanh toán / 9 cảnh báo`, bảng case `1 / 2 / 2 / 2 / 2`; không thấy wording nguy hiểm.
+- **Phạm vi:** Cải tiến UI/UX cho demo; không thay đổi backend, rule, legal hoặc RAG. Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Đây không phải kiểm chứng pháp lý độc lập.
+- **Git trước phiên cập nhật tài liệu:** HEAD khớp commit trên, tracked files sạch; còn untracked `Báo cáo các tài liệu về thuế cho TaxGPT.docx` và `docs/report_assets/`. Không sửa hoặc commit hai mục này.
+
+
 ### Cập nhật điều phối 11/09/2026 — P0 Streamlit upload sample đã hoàn tất
 
 - **P0 `[x]`:** Đã sửa `StreamlitAPIException` khi upload sample tại `frontend/streamlit_app/app.py`. Nguyên nhân là `.write(label, filename)` tạo nhiều phần tử trong một placeholder/column; đã đổi sang `.markdown(f"...")` với một chuỗi duy nhất cho từng cột.
 - **Commit đã push:** `bceda11545ce1837499cd33b78ac909d7b499aa1` — `Fix Streamlit upload result placeholder rendering`. Push GitHub thành công: `b5ebb5f..bceda11 main -> main`.
 - **Git sau push, trước cập nhật điều phối:** Tracked files sạch. Còn untracked `Báo cáo các tài liệu về thuế cho TaxGPT.docx` và `docs/report_assets/`; không commit hai mục này trong nhiệm vụ hiện tại.
 - **Trạng thái giữ nguyên:** Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Vòng 1: **09/09/2026**; theo thông tin đội trưởng cung cấp, đội chưa thi và chưa có kết quả.
-- **Ưu tiên tiếp theo:** P1 kích hoạt Thế Anh tự chạy demo và cross-check 5 case; P2 tập demo script sơ loại; P3 chạy checklist 20 kịch bản QA nhanh; P4 sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại.
+- **Ưu tiên tiếp theo:** P1 tập demo theo script với UI mới; P2 chuẩn bị Q&A giám khảo; P3 nếu còn thời gian nhờ Thế Anh chạy checklist độc lập trên UI mới; P4 sau sơ loại quay lại roadmap bốn giai đoạn.
 
 
 - 5/5 case MVP đã có backend slice ở mức parser/rule/API/test: hóa đơn trùng; sai MST/tên người mua; VAT không khớp phép tính; hóa đơn ngoài kỳ dữ liệu đang rà soát; hóa đơn giá trị lớn thiếu chứng từ thanh toán không dùng tiền mặt.
 - API tổng hợp `GET /demo/scan-all` đã hoàn thành tại commit `667bf24`; toàn bộ test hồi quy hiện đạt `61 passed, 1 warning`.
-- Streamlit Dashboard đã kết nối scan-all tại commit `a13dfd1`, được cải thiện cho thao tác demo tại commit `67d6a4a` và phân biệt nguồn kết quả tại commit `abd9738`. Dashboard hiện có “Chế độ 1: Dữ liệu demo cố định” và “Chế độ 2: File Excel tải lên”; kết quả ghi rõ nguồn dữ liệu và hiển thị tên hai file khi có `uploaded_files`.
+- Streamlit Dashboard đã kết nối scan-all tại commit `a13dfd1`, được cải thiện cho thao tác demo tại commit `67d6a4a` và phân biệt nguồn kết quả tại commit `abd9738`. Dashboard hiện dùng sidebar 6 mục tại commit `e8f8efc`, tách demo cố định và upload Excel; kết quả ghi rõ nguồn dữ liệu và hiển thị tên hai file khi có `uploaded_files`.
 - Khi backend chưa chạy, Dashboard hiển thị lỗi thân thiện và không crash. Git working tree sạch sau các commit đã nêu.
 - **Prototype demo local không RAG: `[x]` đạt** với phạm vi `Excel demo cố định → backend scan-all → Streamlit dashboard hiển thị bảng cảnh báo`.
 - README hướng dẫn clone/cài/test/chạy backend/frontend/demo đã hoàn thành tại commit `21976fc`; repo hiện đủ hướng dẫn để người khác chạy lại prototype local bằng hai terminal.
@@ -32,7 +42,7 @@
 
 ## Hạng mục vừa hoàn thành
 
-- `[x]` Đã tạo [demo script sơ loại 5–7 phút](docs/demo/ROUND1_DEMO_SCRIPT_2026-09-09.md) và [QA checklist 20 kịch bản](docs/demo/ROUND1_QA_CHECKLIST.md) ngày 11/09/2026, có Codex hỗ trợ soạn. Đây là bản chuẩn bị để đội đọc/chỉnh và tập; checklist toàn bộ **Not run**, chưa ghi nhận chạy QA hoặc cross-check hoàn tất. Legal confidence **Pending**; RAG/AI explanation **LOCKED**.
+- `[x]` Đã tạo [demo script sơ loại 5–7 phút](docs/demo/ROUND1_DEMO_SCRIPT_2026-09-09.md) và [QA checklist 20 kịch bản](docs/demo/ROUND1_QA_CHECKLIST.md) ngày 11/09/2026, có Codex hỗ trợ soạn. Đây là bản chuẩn bị để đội đọc/chỉnh và tập; checklist QA-01–QA-20 đã **Pass** do Dương Văn Thiệp chạy thủ công; smoke test sau refactor UI **PASS** theo cập nhật người dùng. Chưa ghi nhận Thế Anh chạy checklist độc lập. Legal confidence **Pending**; RAG/AI explanation **LOCKED**.
 
 - `[x]` P0 sửa lỗi Streamlit upload sample và push GitHub thành công; commit `bceda11545ce1837499cd33b78ac909d7b499aa1` (`Fix Streamlit upload result placeholder rendering`).
 
@@ -54,30 +64,33 @@
 
 ## Thứ tự ưu tiên
 
-### P1 — Kích hoạt Thế Anh tự chạy demo và cross-check 5 case
+### P1 — Tập demo theo script với UI mới
 
-- Thế Anh tự chạy demo local theo README, thử dữ liệu demo cố định và upload sample; đối chiếu kết quả từng case trong 5 case MVP, ghi lại kết quả thực tế và lỗi còn gặp.
-- Đây là việc cần làm, chưa ghi nhận cross-check hoàn tất; không đồng nghĩa kiểm chứng pháp lý độc lập. Nếu chưa có phản hồi, đội trưởng tiếp tục chuẩn bị demo và ghi nhận rủi ro tự kiểm tra.
+- Tập theo [demo script](docs/demo/ROUND1_DEMO_SCRIPT_2026-09-09.md), mục tiêu 5–7 phút. Khi tập, chuyển bằng sidebar giữa demo/upload, Kết quả rà soát và Evidence chi tiết thay vì tìm toàn bộ nội dung trên một màn hình.
+- Luyện kết quả 12/6/9, bảng case 1/2/2/2/2, evidence Case 3 và phương án backend-off; giữ wording an toàn. Vòng 1 vẫn ghi 09/09/2026; chưa có cập nhật đội đã thi hoặc có kết quả.
 
-### P2 — Tập demo script sơ loại
+### P2 — Chuẩn bị Q&A cho giám khảo
 
-- Tập theo [demo script](docs/demo/ROUND1_DEMO_SCRIPT_2026-09-09.md), mục tiêu 5–7 phút; đội đọc và chỉnh lời giới thiệu, luyện luồng demo, evidence Case 3 và phương án dự phòng; giữ cách diễn đạt cảnh báo thận trọng.
-- Vòng 1: `09/09/2026`; đội chưa thi và chưa có kết quả. Theo dõi thông báo BTC, không tự suy diễn trạng thái từ ngày đã ghi.
+- Chuẩn bị câu trả lời về bài toán SMEs, phạm vi 5 case, dữ liệu giả lập, cách đọc cảnh báo/evidence, giới hạn MVP và lý do chưa mở RAG. Không tuyên bố thay thế chuyên gia hoặc kết luận doanh nghiệp vi phạm.
 
-### P3 — Chạy checklist 20 kịch bản QA nhanh
+### P3 — Nếu còn thời gian, nhờ Thế Anh chạy checklist độc lập trên UI mới
 
-- Chạy [QA checklist](docs/demo/ROUND1_QA_CHECKLIST.md) bao phủ 5 case, demo cố định, upload sample/P0, bộ lọc/evidence, đầu vào lỗi, backend tắt và wording; ghi Pass/Fail, người kiểm tra, kết quả thực tế và Known limitations. Hiện cả 20 kịch bản **Not run**.
+- Dùng [QA checklist](docs/demo/ROUND1_QA_CHECKLIST.md), ghi rõ người chạy và kết quả thực tế; không sao chép lượt Pass của Thiệp thành lượt kiểm tra độc lập của Thế Anh. Đây là bước bổ sung, không phải kiểm chứng pháp lý độc lập.
 
-### P4 — Sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại
+### P4 — Sau sơ loại quay lại roadmap bốn giai đoạn
 
-- Sau sơ loại, tiếp tục rà Nghị định `359/2025/NĐ-CP`, `144/2026/NĐ-CP`, đối chiếu với `181/2025/NĐ-CP` bằng bản đọc được/tin cậy, làm rõ phạm vi phương pháp khấu trừ/phương pháp trực tiếp và rà các case pháp lý còn lại.
-- Legal confidence vẫn **Pending**. Chưa có independent/cross review; RAG/AI explanation vẫn **LOCKED toàn bộ 5 case** cho đến khi legal review sạch và có kiểm tra chéo.
+1. Hoàn thiện MVP: củng cố vận hành, QA và xử lý các giới hạn còn lại.
+2. Mở rộng dữ liệu XML/PDF/OCR theo phạm vi được chốt sau sơ loại.
+3. Tăng năng lực pháp lý: tiếp tục rà sâu NĐ 359/144, đối chiếu NĐ 181 và các case pháp lý còn lại, bổ sung kiểm tra chéo.
+4. Sản phẩm hóa theo nhu cầu và phạm vi được đội xác nhận.
+
+Legal confidence vẫn **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Roadmap không đồng nghĩa cho phép mở RAG; chỉ xem xét khi nguồn và phạm vi pháp lý được rà đủ sạch, có kiểm tra chéo.
 
 ## Bước tiếp theo cụ thể
 
-**Bước đã hoàn thành:** Đã tạo demo script và QA checklist; chưa chạy QA/cross-check trong phiên soạn tài liệu. P0 Streamlit upload sample đã sửa và push thành công tại commit `bceda11545ce1837499cd33b78ac909d7b499aa1`. Tracked files sạch sau push, trước cập nhật tài liệu; hai mục báo cáo untracked không được commit trong nhiệm vụ này.
+**Đã hoàn thành:** UI refactor **DONE**, QA sau UI refactor **DONE** theo kết quả được báo cáo; commit `e8f8efc` đã push. Demo/upload 12/6/9, evidence Case 3 và backend-off fallback PASS. Kết quả pytest được người dùng cung cấp là `61 passed, 1 warning`; lần thử chạy lại của Codex trong phiên tài liệu bị chặn bởi Python 3.12 thiếu tại đường dẫn .venv cấu hình.
 
-**Bước đầu phiên sau:** Kích hoạt Thế Anh tự chạy demo và cross-check 5 case theo P1; tiếp theo tập demo script sơ loại theo P2 và chạy checklist 20 kịch bản QA nhanh theo P3. Chỉ tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại sau sơ loại theo P4. Legal confidence **Pending**; RAG/AI explanation **LOCKED**.
+**Bước đầu phiên sau:** Tập demo theo UI sidebar mới và chuẩn bị Q&A; nếu còn thời gian nhờ Thế Anh chạy checklist độc lập. Sau sơ loại mới quay lại roadmap bốn giai đoạn. Legal confidence **Pending**; RAG/AI explanation **LOCKED**.
 
 ## Ước lượng tiến độ
 

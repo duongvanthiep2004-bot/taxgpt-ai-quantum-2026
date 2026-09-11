@@ -1,6 +1,6 @@
 # 01_PROJECT_GOALS.md — Mục tiêu & chia nhỏ dự án
 
-**Cập nhật lần cuối:** 11/09/2026 (cập nhật điều phối sau khi sửa P0 Streamlit upload sample và push GitHub thành công)
+**Cập nhật lần cuối:** 11/09/2026 (sau refactor sidebar 6 mục và kiểm thử UI thành công)
 **Mục tiêu tổng thể:** Xây dựng và nộp dự thi TaxGPT — trợ lý AI phát hiện rủi ro thuế và tuân thủ chứng từ cho SMEs — tại AI-Quantum Challenge 2026, HVTC.
 **Mốc thời gian cuộc thi:**
 
@@ -79,6 +79,15 @@
 - **Git sau push, trước cập nhật điều phối:** Tracked files sạch. Còn untracked `Báo cáo các tài liệu về thuế cho TaxGPT.docx` và `docs/report_assets/`; không commit hai mục này trong nhiệm vụ hiện tại.
 - **Trạng thái giữ nguyên:** Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Vòng 1: **09/09/2026**; theo thông tin đội trưởng cung cấp, đội chưa thi và chưa có kết quả.
 - **Ưu tiên tiếp theo:** P1 kích hoạt Thế Anh tự chạy demo và cross-check 5 case; P2 chuẩn bị demo script sơ loại; P3 chuẩn bị checklist 15–20 kịch bản QA nhanh; P4 sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại.
+
+### 11/09/2026 — UI dashboard đã refactor thành sidebar 6 mục và đã kiểm thử
+
+- **UI refactor: DONE; QA sau UI refactor: DONE** theo kết quả người dùng cung cấp. Commit đã push lên GitHub/main: `e8f8efc0334a57f7caa4abcbf2972b3e2eb29f5f` — `Refactor Streamlit dashboard navigation`.
+- **Sidebar 6 mục:** Tổng quan; Chạy demo cố định; Upload file Excel; Kết quả rà soát; Evidence chi tiết; Hướng dẫn & giới hạn. Không còn dồn toàn bộ demo/upload/kết quả/evidence trên một màn hình.
+- **Session state:** Chạy demo/upload thành công lưu kết quả để xem ở Kết quả rà soát và Evidence chi tiết. Khi backend/API lỗi, kết quả cũ được xóa, không hiển thị như kết quả mới. Backend-off fallback đã PASS: báo lỗi thân thiện, không giữ 12/6/9 cũ trên màn hình chạy demo.
+- **Kiểm thử được báo cáo:** `python -m pytest`: `61 passed, 1 warning`; backend/frontend khởi động được; sidebar, Tổng quan, demo cố định, upload sample, Kết quả rà soát và evidence Case 3 đều PASS. Demo và upload giữ `12 hóa đơn / 6 giao dịch thanh toán / 9 cảnh báo`, bảng case `1 / 2 / 2 / 2 / 2`; không thấy wording nguy hiểm.
+- **Phạm vi:** Cải tiến UI/UX cho demo; không thay đổi backend, rule, legal hoặc RAG. Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Đây không phải kiểm chứng pháp lý độc lập.
+- **Git trước phiên cập nhật tài liệu:** HEAD khớp commit trên, tracked files sạch; còn untracked `Báo cáo các tài liệu về thuế cho TaxGPT.docx` và `docs/report_assets/`. Không sửa hoặc commit hai mục này.
 
 ### Ước lượng tiến độ từ sau phiên 17/08/2026
 

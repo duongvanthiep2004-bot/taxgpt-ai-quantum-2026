@@ -21,6 +21,27 @@ Thông tin lần chạy: ngày/giờ: ___; commit (`git rev-parse HEAD`): ___; m
 - **Nguồn ghi nhận:** Kết quả chạy thủ công do người dùng cung cấp; Codex cập nhật tài liệu, không chạy lại ứng dụng trong phiên này. Không ghi nhận đây là lượt kiểm tra độc lập của Thế Anh.
 - **Trạng thái giữ nguyên:** Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Kết quả QA không đồng nghĩa pháp lý đã hoàn tất.
 
+## Post-refactor UI smoke test: PASS
+
+Cập nhật 11/09/2026 theo kết quả người dùng cung cấp sau commit đã push `e8f8efc0334a57f7caa4abcbf2972b3e2eb29f5f` — `Refactor Streamlit dashboard navigation`. Đây là lượt kiểm tra bổ sung sau refactor; giữ kết quả 20/20 Pass đã ghi của Dương Văn Thiệp, không coi là lượt chạy độc lập của Thế Anh.
+
+| Hạng mục kiểm tra lại | Kết quả | Ghi nhận |
+|---|---|---|
+| Dashboard mở được / Tổng quan | PASS | Backend và frontend khởi động được; Tổng quan hiển thị được. |
+| Sidebar 6 mục | PASS | Tổng quan; Chạy demo cố định; Upload file Excel; Kết quả rà soát; Evidence chi tiết; Hướng dẫn & giới hạn. |
+| Demo cố định | PASS | 12 hóa đơn, 6 giao dịch thanh toán, 9 cảnh báo. |
+| Upload sample | PASS | 12 / 6 / 9; kết quả lưu trong session_state. |
+| Kết quả rà soát | PASS | Đọc kết quả thành công gần nhất; bảng case 1 / 2 / 2 / 2 / 2. |
+| Evidence Case 3 INV-DEMO-007 | PASS | Có taxable_amount, vat_rate, vat_amount, recalculated_vat, difference, tolerance, note. |
+| Backend-off fallback | PASS | Báo “Backend chưa chạy. Vui lòng chạy uvicorn backend.app.main:app --reload” hoặc wording tương đương; không giữ 12/6/9 cũ trên màn hình chạy demo. Khi backend/API lỗi, kết quả cũ được xóa, không dùng lại ở Kết quả rà soát/Evidence. |
+| Wording | PASS | Không thấy wording nguy hiểm. |
+
+- Test được báo cáo: `python -m pytest` → **61 passed, 1 warning**.
+- Backend: `uvicorn backend.app.main:app --reload`; frontend: `streamlit run frontend/streamlit_app/app.py`.
+- Khi chạy lại checklist trên UI mới: thao tác demo/upload ở mục tương ứng; xem metric/bảng/bộ lọc tại **Kết quả rà soát**; chọn cảnh báo tại **Evidence chi tiết** rồi mở expander. Các bước trong bảng 20 kịch bản bên dưới là bản ghi của lượt QA trước refactor.
+- Codex chỉ ghi nhận kết quả được cung cấp. Lần thử chạy pytest trong phiên tài liệu không khởi động được vì thiếu Python 3.12 theo cấu hình .venv; không ghi đây là lần pytest mới đạt.
+- Giữ Known limitations. Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Smoke test kỹ thuật không phải kiểm chứng pháp lý độc lập và không xác nhận pháp lý đã hoàn tất.
+
 ## 20 kịch bản QA nhanh
 
 | ID | Mục tiêu | Cách chạy | Kết quả kỳ vọng | Trạng thái | Người kiểm tra | Ghi chú |

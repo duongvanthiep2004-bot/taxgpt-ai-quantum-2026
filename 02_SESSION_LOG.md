@@ -394,3 +394,18 @@
 - **Trạng thái kiểm soát:** Legal confidence vẫn **Pending**; RAG/AI explanation vẫn **LOCKED toàn bộ 5 case**; không ghi nhận hoàn tất legal review hoặc independent/cross review.
 - **Vòng 1:** `09/09/2026`; theo thông tin đội trưởng cung cấp, đội chưa thi và chưa có kết quả.
 - **Ưu tiên tiếp theo:** P1 kích hoạt Thế Anh tự chạy demo và cross-check 5 case; P2 chuẩn bị demo script sơ loại; P3 checklist 15–20 kịch bản QA nhanh; P4 sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại.
+
+### 11/09/2026 — Refactor UI sidebar và cập nhật kết quả kiểm thử
+
+- **AI/công cụ:** Codex cập nhật tài liệu theo kết quả kiểm thử do người dùng cung cấp; kiểm tra HEAD và Git local.
+- **Commit đã push:** `e8f8efc0334a57f7caa4abcbf2972b3e2eb29f5f` — `Refactor Streamlit dashboard navigation`; main đã push GitHub.
+- **Lý do:** Giao diện cũ quá nhiều nội dung trên một màn hình, khó demo.
+- **Cách làm:** Sidebar 6 mục: Tổng quan; Chạy demo cố định; Upload file Excel; Kết quả rà soát; Evidence chi tiết; Hướng dẫn & giới hạn. Dùng session_state lưu kết quả thành công, tách upload/kết quả/evidence/hướng dẫn. Khi backend/API lỗi, xóa kết quả cũ để tránh hiểu nhầm là kết quả mới.
+- **Test được người dùng báo cáo:** `python -m pytest`: `61 passed, 1 warning`. Backend chạy bằng `uvicorn backend.app.main:app --reload`; frontend chạy bằng `streamlit run frontend/streamlit_app/app.py`.
+- **Runtime PASS:** Sidebar 6 mục, Tổng quan, demo cố định, Kết quả rà soát, upload sample. Demo/upload đều `12 / 6 / 9`, bảng 5 case `1 / 2 / 2 / 2 / 2`. Evidence Case 3 `INV-DEMO-007` PASS, có `taxable_amount`, `vat_rate`, `vat_amount`, `recalculated_vat`, `difference`, `tolerance`, `note`.
+- **Backend-off fallback: PASS.** Dashboard báo “Backend chưa chạy. Vui lòng chạy uvicorn backend.app.main:app --reload” hoặc wording tương đương, không giữ kết quả 12/6/9 cũ. Không thấy wording nguy hiểm.
+- **Kiểm tra lại trong phiên tài liệu:** Đã thử `python -m pytest` qua .venv nhưng không chạy được vì Python 3.12 tại đường dẫn cấu hình không tồn tại. Số `61 passed, 1 warning` ở trên là kết quả người dùng cung cấp, không phải kết quả chạy mới của Codex.
+- **Phạm vi:** Refactor chỉ cải tiến UI/UX, không sửa backend/rule/legal. Phiên này chỉ cập nhật bốn file tài liệu được phép; không sửa code, không commit/push mới.
+- **Git:** Tracked files sạch trước nhiệm vụ này; untracked `Báo cáo các tài liệu về thuế cho TaxGPT.docx` và `docs/report_assets/` vẫn giữ nguyên, không sửa hoặc commit.
+- **Kiểm soát:** Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**; không ghi nhận pháp lý hoàn tất hoặc kiểm tra pháp lý độc lập.
+- **Tiếp theo:** P1 tập demo với UI mới; P2 chuẩn bị Q&A giám khảo; P3 nếu còn thời gian nhờ Thế Anh chạy checklist độc lập; P4 sau sơ loại quay lại roadmap bốn giai đoạn: hoàn thiện MVP, mở rộng XML/PDF/OCR, tăng năng lực pháp lý, sản phẩm hóa.
