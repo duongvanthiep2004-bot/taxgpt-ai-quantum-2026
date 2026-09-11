@@ -8,7 +8,7 @@
 - **Commit đã push:** `bceda11545ce1837499cd33b78ac909d7b499aa1` — `Fix Streamlit upload result placeholder rendering`. Push GitHub thành công: `b5ebb5f..bceda11 main -> main`.
 - **Git sau push, trước cập nhật điều phối:** Tracked files sạch. Còn untracked `Báo cáo các tài liệu về thuế cho TaxGPT.docx` và `docs/report_assets/`; không commit hai mục này trong nhiệm vụ hiện tại.
 - **Trạng thái giữ nguyên:** Legal confidence **Pending**; RAG/AI explanation **LOCKED toàn bộ 5 case**. Vòng 1: **09/09/2026**; theo thông tin đội trưởng cung cấp, đội chưa thi và chưa có kết quả.
-- **Ưu tiên tiếp theo:** P1 kích hoạt Thế Anh tự chạy demo và cross-check 5 case; P2 chuẩn bị demo script sơ loại; P3 chuẩn bị checklist 15–20 kịch bản QA nhanh; P4 sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại.
+- **Ưu tiên tiếp theo:** P1 kích hoạt Thế Anh tự chạy demo và cross-check 5 case; P2 tập demo script sơ loại; P3 chạy checklist 20 kịch bản QA nhanh; P4 sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại.
 
 
 - 5/5 case MVP đã có backend slice ở mức parser/rule/API/test: hóa đơn trùng; sai MST/tên người mua; VAT không khớp phép tính; hóa đơn ngoài kỳ dữ liệu đang rà soát; hóa đơn giá trị lớn thiếu chứng từ thanh toán không dùng tiền mặt.
@@ -31,6 +31,8 @@
 - Ngôn ngữ rule phải tiếp tục chỉ cảnh báo “có dấu hiệu”, “cần rà soát”; không kết luận gian lận, vi phạm, hóa đơn vô hiệu, không được khấu trừ, bị xử phạt hoặc bị loại chi phí.
 
 ## Hạng mục vừa hoàn thành
+
+- `[x]` Đã tạo [demo script sơ loại 5–7 phút](docs/demo/ROUND1_DEMO_SCRIPT_2026-09-09.md) và [QA checklist 20 kịch bản](docs/demo/ROUND1_QA_CHECKLIST.md) ngày 11/09/2026, có Codex hỗ trợ soạn. Đây là bản chuẩn bị để đội đọc/chỉnh và tập; checklist toàn bộ **Not run**, chưa ghi nhận chạy QA hoặc cross-check hoàn tất. Legal confidence **Pending**; RAG/AI explanation **LOCKED**.
 
 - `[x]` P0 sửa lỗi Streamlit upload sample và push GitHub thành công; commit `bceda11545ce1837499cd33b78ac909d7b499aa1` (`Fix Streamlit upload result placeholder rendering`).
 
@@ -57,14 +59,14 @@
 - Thế Anh tự chạy demo local theo README, thử dữ liệu demo cố định và upload sample; đối chiếu kết quả từng case trong 5 case MVP, ghi lại kết quả thực tế và lỗi còn gặp.
 - Đây là việc cần làm, chưa ghi nhận cross-check hoàn tất; không đồng nghĩa kiểm chứng pháp lý độc lập. Nếu chưa có phản hồi, đội trưởng tiếp tục chuẩn bị demo và ghi nhận rủi ro tự kiểm tra.
 
-### P2 — Chuẩn bị demo script sơ loại
+### P2 — Tập demo script sơ loại
 
-- Chuẩn bị lời giới thiệu, luồng demo, kết quả kỳ vọng, giới hạn prototype và phương án dự phòng; giữ cách diễn đạt cảnh báo thận trọng.
+- Tập theo [demo script](docs/demo/ROUND1_DEMO_SCRIPT_2026-09-09.md), mục tiêu 5–7 phút; đội đọc và chỉnh lời giới thiệu, luyện luồng demo, evidence Case 3 và phương án dự phòng; giữ cách diễn đạt cảnh báo thận trọng.
 - Vòng 1: `09/09/2026`; đội chưa thi và chưa có kết quả. Theo dõi thông báo BTC, không tự suy diễn trạng thái từ ngày đã ghi.
 
-### P3 — Checklist 15–20 kịch bản QA nhanh
+### P3 — Chạy checklist 20 kịch bản QA nhanh
 
-- Chuẩn bị checklist bao phủ 5 case, demo cố định, upload sample, dữ liệu đầu vào không hợp lệ và backend chưa chạy; ghi kết quả kỳ vọng/thực tế, người kiểm tra và lỗi cần xử lý.
+- Chạy [QA checklist](docs/demo/ROUND1_QA_CHECKLIST.md) bao phủ 5 case, demo cố định, upload sample/P0, bộ lọc/evidence, đầu vào lỗi, backend tắt và wording; ghi Pass/Fail, người kiểm tra, kết quả thực tế và Known limitations. Hiện cả 20 kịch bản **Not run**.
 
 ### P4 — Sau sơ loại mới tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại
 
@@ -73,9 +75,9 @@
 
 ## Bước tiếp theo cụ thể
 
-**Bước đã hoàn thành:** P0 Streamlit upload sample đã sửa và push thành công tại commit `bceda11545ce1837499cd33b78ac909d7b499aa1`. Tracked files sạch sau push, trước cập nhật tài liệu; hai mục báo cáo untracked không được commit trong nhiệm vụ này.
+**Bước đã hoàn thành:** Đã tạo demo script và QA checklist; chưa chạy QA/cross-check trong phiên soạn tài liệu. P0 Streamlit upload sample đã sửa và push thành công tại commit `bceda11545ce1837499cd33b78ac909d7b499aa1`. Tracked files sạch sau push, trước cập nhật tài liệu; hai mục báo cáo untracked không được commit trong nhiệm vụ này.
 
-**Bước đầu phiên sau:** Kích hoạt Thế Anh tự chạy demo và cross-check 5 case theo P1; tiếp theo chuẩn bị demo script sơ loại và checklist 15–20 kịch bản QA nhanh. Chỉ tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại sau sơ loại theo P4. Legal confidence **Pending**; RAG/AI explanation **LOCKED**.
+**Bước đầu phiên sau:** Kích hoạt Thế Anh tự chạy demo và cross-check 5 case theo P1; tiếp theo tập demo script sơ loại theo P2 và chạy checklist 20 kịch bản QA nhanh theo P3. Chỉ tiếp tục rà sâu NĐ 359/144 và các case pháp lý còn lại sau sơ loại theo P4. Legal confidence **Pending**; RAG/AI explanation **LOCKED**.
 
 ## Ước lượng tiến độ
 
