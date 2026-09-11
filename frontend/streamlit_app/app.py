@@ -23,17 +23,27 @@ BACKEND_NOT_RUNNING_MESSAGE = (
 )
 
 
+def clear_scan_result() -> None:
+    # Button callbacks run before rendering, so a new attempt invalidates old data.
+    st.session_state.pop("scan_result", None)
+    st.session_state.pop("scan_result_error", None)
+
+
+def report_scan_error(message: str) -> None:
+    st.session_state.pop("scan_result", None)
+    st.session_state["scan_result_error"] = message
+
 def fetch_scan_all() -> dict | None:
     try:
         response = httpx.get(SCAN_ALL_URL, timeout=10.0)
         response.raise_for_status()
         return response.json()
     except httpx.RequestError:
-        st.error(BACKEND_NOT_RUNNING_MESSAGE)
+        report_scan_error(BACKEND_NOT_RUNNING_MESSAGE)
     except httpx.HTTPStatusError as exc:
-        st.error(f"Backend trả về lỗi HTTP {exc.response.status_code}.")
+        report_scan_error(f"Backend trả về lỗi HTTP {exc.response.status_code}.")
     except ValueError:
-        st.error("Backend trả về dữ liệu không đúng định dạng JSON.")
+        report_scan_error("Backend trả về dữ liệu không đúng định dạng JSON.")
     return None
 
 
@@ -55,15 +65,16 @@ def scan_uploaded_files(invoice_file, payment_file) -> dict | None:
         response.raise_for_status()
         return response.json()
     except httpx.RequestError:
-        st.error(BACKEND_NOT_RUNNING_MESSAGE)
+        report_scan_error(BACKEND_NOT_RUNNING_MESSAGE)
     except httpx.HTTPStatusError as exc:
         try:
-            detail = exc.response.json().get("detail")
+            error_body = exc.response.json()
+            detail = error_body.get("detail") if isinstance(error_body, dict) else None
         except ValueError:
             detail = None
-        st.error(detail or f"Backend trả về lỗi HTTP {exc.response.status_code}.")
+        report_scan_error(str(detail) if detail else f"Backend trả về lỗi HTTP {exc.response.status_code}.")
     except ValueError:
-        st.error("Backend trả về dữ liệu không đúng định dạng JSON.")
+        report_scan_error("Backend trả về dữ liệu không đúng định dạng JSON.")
     return None
 
 
@@ -123,77 +134,7 @@ def build_alerts_table(alerts: list[dict]) -> pd.DataFrame:
     )
 
 
-st.set_page_config(page_title="TaxGPT Dashboard", layout="wide")
-st.title("TaxGPT Dashboard")
-st.write("Rà soát 5 nhóm rủi ro trên dữ liệu Excel demo hoặc file tải lên.")
-st.info(
-    "TaxGPT chỉ hỗ trợ rà soát rủi ro và không thay thế kế toán, luật sư, "
-    "đại lý thuế hoặc cơ quan thuế."
-)
-
-with st.expander("Cách chạy demo local"):
-    st.markdown("**1. Chạy backend:**")
-    st.code("uvicorn backend.app.main:app --reload", language="bash")
-    st.markdown("**2. Chạy frontend:**")
-    st.code("streamlit run frontend/streamlit_app/app.py", language="bash")
-    st.warning("Cần bật backend trước khi bấm nút rà soát dữ liệu demo.")
-
-st.subheader("Chế độ 1: Dữ liệu demo cố định")
-st.caption("Dùng hai file mẫu có sẵn trong repo để chạy nhanh luồng demo.")
-if st.button("Chạy rà soát dữ liệu demo", type="primary"):
-    with st.spinner("Đang gọi backend và rà soát dữ liệu demo..."):
-        scan_result = fetch_scan_all()
-    if scan_result is None:
-        st.session_state.pop("scan_result", None)
-    else:
-        st.session_state["scan_result"] = scan_result
-
-st.divider()
-st.subheader("Chế độ 2: File Excel tải lên")
-st.caption("Rà soát file Excel tải lên theo sheet, header và schema hiện tại.")
-st.write("Tải file theo template nếu chưa có dữ liệu đúng định dạng.")
-invoice_template_column, payment_template_column = st.columns(2)
-render_template_download(
-    invoice_template_column,
-    "Tải template hóa đơn",
-    INVOICE_TEMPLATE_PATH,
-)
-render_template_download(
-    payment_template_column,
-    "Tải template thanh toán",
-    PAYMENT_TEMPLATE_PATH,
-)
-upload_invoice_column, upload_payment_column = st.columns(2)
-uploaded_invoice_file = upload_invoice_column.file_uploader(
-    "File hóa đơn Excel (.xlsx)",
-    type=["xlsx"],
-    key="uploaded_invoice_file",
-)
-uploaded_payment_file = upload_payment_column.file_uploader(
-    "File thanh toán Excel (.xlsx)",
-    type=["xlsx"],
-    key="uploaded_payment_file",
-)
-
-if st.button("Chạy rà soát file tải lên"):
-    if uploaded_invoice_file is None or uploaded_payment_file is None:
-        st.error("Vui lòng chọn đủ file hóa đơn và file thanh toán.")
-    else:
-        with st.spinner("Đang tải file lên backend và rà soát dữ liệu..."):
-            scan_result = scan_uploaded_files(
-                uploaded_invoice_file,
-                uploaded_payment_file,
-            )
-        if scan_result is None:
-            st.session_state.pop("scan_result", None)
-        else:
-            st.session_state["scan_result"] = scan_result
-
-result = st.session_state.get("scan_result")
-if result is not None:
-    st.divider()
-    st.subheader("Kết quả rà soát")
-
+def render_result_summary(result: dict) -> None:
     uploaded_files = result.get("uploaded_files")
     if isinstance(uploaded_files, dict):
         st.info("Nguồn kết quả: File tải lên")
@@ -221,6 +162,9 @@ if result is not None:
     )
     alert_metric.metric("Tổng số cảnh báo", result.get("total_alerts", 0))
 
+
+def render_results(result: dict) -> None:
+    render_result_summary(result)
     st.subheader("Tổng hợp theo 5 case")
     st.dataframe(
         build_case_summary_table(result.get("case_summary", {})),
@@ -258,11 +202,161 @@ if result is not None:
         hide_index=True,
     )
 
-    with st.expander("Xem evidence chi tiết"):
-        if not filtered_alerts:
-            st.write("Không có cảnh báo phù hợp với bộ lọc hiện tại.")
-        for alert in filtered_alerts:
-            invoice_reference = get_invoice_reference(alert) or "Không có invoice_id"
-            case_id = alert.get("case_id", "Không có case_id")
-            with st.expander(f"{invoice_reference} — {case_id}"):
-                st.json(alert.get("evidence", {}), expanded=True)
+
+def render_upload() -> None:
+    st.caption("Rà soát file Excel tải lên theo sheet, header và schema hiện tại.")
+    st.write("Tải file theo template nếu chưa có dữ liệu đúng định dạng.")
+    invoice_template_column, payment_template_column = st.columns(2)
+    render_template_download(
+        invoice_template_column,
+        "Tải template hóa đơn",
+        INVOICE_TEMPLATE_PATH,
+    )
+    render_template_download(
+        payment_template_column,
+        "Tải template thanh toán",
+        PAYMENT_TEMPLATE_PATH,
+    )
+    upload_invoice_column, upload_payment_column = st.columns(2)
+    uploaded_invoice_file = upload_invoice_column.file_uploader(
+        "File hóa đơn Excel (.xlsx)",
+        type=["xlsx"],
+        key="uploaded_invoice_file",
+    )
+    uploaded_payment_file = upload_payment_column.file_uploader(
+        "File thanh toán Excel (.xlsx)",
+        type=["xlsx"],
+        key="uploaded_payment_file",
+    )
+
+    if st.button("Chạy rà soát file tải lên", on_click=clear_scan_result):
+        if uploaded_invoice_file is None or uploaded_payment_file is None:
+            report_scan_error("Vui lòng chọn đủ file hóa đơn và file thanh toán.")
+        else:
+            with st.spinner("Đang tải file lên backend và rà soát dữ liệu..."):
+                scan_result = scan_uploaded_files(
+                    uploaded_invoice_file,
+                    uploaded_payment_file,
+                )
+            if scan_result is None:
+                st.session_state.pop("scan_result", None)
+            else:
+                st.session_state["scan_result"] = scan_result
+
+    if st.session_state.get("scan_result_error"):
+        st.error(st.session_state["scan_result_error"])
+    result = st.session_state.get("scan_result")
+    if result is not None and isinstance(result.get("uploaded_files"), dict):
+        render_result_summary(result)
+        st.caption('Xem bảng cảnh báo tại mục “Kết quả rà soát”.')
+
+
+def render_evidence(result: dict) -> None:
+    alerts = result.get("alerts", [])
+    if not alerts:
+        st.info("Không có cảnh báo để xem evidence.")
+        return
+    selected_index = st.selectbox(
+        "Chọn cảnh báo",
+        range(len(alerts)),
+        format_func=lambda index: (
+            f"{index + 1}. {get_invoice_reference(alerts[index])}"
+            f" — {alerts[index].get('case_id', '')}"
+        ),
+    )
+    alert = alerts[selected_index]
+    st.write(alert.get("message", ""))
+    with st.expander("Xem evidence chi tiết", expanded=False):
+        st.json(alert.get("evidence", {}), expanded=True)
+
+
+def render_overview() -> None:
+    st.write("TaxGPT là prototype hỗ trợ rà soát rủi ro thuế/chứng từ cho SMEs.")
+    st.info(
+        "TaxGPT chỉ hỗ trợ rà soát rủi ro và không thay thế kế toán, luật sư, "
+        "đại lý thuế hoặc cơ quan thuế."
+    )
+    st.markdown(
+        "1. Hóa đơn trùng\n"
+        "2. Sai MST/tên người mua\n"
+        "3. VAT không khớp phép tính cơ bản\n"
+        "4. Hóa đơn ngoài kỳ rà soát\n"
+        "5. Hóa đơn giá trị lớn chưa tìm thấy thanh toán ngân hàng "
+        "trong dữ liệu cung cấp"
+    )
+    st.caption("Legal confidence: Pending · RAG/AI explanation: LOCKED")
+
+
+def render_demo() -> None:
+    st.caption("Dùng hai file mẫu có sẵn trong repo để chạy nhanh luồng demo.")
+    if st.button(
+        "Chạy rà soát dữ liệu demo", type="primary", on_click=clear_scan_result
+    ):
+        with st.spinner("Đang gọi backend và rà soát dữ liệu demo..."):
+            scan_result = fetch_scan_all()
+        if scan_result is None:
+            st.session_state.pop("scan_result", None)
+        else:
+            st.session_state["scan_result"] = scan_result
+    if st.session_state.get("scan_result_error"):
+        st.error(st.session_state["scan_result_error"])
+    result = st.session_state.get("scan_result")
+    if result is not None and not isinstance(result.get("uploaded_files"), dict):
+        render_result_summary(result)
+        st.caption('Xem bảng cảnh báo tại mục “Kết quả rà soát”.')
+
+
+def render_guidance() -> None:
+    st.markdown("**1. Chạy backend:**")
+    st.code("uvicorn backend.app.main:app --reload", language="bash")
+    st.markdown("**2. Chạy frontend:**")
+    st.code("streamlit run frontend/streamlit_app/app.py", language="bash")
+    st.warning("Cần bật backend trước khi chạy rà soát.")
+    st.subheader("Giới hạn MVP")
+    st.markdown(
+        "- Chỉ hỗ trợ Excel `.xlsx` theo schema hiện tại.\n"
+        "- Chưa hỗ trợ XML/PDF/OCR.\n"
+        "- Chưa bật RAG/AI explanation: **LOCKED**.\n"
+        "- Chưa kết luận pháp lý; Legal confidence: **Pending**."
+    )
+    st.subheader("Câu không được nói khi demo")
+    st.markdown(
+        "- Không nói hệ thống kết luận doanh nghiệp vi phạm.\n"
+        "- Không nói pháp lý đã hoàn tất.\n"
+        "- Không nói RAG đã sẵn sàng.\n"
+        "- Không nói thay thế chuyên gia thuế."
+    )
+
+
+st.set_page_config(page_title="TaxGPT Dashboard", layout="wide")
+st.title("TaxGPT Dashboard")
+page = st.sidebar.radio(
+    "Điều hướng",
+    [
+        "Tổng quan",
+        "Chạy demo cố định",
+        "Upload file Excel",
+        "Kết quả rà soát",
+        "Evidence chi tiết",
+        "Hướng dẫn & giới hạn",
+    ],
+)
+st.subheader(page)
+if page == "Tổng quan":
+    render_overview()
+elif page == "Chạy demo cố định":
+    render_demo()
+elif page == "Upload file Excel":
+    render_upload()
+elif page in ("Kết quả rà soát", "Evidence chi tiết"):
+    if st.session_state.get("scan_result_error"):
+        st.error(st.session_state["scan_result_error"])
+    result = st.session_state.get("scan_result")
+    if result is None:
+        st.info("Hãy chạy demo cố định hoặc upload file Excel và chạy rà soát trước.")
+    elif page == "Kết quả rà soát":
+        render_results(result)
+    else:
+        render_evidence(result)
+else:
+    render_guidance()
